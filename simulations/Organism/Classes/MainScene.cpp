@@ -1,11 +1,10 @@
 #include "MainScene.h"
 #include "Organism.h"
+#include "Food.h"
 #include <iostream>
 #include <string>
 
 USING_NS_CC;
-
-DrawNode *organismNode;
 
 Scene *MainScene::createScene()
 {
@@ -22,14 +21,12 @@ static void problemLoading(const char *filename)
 // on "init" you need to initialize your instance
 bool MainScene::init()
 {
+    if (!Scene::initWithPhysics())
+        return false;
+
     this->index = 0;
 
-    if (!Scene::initWithPhysics())
-    {
-        return false;
-    }
-
-    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
@@ -38,13 +35,16 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Organism
-    Organism organism(Vec2(200, 200));
-    organismNode = organism.getNode();
-    organismNode->getPhysicsBody()->setVelocity(Vec2(40, 40));
-    this->addChild(organismNode, 2);
+    for (int i = 0; i < 10; i++)
+    {
+        Organism organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+        this->organismList.push_back(organism);
+        this->addChild(organism.getNode(), 2);
+    }
 
     // Set scheduler to update the velocity of the organism[s]
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::organismsTick), 1, CC_REPEAT_FOREVER, 0);
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::organismsTick), 2.5, CC_REPEAT_FOREVER, 0);
+    this->organismsTick(0);
 
     // Boundary
     const int boundaryCategoryBitmask = 4;
@@ -142,16 +142,13 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     {
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
-            if (categoryBitmaskA == 2)
+            auto foodNode = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
+            if (foodNode != nullptr)
             {
-                this->removeChildByName(bodyA->getNode()->getName());
-            }
-            else
-            {
-                this->removeChildByName(bodyB->getNode()->getName());
-            }
+                this->removeChildByName(foodNode->getName());
 
-            this->addFood();
+                this->addFood();
+            }
 
             return false;
         }
@@ -174,11 +171,17 @@ void MainScene::addFood()
 
 void MainScene::organismsTick(float delta)
 {
-    int speedX = random(60, 130);
-    int speedY = random(60, 130);
+    for (auto organism : this->organismList)
+    {
+        if (random(-1, 1) > 0 || delta == 0)
+        {
+            int speedX = random(60, 130);
+            int speedY = random(60, 130);
 
-    int directionX = random(-1, 1) > 0 ? 1 : -1;
-    int directionY = random(-1, 1) > 0 ? 1 : -1;
+            int directionX = random(-1, 1) > 0 ? 1 : -1;
+            int directionY = random(-1, 1) > 0 ? 1 : -1;
 
-    organismNode->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
+            organism.getNode()->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
+        }
+    }
 }

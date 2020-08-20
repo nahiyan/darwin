@@ -3,12 +3,12 @@
 
 #include "cocos2d.h"
 #include <vector>
-#include "Food.h"
+#include "Organism.h"
 
 class MainScene : public cocos2d::Scene
 {
 private:
-    std::vector<Food> foodList;
+    std::vector<Organism> organismList;
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addFood();
     int index;
