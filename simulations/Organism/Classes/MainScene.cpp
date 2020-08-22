@@ -3,6 +3,9 @@
 #include "Food.h"
 #include <iostream>
 #include <string>
+#include <cmath>
+#include <cstdlib>
+#include <algorithm>
 
 USING_NS_CC;
 
@@ -140,6 +143,7 @@ void MainScene::update(float delta)
 
     for (auto organism : this->organismList)
     {
+        // Raycast to determine if food is intersecting the antennae
         auto organismPosition = organism.getNode()->getParent()->convertToWorldSpace(organism.getNode()->getPosition());
 
         organism.unsetFoodIntersection();
@@ -151,6 +155,18 @@ void MainScene::update(float delta)
 
         this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition1, &organism);
         this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition2, &organism);
+
+        // Set organism rotation
+        auto organismVelocity = organism.getNode()->getPhysicsBody()->getVelocity();
+        float desiredRotation = organismVelocity.getAngle(Vec2(0, 1)) * (180 / M_PI);
+        float organismRotation = organism.getNode()->getPhysicsBody()->getRotation();
+        float absRotDiff = abs(desiredRotation - organismRotation);
+        float rotationChange = std::min(absRotDiff, 1.5f);
+
+        if (desiredRotation > organismRotation)
+            organism.getNode()->setRotation(organismRotation + rotationChange);
+        else if (desiredRotation < organismRotation)
+            organism.getNode()->setRotation(organismRotation - rotationChange);
     }
 }
 
@@ -219,8 +235,11 @@ void MainScene::organismsTick(float delta)
             int directionX = random(-1, 1) > 0 ? 1 : -1;
             int directionY = random(-1, 1) > 0 ? 1 : -1;
 
-            organism.getNode()->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
-            organism.getNode()->getPhysicsBody()->setAngularVelocity(random(0, 1));
+            Vec2 newVelocity;
+            newVelocity.x = speedX * directionX;
+            newVelocity.y = speedY * directionY;
+
+            organism.getNode()->getPhysicsBody()->setVelocity(newVelocity);
         }
     }
 }
