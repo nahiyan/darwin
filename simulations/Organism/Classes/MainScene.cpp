@@ -35,7 +35,7 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Organism
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
         Organism organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
         this->organismList.push_back(organism);
@@ -119,9 +119,7 @@ bool MainScene::init()
 
     // Mouse listener
     auto mouseListener = EventListenerMouse::create();
-
     mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
-
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     return true;
@@ -142,19 +140,17 @@ void MainScene::update(float delta)
 
     for (auto organism : this->organismList)
     {
-        auto organismPosition = organism.getNode()->getParent()->convertToWorldSpaceAR(organism.getNode()->getPosition());
-
-        auto trail = DrawNode::create();
-        trail->drawPoint(organismPosition, 5, Color4F::MAGENTA);
-
-        this->addChild(trail);
-
-        std::cout << organismPosition.x << ", " << organismPosition.y << "\n";
+        auto organismPosition = organism.getNode()->getParent()->convertToWorldSpace(organism.getNode()->getPosition());
 
         organism.unsetFoodIntersection();
+        auto organismAngle = -organism.getNode()->getPhysicsBody()->getRotation() * (M_PI / 180);
 
-        // this->getPhysicsWorld()->rayCast(rayCastCB, organismPosition + Vec2(0, 20), organismPosition + Vec2(40, 100), &organism);
-        // this->getPhysicsWorld()->rayCast(rayCastCB, organismPosition + Vec2(0, 20), organismPosition + Vec2(-40, 100), &organism);
+        auto rayCastStartingPosition = (organismPosition + Vec2(0, 20)).rotateByAngle(organismPosition, organismAngle);
+        auto rayCastEndingPosition1 = (organismPosition + Vec2(40, 100)).rotateByAngle(organismPosition, organismAngle);
+        auto rayCastEndingPosition2 = (organismPosition + Vec2(-40, 100)).rotateByAngle(organismPosition, organismAngle);
+
+        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition1, &organism);
+        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition2, &organism);
     }
 }
 
@@ -196,7 +192,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 void MainScene::onMouseMove(EventMouse *e)
 {
     // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
-    // auto organismNewPosition = this->organismList[0].getNode()->getParent()->convertToNodeSpaceAR(mousePosition);
+    // auto organismNewPosition = this->organismList[0].getNode()->getParent()->convertToNodeSpace(mousePosition);
 
     // this->organismList[0].getNode()->setPosition(organismNewPosition);
 }
@@ -224,6 +220,7 @@ void MainScene::organismsTick(float delta)
             int directionY = random(-1, 1) > 0 ? 1 : -1;
 
             organism.getNode()->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
+            organism.getNode()->getPhysicsBody()->setAngularVelocity(random(0, 1));
         }
     }
 }

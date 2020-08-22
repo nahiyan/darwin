@@ -8,6 +8,7 @@ class Organism
 private:
     cocos2d::DrawNode *node;
     bool foodIntersection;
+    void setGeometry();
 
 public:
     Organism(const cocos2d::Vec2 &);
