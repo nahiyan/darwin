@@ -26,7 +26,7 @@ bool MainScene::init()
 
     this->index = 0;
 
-    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
@@ -35,7 +35,7 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Organism
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         Organism organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
         this->organismList.push_back(organism);
@@ -110,18 +110,52 @@ bool MainScene::init()
         Food food(Vec2(random((float)10, (float)(visibleSize.width - 10)), random((float)10, (float)(visibleSize.height - 10))));
         this->addChild(food.getNode(), 0, "food" + std::to_string(i));
     }
-
     this->index += 101;
 
+    // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(MainScene::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+    // Mouse listener
+    auto mouseListener = EventListenerMouse::create();
+
+    mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     return true;
 }
 
 void MainScene::update(float delta)
 {
+    auto rayCastCB = [](PhysicsWorld &world, const PhysicsRayCastInfo &info, void *organism) -> bool {
+        if (info.shape->getBody()->getCategoryBitmask() == 2)
+        {
+            ((Organism *)organism)->setFoodIntersection();
+
+            return false;
+        }
+
+        return true;
+    };
+
+    for (auto organism : this->organismList)
+    {
+        auto organismPosition = organism.getNode()->getParent()->convertToWorldSpaceAR(organism.getNode()->getPosition());
+
+        auto trail = DrawNode::create();
+        trail->drawPoint(organismPosition, 5, Color4F::MAGENTA);
+
+        this->addChild(trail);
+
+        std::cout << organismPosition.x << ", " << organismPosition.y << "\n";
+
+        organism.unsetFoodIntersection();
+
+        // this->getPhysicsWorld()->rayCast(rayCastCB, organismPosition + Vec2(0, 20), organismPosition + Vec2(40, 100), &organism);
+        // this->getPhysicsWorld()->rayCast(rayCastCB, organismPosition + Vec2(0, 20), organismPosition + Vec2(-40, 100), &organism);
+    }
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)
@@ -157,6 +191,14 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     }
 
     return false;
+}
+
+void MainScene::onMouseMove(EventMouse *e)
+{
+    // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
+    // auto organismNewPosition = this->organismList[0].getNode()->getParent()->convertToNodeSpaceAR(mousePosition);
+
+    // this->organismList[0].getNode()->setPosition(organismNewPosition);
 }
 
 void MainScene::addFood()

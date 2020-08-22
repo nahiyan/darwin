@@ -7,10 +7,13 @@ class Organism
 {
 private:
     cocos2d::DrawNode *node;
+    bool foodIntersection;
 
 public:
     Organism(const cocos2d::Vec2 &);
     cocos2d::DrawNode *getNode();
+    void setFoodIntersection();
+    void unsetFoodIntersection();
 };
 
 #endif // __ORGANISM_H__

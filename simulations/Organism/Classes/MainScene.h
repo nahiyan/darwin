@@ -10,6 +10,7 @@ class MainScene : public cocos2d::Scene
 private:
     std::vector<Organism> organismList;
     bool onContactBegin(cocos2d::PhysicsContact &);
+
     void addFood();
     int index;
 
@@ -19,6 +20,7 @@ public:
     virtual bool init();
     virtual void update(float);
     virtual void organismsTick(float);
+    void onMouseMove(cocos2d::EventMouse *);
 
     // a selector callback
     void menuCloseCallback(cocos2d::Ref *pSender);
