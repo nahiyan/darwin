@@ -5,6 +5,7 @@ USING_NS_CC;
 
 Organism::Organism(const Vec2 &position)
 {
+    // Create node
     this->node = DrawNode::create();
     this->node->setPosition(position);
     this->setGeometry();
@@ -18,7 +19,12 @@ Organism::Organism(const Vec2 &position)
 
     this->node->addComponent(physicsBody);
 
+    // Initialize food intersection
     this->foodIntersection = false;
+
+    // Initialize neural network
+    this->neuralNetwork = new OpenNN::NeuralNetwork(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{2, 10, 2});
+    this->neuralNetwork->randomize_parameters_normal();
 }
 
 void Organism::setGeometry()
@@ -32,18 +38,27 @@ void Organism::setFoodIntersection()
 {
     this->foodIntersection = true;
 
-    this->node->clear();
-    this->setGeometry();
+    this->resetGeometry();
 }
 void Organism::unsetFoodIntersection()
 {
     this->foodIntersection = false;
 
-    this->node->clear();
-    this->setGeometry();
+    this->resetGeometry();
 }
 
 DrawNode *Organism::getNode()
 {
     return this->node;
+}
+
+void Organism::resetGeometry()
+{
+    this->node->clear();
+    this->setGeometry();
+}
+
+Organism::~Organism()
+{
+    // delete this->neuralNetwork;
 }

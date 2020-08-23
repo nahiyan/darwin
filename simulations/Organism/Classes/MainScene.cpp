@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <algorithm>
+#include <neural_network.h>
 
 USING_NS_CC;
 
@@ -29,7 +30,7 @@ bool MainScene::init()
 
     this->index = 0;
 
-    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
@@ -38,7 +39,7 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Organism
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
     {
         Organism organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
         this->organismList.push_back(organism);
