@@ -7,19 +7,22 @@
 class Organism
 {
 private:
-    cocos2d::DrawNode *node;
-    bool foodIntersection;
-    OpenNN::NeuralNetwork *neuralNetwork;
-
     void setGeometry();
     void resetGeometry();
 
 public:
+    enum Motive
+    {
+        ConsumeFood,
+        ScoutForFood
+    };
+    bool foodIntersection;
+    OpenNN::NeuralNetwork *neuralNetwork;
+    cocos2d::DrawNode *node;
+
     Organism(const cocos2d::Vec2 &);
     ~Organism();
     cocos2d::DrawNode *getNode();
-    void setFoodIntersection();
-    void unsetFoodIntersection();
 };
 
 #endif // __ORGANISM_H__

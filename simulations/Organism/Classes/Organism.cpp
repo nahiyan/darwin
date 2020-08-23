@@ -34,24 +34,6 @@ void Organism::setGeometry()
     this->node->drawLine(Vec2::ZERO + Vec2(0, 20), Vec2::ZERO + Vec2(-40, 100), this->foodIntersection ? Color4F::GREEN : Color4F::RED);
 }
 
-void Organism::setFoodIntersection()
-{
-    this->foodIntersection = true;
-
-    this->resetGeometry();
-}
-void Organism::unsetFoodIntersection()
-{
-    this->foodIntersection = false;
-
-    this->resetGeometry();
-}
-
-DrawNode *Organism::getNode()
-{
-    return this->node;
-}
-
 void Organism::resetGeometry()
 {
     this->node->clear();
@@ -60,5 +42,5 @@ void Organism::resetGeometry()
 
 Organism::~Organism()
 {
-    // delete this->neuralNetwork;
+    delete this->neuralNetwork;
 }

@@ -39,11 +39,11 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Organism
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
-        Organism organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+        auto organism = new Organism(Vec2(visibleSize.width / 2, visibleSize.height / 2));
         this->organismList.push_back(organism);
-        this->addChild(organism.getNode(), 2);
+        this->addChild(organism->node, 2);
     }
 
     // Set scheduler to update the velocity of the organism[s]
@@ -134,7 +134,7 @@ void MainScene::update(float delta)
     auto rayCastCB = [](PhysicsWorld &world, const PhysicsRayCastInfo &info, void *organism) -> bool {
         if (info.shape->getBody()->getCategoryBitmask() == 2)
         {
-            ((Organism *)organism)->setFoodIntersection();
+            ((Organism *)organism)->foodIntersection = true;
 
             return false;
         }
@@ -145,29 +145,37 @@ void MainScene::update(float delta)
     for (auto organism : this->organismList)
     {
         // Raycast to determine if food is intersecting the antennae
-        auto organismPosition = organism.getNode()->getParent()->convertToWorldSpace(organism.getNode()->getPosition());
+        auto organismPosition = organism->node->getParent()->convertToWorldSpace(organism->node->getPosition());
 
-        organism.unsetFoodIntersection();
-        auto organismAngle = -organism.getNode()->getPhysicsBody()->getRotation() * (M_PI / 180);
+        organism->foodIntersection = false;
+        auto organismAngle = -organism->node->getPhysicsBody()->getRotation() * (M_PI / 180);
 
         auto rayCastStartingPosition = (organismPosition + Vec2(0, 20)).rotateByAngle(organismPosition, organismAngle);
         auto rayCastEndingPosition1 = (organismPosition + Vec2(40, 100)).rotateByAngle(organismPosition, organismAngle);
         auto rayCastEndingPosition2 = (organismPosition + Vec2(-40, 100)).rotateByAngle(organismPosition, organismAngle);
 
-        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition1, &organism);
-        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition2, &organism);
+        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition1, organism);
+        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition2, organism);
 
         // Set organism rotation
-        auto organismVelocity = organism.getNode()->getPhysicsBody()->getVelocity();
+        auto organismVelocity = organism->node->getPhysicsBody()->getVelocity();
         float desiredRotation = organismVelocity.getAngle(Vec2(0, 1)) * (180 / M_PI);
-        float organismRotation = organism.getNode()->getPhysicsBody()->getRotation();
+        float organismRotation = organism->node->getPhysicsBody()->getRotation();
         float absRotDiff = abs(desiredRotation - organismRotation);
         float rotationChange = std::min(absRotDiff, 1.5f);
 
         if (desiredRotation > organismRotation)
-            organism.getNode()->setRotation(organismRotation + rotationChange);
+            organism->node->setRotation(organismRotation + rotationChange);
         else if (desiredRotation < organismRotation)
-            organism.getNode()->setRotation(organismRotation - rotationChange);
+            organism->node->setRotation(organismRotation - rotationChange);
+
+        // Neural network
+        OpenNN::Tensor<double> input{1, 2};
+        input[0] = (double)organism->foodIntersection;
+        input[1] = organism->node->getPhysicsBody()->getVelocity().length();
+
+        auto output = organism->neuralNetwork->calculate_outputs(input);
+        // std::cout << output[0] << ", " << output[1] << "\n";
     }
 }
 
@@ -240,7 +248,13 @@ void MainScene::organismsTick(float delta)
             newVelocity.x = speedX * directionX;
             newVelocity.y = speedY * directionY;
 
-            organism.getNode()->getPhysicsBody()->setVelocity(newVelocity);
+            organism->node->getPhysicsBody()->setVelocity(newVelocity);
         }
     }
+}
+
+MainScene::~MainScene()
+{
+    for (auto organism : this->organismList)
+        delete organism;
 }

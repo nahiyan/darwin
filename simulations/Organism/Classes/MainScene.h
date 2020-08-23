@@ -8,7 +8,7 @@
 class MainScene : public cocos2d::Scene
 {
 private:
-    std::vector<Organism> organismList;
+    std::vector<Organism *> organismList;
     bool onContactBegin(cocos2d::PhysicsContact &);
 
     void addFood();
@@ -16,6 +16,7 @@ private:
 
 public:
     static cocos2d::Scene *createScene();
+    ~MainScene();
 
     virtual bool init();
     virtual void update(float);
