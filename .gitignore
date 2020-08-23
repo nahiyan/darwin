@@ -1,6 +1,9 @@
 *.sh
 /cocos2d-x
-/test
 *.code-workspace
-/opennn
 /.vscode
+/opennn/opennn/*.cpp
+/opennn/opennn/*.a
+/opennn/opennn/CMakeFiles
+/opennn/*.pdf
+/opennn/*.txt
