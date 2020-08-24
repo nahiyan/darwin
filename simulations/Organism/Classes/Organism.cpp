@@ -22,6 +22,9 @@ Organism::Organism(const Vec2 &position)
     // Initialize food intersection
     this->foodIntersection = false;
 
+    // Targeted food
+    this->targetedFoodName = "";
+
     // Initialize neural network
     this->neuralNetwork = new OpenNN::NeuralNetwork(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{2, 10, 2});
     this->neuralNetwork->randomize_parameters_normal();
@@ -43,4 +46,21 @@ void Organism::resetGeometry()
 Organism::~Organism()
 {
     delete this->neuralNetwork;
+}
+
+void Organism::setFoodIntersection()
+{
+    this->foodIntersection = true;
+    this->resetGeometry();
+}
+
+void Organism::unsetFoodIntersection()
+{
+    this->foodIntersection = false;
+    this->resetGeometry();
+}
+
+bool Organism::getFoodIntersection()
+{
+    return this->foodIntersection;
 }
