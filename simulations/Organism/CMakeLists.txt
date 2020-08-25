@@ -133,10 +133,18 @@ else()
     target_link_libraries(${APP_NAME} -Wl,--whole-archive cpp_android_spec -Wl,--no-whole-archive)
 endif()
 
-target_link_libraries(${APP_NAME} cocos2d)
+# Link cocos2d-x and OpenNN
+set(OPENNN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../opennn/opennn)
+
+target_link_directories(${APP_NAME}
+    PRIVATE ${OPENNN_PATH}
+)
+
+target_link_libraries(${APP_NAME} cocos2d opennn)
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
+        PRIVATE ${OPENNN_PATH}
 )
 
 # mark app resources
@@ -162,6 +170,3 @@ if(LINUX OR WINDOWS)
     cocos_get_resource_path(APP_RES_DIR ${APP_NAME})
     cocos_copy_target_res(${APP_NAME} LINK_TO ${APP_RES_DIR} FOLDERS ${GAME_RES_FOLDER})
 endif()
-
-set (CMAKE_CXX_FLAGS "-I../../opennn/opennn")
-set (CMAKE_EXE_LINKER_FLAGS "-L../../opennn/opennn -lopennn")
