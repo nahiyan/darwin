@@ -9,9 +9,11 @@ class MainScene : public cocos2d::Scene
 {
 private:
     std::vector<Organism *> organismList;
+    cocos2d::Size visibleSize;
+    
     bool onContactBegin(cocos2d::PhysicsContact &);
-
-    void addFood();
+    void addFood(int);
+    void addBoundary();
     int index;
 
 public:

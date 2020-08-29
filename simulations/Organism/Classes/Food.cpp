@@ -2,21 +2,17 @@
 
 USING_NS_CC;
 
-Food::Food(const Vec2 &position)
+Sprite* Food::create(const Vec2 &position)
 {
-    this->node = DrawNode::create();
-    this->node->drawDot(position, 5, Color4F::YELLOW);
+    auto node = Sprite::create("food.png");
+    node->setPosition(position);
 
-    auto physicsBody = PhysicsBody::createCircle(5, PHYSICSBODY_MATERIAL_DEFAULT, position);
+    auto physicsBody = PhysicsBody::createCircle(5, PHYSICSBODY_MATERIAL_DEFAULT);
     physicsBody->setDynamic(false);
     physicsBody->setCategoryBitmask(2);
     physicsBody->setCollisionBitmask(1);
     physicsBody->setContactTestBitmask(1);
-
-    this->node->addComponent(physicsBody);
-}
-
-DrawNode *Food::getNode()
-{
-    return this->node;
+    node->addComponent(physicsBody);
+    
+    return node;
 }

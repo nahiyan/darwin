@@ -5,12 +5,8 @@
 
 class Food
 {
-private:
-    cocos2d::DrawNode *node;
-
 public:
-    Food(const cocos2d::Vec2 &);
-    cocos2d::DrawNode *getNode();
+    static cocos2d::Sprite* create(const cocos2d::Vec2 &);
 };
 
 #endif // __FOOD_H__
