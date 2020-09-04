@@ -10,11 +10,11 @@ class MainScene : public cocos2d::Scene
 private:
     std::vector<Organism *> organismList;
     cocos2d::Size visibleSize;
-    
+    int foodToBeAdded;
+    int totalFoodEaten;
+
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addFood(int);
-    void addBoundary();
-    int index;
 
 public:
     static cocos2d::Scene *createScene();

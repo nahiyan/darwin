@@ -1,5 +1,7 @@
 #include "Organism.h"
 #include <iostream>
+#include <memory>
+#include <neural_network.h>
 
 USING_NS_CC;
 
@@ -19,6 +21,14 @@ Organism::Organism(const Vec2 &position)
 
     this->node->addComponent(physicsBody);
 
+    // Food eaten count
+    this->foodEaten = 0;
+
+    // Label
+    this->label = Label::createWithTTF(std::to_string(this->foodEaten), "fonts/arial.ttf", 12);
+    this->label->setTextColor(Color4B::BLACK);
+    this->node->addChild(this->label);
+
     // Initialize food intersection
     this->foodIntersection = false;
 
@@ -26,7 +36,7 @@ Organism::Organism(const Vec2 &position)
     this->targetedFoodName = "";
 
     // Initialize neural network
-    this->neuralNetwork = new OpenNN::NeuralNetwork(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{2, 10, 2});
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{2, 20, 2});
     this->neuralNetwork->randomize_parameters_normal();
 }
 
@@ -45,7 +55,6 @@ void Organism::resetGeometry()
 
 Organism::~Organism()
 {
-    delete this->neuralNetwork;
 }
 
 void Organism::setFoodIntersection()
@@ -63,4 +72,11 @@ void Organism::unsetFoodIntersection()
 bool Organism::getFoodIntersection()
 {
     return this->foodIntersection;
+}
+
+void Organism::eatFood()
+{
+    this->label->setString(std::to_string(++this->foodEaten));
+    // std::cout << this->label->getString() << "\n";
+    // this->label->updateContent();
 }

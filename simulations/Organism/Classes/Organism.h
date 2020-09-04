@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include <neural_network.h>
 #include <string>
+#include <memory>
 
 class Organism
 {
@@ -11,9 +12,12 @@ private:
     void setGeometry();
     void resetGeometry();
     bool foodIntersection;
+    cocos2d::Label *label;
+    int foodEaten;
 
 public:
-    OpenNN::NeuralNetwork *neuralNetwork;
+    std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
+    // OpenNN::NeuralNetwork *;
     cocos2d::DrawNode *node;
     std::string targetedFoodName;
 
@@ -23,6 +27,7 @@ public:
     void setFoodIntersection();
     void unsetFoodIntersection();
     bool getFoodIntersection();
+    void eatFood();
 };
 
 #endif // __ORGANISM_H__

@@ -60,12 +60,14 @@ list(APPEND GAME_SOURCE
      Classes/MainScene.cpp
      Classes/Food.cpp
      Classes/Organism.cpp
+     Classes/Evolution.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/MainScene.h
      Classes/Food.h
      Classes/Organism.h
+     Classes/Evolution.h
      )
 
 if(ANDROID)

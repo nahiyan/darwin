@@ -1,5 +1,7 @@
 #include "MainScene.h"
 #include "Organism.h"
+#include "Boundary.h"
+#include "Evolution.h"
 #include "Food.h"
 #include <iostream>
 #include <string>
@@ -28,10 +30,9 @@ bool MainScene::init()
     if (!Scene::initWithPhysics())
         return false;
 
-    this->index = 0;
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
-    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-
+    // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
 
@@ -42,7 +43,7 @@ bool MainScene::init()
     {
         auto organism = new Organism(Vec2(this->visibleSize.width / 2, this->visibleSize.height / 2));
         this->organismList.push_back(organism);
-        this->addChild(organism->node, 2);
+        this->addChild(organism->node, 2, i);
     }
 
     // Set scheduler to update the velocity of the organism[s]
@@ -50,10 +51,17 @@ bool MainScene::init()
     this->organismsTick(0);
 
     // Boundary
-    this->addBoundary();
+    auto boundaries = Boundary::create(this->visibleSize);
+    for (int i = 0; i < 4; i++)
+    {
+        this->addChild(boundaries[i]);
+    }
+    delete[] boundaries;
 
     // Spawn food
+    this->foodToBeAdded = 100;
     this->addFood(100);
+    this->totalFoodEaten = 0;
 
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
@@ -61,9 +69,9 @@ bool MainScene::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     // Mouse listener
-//    auto mouseListener = EventListenerMouse::create();
-//    mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
-//    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+    // auto mouseListener = EventListenerMouse::create();
+    // mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
+    // _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     return true;
 }
@@ -74,7 +82,6 @@ void MainScene::update(float delta)
         if (info.shape->getBody()->getCategoryBitmask() == 2)
         {
             ((Organism *)organism)->setFoodIntersection();
-            ((Organism *)organism)->targetedFoodName = info.shape->getBody()->getNode()->getName();
 
             return false;
         }
@@ -110,42 +117,42 @@ void MainScene::update(float delta)
             organism->node->setRotation(organismRotation - rotationChange);
 
         // Neural network
-//        OpenNN::Tensor<double> input{1, 2};
-//        input[0] = (double)organism->getFoodIntersection();
-//        input[1] = organism->node->getPhysicsBody()->getVelocity().length();
-//
-//        auto output = organism->neuralNetwork->calculate_outputs(input);
-//
-//        bool goAfterFood = output[0] > 0.5 ? true : false;
-//        bool shouldChangeVelocity = output[1] > 0.5 ? true : false;
-//
-//        if (goAfterFood && shouldChangeVelocity && organism->targetedFoodName.length() > 0)
-//        {
-//            auto targetedFood = this->getChildByName(organism->targetedFoodName);
-//
-//            if (targetedFood != nullptr)
-//            {
-//
-//                int speedX = random(60, 130);
-//                int speedY = random(60, 130);
-//                auto foodPosition = targetedFood->getParent()->convertToWorldSpace(targetedFood->getPosition());
-//
-//                Vec2 newVelocity(random(60, 130), random(60, 130));
-//                newVelocity.rotateByAngle(Vec2(0, 0), Vec2(0, 1).getAngle(foodPosition));
-//
-//                organism->node->getPhysicsBody()->setVelocity(foodPosition);
-//            }
-//        }
-//        else if (!goAfterFood && shouldChangeVelocity)
-//        {
-//            int speedX = random(60, 130);
-//            int speedY = random(60, 130);
-//
-//            int directionX = random(-1, 1) > 0 ? 1 : -1;
-//            int directionY = random(-1, 1) > 0 ? 1 : -1;
-//
-//            organism->node->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
-//        }
+        // OpenNN::Tensor<double> input{1, 2};
+        // input[0] = (double)organism->getFoodIntersection();
+        // input[1] = organism->node->getPhysicsBody()->getVelocity().length();
+
+        // auto output = organism->neuralNetwork->calculate_outputs(input);
+
+        // bool goAfterFood = output[0] > 0.5 ? true : false;
+        // bool shouldChangeVelocity = output[1] > 0.5 ? true : false;
+
+        // if (goAfterFood && shouldChangeVelocity && organism->targetedFoodName.length() > 0)
+        // {
+        //     auto targetedFood = this->getChildByName(organism->targetedFoodName);
+
+        //     if (targetedFood != nullptr)
+        //     {
+
+        //         int speedX = random(60, 130);
+        //         int speedY = random(60, 130);
+        //         auto foodPosition = targetedFood->getParent()->convertToWorldSpace(targetedFood->getPosition());
+
+        //         Vec2 newVelocity(random(60, 130), random(60, 130));
+        //         newVelocity.rotateByAngle(Vec2(0, 0), Vec2(0, 1).getAngle(foodPosition));
+
+        //         organism->node->getPhysicsBody()->setVelocity(foodPosition);
+        //     }
+        // }
+        // else if (!goAfterFood && shouldChangeVelocity)
+        // {
+        //     int speedX = random(60, 130);
+        //     int speedY = random(60, 130);
+
+        //     int directionX = random(-1, 1) > 0 ? 1 : -1;
+        //     int directionY = random(-1, 1) > 0 ? 1 : -1;
+
+        //     organism->node->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
+        // }
     }
 }
 
@@ -162,17 +169,26 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 
     auto categoryBitmaskA = bodyA->getCategoryBitmask();
     auto categoryBitmaskB = bodyB->getCategoryBitmask();
-    
+
     if (categoryBitmaskA != categoryBitmaskB)
     {
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
             auto foodNode = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
+            auto organismNodeTag = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag();
             if (foodNode != nullptr)
             {
-                this->removeChild(foodNode);
-                cocos2d::Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-                    this->addFood(1);
+                Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+                    this->removeChild(foodNode);
+                    this->foodToBeAdded++;
+                    this->organismList[organismNodeTag]->eatFood();
+                    this->totalFoodEaten++;
+
+                    if (this->totalFoodEaten >= 20)
+                    {
+                        this->totalFoodEaten = 0;
+                        Evolution::nextGeneration(this->organismList);
+                    }
                 });
             }
 
@@ -187,102 +203,49 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 
 void MainScene::onMouseMove(EventMouse *e)
 {
-    auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
-    auto organismNewPosition = this->organismList[0]->node->getParent()->convertToNodeSpace(mousePosition);
+    // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
+    // auto organismNewPosition = this->organismList[0]->node->getParent()->convertToNodeSpace(mousePosition);
 
-    this->organismList[0]->node->setPosition(organismNewPosition);
+    // this->organismList[0]->node->setPosition(organismNewPosition);
+    auto scene = MainScene::createScene();
+    Director::getInstance()->replaceScene(scene);
 }
 
 void MainScene::addFood(int count)
 {
-    for (int i = 0; i < count; i++){
+    for (int i = 0; i < count; i++)
+    {
         auto location = Vec2(random((float)10, (float)(this->visibleSize.width - 10)), random((float)10, (float)(this->visibleSize.height - 10)));
-        
+
         auto food = Food::create(location);
-        
-        this->addChild(food, 0, "food" + std::to_string(this->index));
-        this->index++;
-    }
-}
 
-void MainScene::addBoundary() {
-    const int boundaryCategoryBitmask = 4;
-    const int boundaryCollisionBitmask = 1;
-    const int boundaryContactTestBitmask = 0;
-
-    {
-        auto boundary = DrawNode::create();
-        boundary->drawSolidRect(Vec2(0, 0), Vec2(5, this->visibleSize.height), Color4F::GRAY);
-
-        auto physicsBody = PhysicsBody::createBox(Size(5, this->visibleSize.height - 10), PHYSICSBODY_MATERIAL_DEFAULT, Vec2(2.5, this->visibleSize.height / 2));
-        boundary->addComponent(physicsBody);
-        physicsBody->setDynamic(false);
-        physicsBody->setCategoryBitmask(boundaryCategoryBitmask);
-        physicsBody->setCollisionBitmask(boundaryCollisionBitmask);
-        physicsBody->setContactTestBitmask(boundaryContactTestBitmask);
-
-        this->addChild(boundary, 2);
-    }
-    {
-        auto boundary = DrawNode::create();
-        boundary->drawSolidRect(Vec2(this->visibleSize.width - 5, 0), Vec2(this->visibleSize.width, this->visibleSize.height), Color4F::GRAY);
-
-        auto physicsBody = PhysicsBody::createBox(Size(5, this->visibleSize.height - 10), PHYSICSBODY_MATERIAL_DEFAULT, Vec2(this->visibleSize.width - 2.5, this->visibleSize.height / 2));
-        boundary->addComponent(physicsBody);
-        physicsBody->setDynamic(false);
-        physicsBody->setCategoryBitmask(boundaryCategoryBitmask);
-        physicsBody->setCollisionBitmask(boundaryCollisionBitmask);
-        physicsBody->setContactTestBitmask(boundaryContactTestBitmask);
-
-        this->addChild(boundary, 2);
-    }
-    {
-        auto boundary = DrawNode::create();
-        boundary->drawSolidRect(Vec2(0, 0), Vec2(this->visibleSize.width, 5), Color4F::GRAY);
-
-        auto physicsBody = PhysicsBody::createBox(Size(this->visibleSize.width, 5), PHYSICSBODY_MATERIAL_DEFAULT, Vec2(this->visibleSize.width / 2, 2.5));
-        boundary->addComponent(physicsBody);
-        physicsBody->setDynamic(false);
-        physicsBody->setCategoryBitmask(boundaryCategoryBitmask);
-        physicsBody->setCollisionBitmask(boundaryCollisionBitmask);
-        physicsBody->setContactTestBitmask(boundaryContactTestBitmask);
-
-        this->addChild(boundary, 2);
-    }
-    {
-        auto boundary = DrawNode::create();
-        boundary->drawSolidRect(Vec2(0, this->visibleSize.height), Vec2(this->visibleSize.width, this->visibleSize.height - 5), Color4F::GRAY);
-
-        auto physicsBody = PhysicsBody::createBox(Size(this->visibleSize.width, 5), PHYSICSBODY_MATERIAL_DEFAULT, Vec2(this->visibleSize.width / 2, this->visibleSize.height - 2.5));
-        boundary->addComponent(physicsBody);
-        physicsBody->setDynamic(false);
-        physicsBody->setCategoryBitmask(boundaryCategoryBitmask);
-        physicsBody->setCollisionBitmask(boundaryCollisionBitmask);
-        physicsBody->setContactTestBitmask(boundaryContactTestBitmask);
-
-        this->addChild(boundary, 2);
+        this->addChild(food, 0);
+        this->foodToBeAdded--;
     }
 }
 
 void MainScene::organismsTick(float delta)
 {
-     for (auto organism : this->organismList)
-     {
-         if (random(-1, 1) > 0 || delta == 0)
-         {
-             int speedX = random(60, 130);
-             int speedY = random(60, 130);
+    if (this->foodToBeAdded > 0)
+        this->addFood(1);
 
-             int directionX = random(-1, 1) > 0 ? 1 : -1;
-             int directionY = random(-1, 1) > 0 ? 1 : -1;
+    for (auto organism : this->organismList)
+    {
+        if (random(-1, 1) > 0 || delta == 0)
+        {
+            int speedX = random(60, 130);
+            int speedY = random(60, 130);
 
-             Vec2 newVelocity;
-             newVelocity.x = speedX * directionX;
-             newVelocity.y = speedY * directionY;
+            int directionX = random(-1, 1) > 0 ? 1 : -1;
+            int directionY = random(-1, 1) > 0 ? 1 : -1;
 
-             organism->node->getPhysicsBody()->setVelocity(newVelocity);
-         }
-     }
+            Vec2 newVelocity;
+            newVelocity.x = speedX * directionX;
+            newVelocity.y = speedY * directionY;
+
+            organism->node->getPhysicsBody()->setVelocity(newVelocity);
+        }
+    }
 }
 
 MainScene::~MainScene()
