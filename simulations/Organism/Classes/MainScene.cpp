@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <neural_network.h>
+#include <ctime>
 
 USING_NS_CC;
 
@@ -37,6 +38,9 @@ bool MainScene::init()
     this->addChild(_bgColor, -10);
 
     this->visibleSize = Director::getInstance()->getVisibleSize();
+
+    // Timer
+    this->generationStartTimestamp = std::time(nullptr);
 
     // Organism
     for (int i = 0; i < 20; i++)
@@ -78,82 +82,8 @@ bool MainScene::init()
 
 void MainScene::update(float delta)
 {
-    auto rayCastCB = [](PhysicsWorld &world, const PhysicsRayCastInfo &info, void *organism) -> bool {
-        if (info.shape->getBody()->getCategoryBitmask() == 2)
-        {
-            ((Organism *)organism)->setFoodIntersection();
-
-            return false;
-        }
-
-        return true;
-    };
-
     for (auto organism : this->organismList)
-    {
-        // Raycast to determine if food is intersecting the antennae
-        auto organismPosition = organism->node->getParent()->convertToWorldSpace(organism->node->getPosition());
-
-        organism->unsetFoodIntersection();
-        auto organismAngle = -organism->node->getPhysicsBody()->getRotation() * (M_PI / 180);
-
-        auto rayCastStartingPosition = (organismPosition + Vec2(0, 20)).rotateByAngle(organismPosition, organismAngle);
-        auto rayCastEndingPosition1 = (organismPosition + Vec2(40, 100)).rotateByAngle(organismPosition, organismAngle);
-        auto rayCastEndingPosition2 = (organismPosition + Vec2(-40, 100)).rotateByAngle(organismPosition, organismAngle);
-
-        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition1, organism);
-        this->getPhysicsWorld()->rayCast(rayCastCB, rayCastStartingPosition, rayCastEndingPosition2, organism);
-
-        // Set organism rotation
-        auto organismVelocity = organism->node->getPhysicsBody()->getVelocity();
-        float desiredRotation = organismVelocity.getAngle(Vec2(0, 1)) * (180 / M_PI);
-        float organismRotation = organism->node->getPhysicsBody()->getRotation();
-        float absRotDiff = abs(desiredRotation - organismRotation);
-        float rotationChange = std::min(absRotDiff, 1.5f);
-
-        if (desiredRotation > organismRotation)
-            organism->node->setRotation(organismRotation + rotationChange);
-        else if (desiredRotation < organismRotation)
-            organism->node->setRotation(organismRotation - rotationChange);
-
-        // Neural network
-        // OpenNN::Tensor<double> input{1, 2};
-        // input[0] = (double)organism->getFoodIntersection();
-        // input[1] = organism->node->getPhysicsBody()->getVelocity().length();
-
-        // auto output = organism->neuralNetwork->calculate_outputs(input);
-
-        // bool goAfterFood = output[0] > 0.5 ? true : false;
-        // bool shouldChangeVelocity = output[1] > 0.5 ? true : false;
-
-        // if (goAfterFood && shouldChangeVelocity && organism->targetedFoodName.length() > 0)
-        // {
-        //     auto targetedFood = this->getChildByName(organism->targetedFoodName);
-
-        //     if (targetedFood != nullptr)
-        //     {
-
-        //         int speedX = random(60, 130);
-        //         int speedY = random(60, 130);
-        //         auto foodPosition = targetedFood->getParent()->convertToWorldSpace(targetedFood->getPosition());
-
-        //         Vec2 newVelocity(random(60, 130), random(60, 130));
-        //         newVelocity.rotateByAngle(Vec2(0, 0), Vec2(0, 1).getAngle(foodPosition));
-
-        //         organism->node->getPhysicsBody()->setVelocity(foodPosition);
-        //     }
-        // }
-        // else if (!goAfterFood && shouldChangeVelocity)
-        // {
-        //     int speedX = random(60, 130);
-        //     int speedY = random(60, 130);
-
-        //     int directionX = random(-1, 1) > 0 ? 1 : -1;
-        //     int directionY = random(-1, 1) > 0 ? 1 : -1;
-
-        //     organism->node->getPhysicsBody()->setVelocity(Vec2(speedX * directionX, speedY * directionY));
-        // }
-    }
+        organism->update(delta);
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)
@@ -184,10 +114,11 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
                     this->organismList[organismNodeTag]->eatFood();
                     this->totalFoodEaten++;
 
+                    // Start a new generation
                     if (this->totalFoodEaten >= 20)
                     {
-                        this->totalFoodEaten = 0;
                         Evolution::nextGeneration(this->organismList);
+                        this->prepareNextGeneration();
                     }
                 });
             }
@@ -229,23 +160,35 @@ void MainScene::organismsTick(float delta)
     if (this->foodToBeAdded > 0)
         this->addFood(1);
 
-    for (auto organism : this->organismList)
+    if (std::time(nullptr) - this->generationStartTimestamp > 10)
     {
-        if (random(-1, 1) > 0 || delta == 0)
-        {
-            int speedX = random(60, 130);
-            int speedY = random(60, 130);
-
-            int directionX = random(-1, 1) > 0 ? 1 : -1;
-            int directionY = random(-1, 1) > 0 ? 1 : -1;
-
-            Vec2 newVelocity;
-            newVelocity.x = speedX * directionX;
-            newVelocity.y = speedY * directionY;
-
-            organism->node->getPhysicsBody()->setVelocity(newVelocity);
-        }
+        Evolution::nextGeneration(this->organismList);
+        this->prepareNextGeneration();
     }
+
+    // for (auto organism : this->organismList)
+    // {
+    //     if (random(-1, 1) > 0 || delta == 0)
+    //     {
+    //         int speedX = random(60, 130);
+    //         int speedY = random(60, 130);
+
+    //         int directionX = random(-1, 1) > 0 ? 1 : -1;
+    //         int directionY = random(-1, 1) > 0 ? 1 : -1;
+
+    //         Vec2 newVelocity;
+    //         newVelocity.x = speedX * directionX;
+    //         newVelocity.y = speedY * directionY;
+
+    //         organism->node->getPhysicsBody()->setVelocity(newVelocity);
+    //     }
+    // }
+}
+
+void MainScene::prepareNextGeneration()
+{
+    this->totalFoodEaten = 0;
+    this->generationStartTimestamp = std::time(nullptr);
 }
 
 MainScene::~MainScene()

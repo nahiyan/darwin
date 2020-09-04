@@ -6,7 +6,6 @@ USING_NS_CC;
 
 void Evolution::nextGeneration(vector<Organism *> organismList)
 {
-    std::cout << "New generation! ";
     auto visibleSize = Director::getInstance()->getVisibleSize();
     for (auto organism : organismList)
     {

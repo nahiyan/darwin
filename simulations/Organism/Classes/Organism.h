@@ -5,6 +5,7 @@
 #include <neural_network.h>
 #include <string>
 #include <memory>
+#include <ctime>
 
 class Organism
 {
@@ -14,6 +15,7 @@ private:
     bool foodIntersection;
     cocos2d::Label *label;
     int foodEaten;
+    std::time_t lastVelocityChangeTimestamp;
 
 public:
     std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
@@ -28,6 +30,7 @@ public:
     void unsetFoodIntersection();
     bool getFoodIntersection();
     void eatFood();
+    void update(float);
 };
 
 #endif // __ORGANISM_H__

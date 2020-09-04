@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include <vector>
+#include <ctime>
 #include "Organism.h"
 
 class MainScene : public cocos2d::Scene
@@ -12,9 +13,11 @@ private:
     cocos2d::Size visibleSize;
     int foodToBeAdded;
     int totalFoodEaten;
+    std::time_t generationStartTimestamp;
 
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addFood(int);
+    void prepareNextGeneration();
 
 public:
     static cocos2d::Scene *createScene();
