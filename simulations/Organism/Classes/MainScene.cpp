@@ -31,7 +31,7 @@ bool MainScene::init()
     if (!Scene::initWithPhysics())
         return false;
 
-    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
@@ -43,12 +43,14 @@ bool MainScene::init()
     this->generationStartTimestamp = std::time(nullptr);
 
     // Organism
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 1; i++)
     {
         auto organism = new Organism(Vec2(this->visibleSize.width / 2, this->visibleSize.height / 2));
         this->organismList.push_back(organism);
         this->addChild(organism->node, 2, i);
     }
+
+    // this->organismList[0]->neuralNetwork->print();
 
     // Set scheduler to update the velocity of the organism[s]
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::organismsTick), 2.5, CC_REPEAT_FOREVER, 0);
@@ -63,9 +65,13 @@ bool MainScene::init()
     delete[] boundaries;
 
     // Spawn food
+    this->index = 0;
     this->foodToBeAdded = 100;
     this->addFood(100);
     this->totalFoodEaten = 0;
+
+    // Evolution session
+    this->evolutionSession = new Evolution(&this->organismList);
 
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
@@ -73,9 +79,9 @@ bool MainScene::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     // Mouse listener
-    // auto mouseListener = EventListenerMouse::create();
-    // mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
-    // _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+    auto mouseListener = EventListenerMouse::create();
+    mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
     return true;
 }
@@ -106,6 +112,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
         {
             auto foodNode = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
             auto organismNodeTag = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag();
+
             if (foodNode != nullptr)
             {
                 Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
@@ -117,7 +124,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
                     // Start a new generation
                     if (this->totalFoodEaten >= 20)
                     {
-                        Evolution::nextGeneration(this->organismList);
+                        this->evolutionSession->nextGeneration();
                         this->prepareNextGeneration();
                     }
                 });
@@ -134,12 +141,10 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 
 void MainScene::onMouseMove(EventMouse *e)
 {
-    // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
-    // auto organismNewPosition = this->organismList[0]->node->getParent()->convertToNodeSpace(mousePosition);
+    auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
+    auto organismNewPosition = this->organismList[0]->node->getParent()->convertToNodeSpace(mousePosition);
 
-    // this->organismList[0]->node->setPosition(organismNewPosition);
-    auto scene = MainScene::createScene();
-    Director::getInstance()->replaceScene(scene);
+    this->organismList[0]->node->setPosition(organismNewPosition);
 }
 
 void MainScene::addFood(int count)
@@ -150,7 +155,7 @@ void MainScene::addFood(int count)
 
         auto food = Food::create(location);
 
-        this->addChild(food, 0);
+        this->addChild(food, 0, "food" + to_string(this->index++));
         this->foodToBeAdded--;
     }
 }
@@ -162,7 +167,7 @@ void MainScene::organismsTick(float delta)
 
     if (std::time(nullptr) - this->generationStartTimestamp > 10)
     {
-        Evolution::nextGeneration(this->organismList);
+        this->evolutionSession->nextGeneration();
         this->prepareNextGeneration();
     }
 
@@ -189,10 +194,19 @@ void MainScene::prepareNextGeneration()
 {
     this->totalFoodEaten = 0;
     this->generationStartTimestamp = std::time(nullptr);
+
+    // Reset organisms
+    for (auto organism : this->organismList)
+        organism->reset();
+
+    // Replenish food quantity
+    this->addFood(this->foodToBeAdded);
 }
 
 MainScene::~MainScene()
 {
     for (auto organism : this->organismList)
         delete organism;
+
+    delete this->evolutionSession;
 }

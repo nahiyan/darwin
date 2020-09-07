@@ -5,6 +5,7 @@
 #include <vector>
 #include <ctime>
 #include "Organism.h"
+#include "Evolution.h"
 
 class MainScene : public cocos2d::Scene
 {
@@ -14,6 +15,8 @@ private:
     int foodToBeAdded;
     int totalFoodEaten;
     std::time_t generationStartTimestamp;
+    Evolution *evolutionSession;
+    int index;
 
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addFood(int);

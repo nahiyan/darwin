@@ -7,8 +7,13 @@
 
 class Evolution
 {
+private:
+    std::vector<Organism *> *organismList;
+
 public:
-    static void nextGeneration(std::vector<Organism *>);
+    Evolution(std::vector<Organism *> *);
+    void nextGeneration();
+    void rank();
 };
 
 #endif /* Evolution_hpp */

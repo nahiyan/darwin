@@ -16,6 +16,7 @@ private:
     cocos2d::Label *label;
     int foodEaten;
     std::time_t lastVelocityChangeTimestamp;
+    bool goAfterFoodAndChangeVelocity;
 
 public:
     std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
@@ -29,8 +30,10 @@ public:
     void setFoodIntersection();
     void unsetFoodIntersection();
     bool getFoodIntersection();
+    int getFoodEaten();
     void eatFood();
     void update(float);
+    void reset();
 };
 
 #endif // __ORGANISM_H__
