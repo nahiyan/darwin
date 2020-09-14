@@ -45,7 +45,7 @@ bool MainScene::init()
     // Jumpers
     for (int i = 0; i < 18; i++)
     {
-        auto jumper = new Jumper(Vec2(40 + i * 50, 35 + 5));
+        auto jumper = new Jumper(Vec2(40 + i * 50, 40));
         this->jumperList.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
@@ -70,26 +70,21 @@ bool MainScene::init()
     contactListener->onContactBegin = CC_CALLBACK_1(MainScene::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
+    // Mouse listener
+    // auto mouseListener = EventListenerMouse::create();
+    // mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
+    // _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
     return true;
 }
 
 void MainScene::update(float delta)
 {
     for (auto jumper : this->jumperList)
-        jumper->update(delta);
-
-    // auto children = this->getChildren();
-    // for (auto child : children)
-    // {
-    //     auto physicsBody = child->getPhysicsBody();
-    //     if (physicsBody != nullptr && physicsBody->getCategoryBitmask() == 2)
-    //     {
-    //         auto force = this->organismList[0]->node->convertToWorldSpace(this->organismList[0]->node->getPosition()) - child->convertToWorldSpace(child->getPosition());
-    //         force.normalize();
-    //         force.scale(1000);
-    //         physicsBody->applyForce(force, Vec2::ZERO);
-    //     }
-    // }
+    {
+        if (!jumper->isDead)
+            jumper->update(delta);
+    }
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)
@@ -110,33 +105,12 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     {
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
-            std::cout << "Jumper collision\n";
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
                 auto jumper = this->jumperList[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
                 jumper->deathTimestamp = std::time(nullptr);
+                jumper->isDead = true;
                 this->removeChild(jumper->node);
             });
-            // auto foodNode = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
-            // auto organism = this->organismMap[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
-
-            // if (foodNode != nullptr)
-            // {
-            //     Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-            //         // std::cout << foodNode->getName() << " Food to be added: " << to_string(this->foodToBeAdded) << "\n";
-
-            //         this->removeChild(foodNode);
-            //         this->foodToBeAdded++;
-            //         organism->eatFood();
-            //         this->totalFoodEaten++;
-
-            //         // Start a new generation
-            //         if (this->totalFoodEaten >= 100)
-            //         {
-            //             this->evolutionSession->nextGeneration();
-            //             this->prepareNextGeneration();
-            //         }
-            //     });
-            // }
 
             return false;
         }
@@ -156,19 +130,17 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     return false;
 }
 
+void MainScene::onMouseMove(EventMouse *e)
+{
+    // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
+    // auto obstacleNewPosition = this->obstacle->getParent()->convertToNodeSpace(mousePosition);
+
+    // this->obstacle->setPosition(obstacleNewPosition);
+}
+
 void MainScene::addObstacle(float delta)
 {
     this->addChild(Obstacle::create(Vec2(visibleSize.width - 30, 23)), 0);
-    // for (int i = 0; i < count; i++)
-    // {
-    //     auto location = Vec2(random((float)10, (float)(this->visibleSize.width - 10)), random((float)10, (float)(this->visibleSize.height - 10)));
-
-    //     auto food = Food::create(location);
-
-    //     this->addChild(food, 0, "food" + to_string(this->index++));
-
-    //     this->foodToBeAdded--;
-    // }
 }
 
 void MainScene::prepareNextGeneration()

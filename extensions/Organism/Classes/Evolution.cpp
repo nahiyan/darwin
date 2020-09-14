@@ -57,7 +57,7 @@ void Evolution::nextGeneration()
             for (int i = 0; i < parentAParameters.size(); i++)
             {
                 // Crossover and mutation
-                newParameters[i] = (random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i]);
+                newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
                 newParameters[i] += random<double>(-1, 1) * this->mutationRate * newParameters[i];
             }
 

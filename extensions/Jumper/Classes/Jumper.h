@@ -12,19 +12,23 @@ class Jumper
 private:
     void setGeometry();
     float rayTraceFraction;
+    std::time_t lastJumpTimestamp;
 
 public:
     cocos2d::Sprite *node;
+    cocos2d::DrawNode *drawNode;
+    bool isDead;
     std::time_t deathTimestamp;
     std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
 
     Jumper(const cocos2d::Vec2 &);
     ~Jumper();
 
-    void setRayTraceFraction(float &);
+    void setRayTraceFraction(float);
     int getDeathTimestamp();
     void update(float);
     void reset();
+    void setDead();
 };
 
 #endif // __Jumper_H__

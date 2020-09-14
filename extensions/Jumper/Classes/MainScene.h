@@ -5,6 +5,7 @@
 #include <vector>
 #include <ctime>
 #include "Jumper.h"
+#include "Obstacle.h"
 #include "Evolution.h"
 
 class MainScene : public cocos2d::Scene
@@ -17,6 +18,7 @@ private:
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addObstacle();
     void prepareNextGeneration();
+    void onMouseMove(cocos2d::EventMouse *);
 
 public:
     std::vector<Jumper *> jumperList;
