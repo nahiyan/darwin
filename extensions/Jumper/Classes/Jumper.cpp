@@ -13,12 +13,12 @@ Jumper::Jumper(const Vec2 &position)
     this->node = Sprite::create("jumper1.png");
     this->node->setPosition(position);
 
-    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PHYSICSBODY_MATERIAL_DEFAULT);
+    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(0.1f, 1.0f, 0.0f));
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
-    physicsBody->setCollisionBitmask(4);
-    physicsBody->setContactTestBitmask(2);
+    physicsBody->setCollisionBitmask(6);   // 2 + 4
+    physicsBody->setContactTestBitmask(2); // 2
 
     this->node->addComponent(physicsBody);
 

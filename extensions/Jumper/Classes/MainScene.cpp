@@ -43,9 +43,9 @@ bool MainScene::init()
     this->generationStartTimestamp = std::time(nullptr);
 
     // Jumpers
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 18; i++)
     {
-        auto jumper = new Jumper(Vec2(this->visibleSize.width / 2, this->visibleSize.height / 2));
+        auto jumper = new Jumper(Vec2(40 + i * 50, 35 + 5));
         this->jumperList.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
@@ -67,7 +67,7 @@ bool MainScene::init()
 
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
-    contactListener->onContactPostSolve = CC_CALLBACK_1(MainScene::onContactBegin, this);
+    contactListener->onContactBegin = CC_CALLBACK_1(MainScene::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     return true;
@@ -110,6 +110,12 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     {
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
+            std::cout << "Jumper collision\n";
+            Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+                auto jumper = this->jumperList[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
+                jumper->deathTimestamp = std::time(nullptr);
+                this->removeChild(jumper->node);
+            });
             // auto foodNode = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
             // auto organism = this->organismMap[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
 
@@ -134,6 +140,15 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 
             return false;
         }
+        else if ((categoryBitmaskA == 8 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 8))
+        {
+            Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+                auto obstacle = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
+                this->removeChild(obstacle);
+            });
+
+            return false;
+        }
 
         return true;
     }
@@ -143,6 +158,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
 
 void MainScene::addObstacle(float delta)
 {
+    this->addChild(Obstacle::create(Vec2(visibleSize.width - 30, 23)), 0);
     // for (int i = 0; i < count; i++)
     // {
     //     auto location = Vec2(random((float)10, (float)(this->visibleSize.width - 10)), random((float)10, (float)(this->visibleSize.height - 10)));

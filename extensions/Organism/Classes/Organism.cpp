@@ -18,8 +18,8 @@ Organism::Organism(const Vec2 &position)
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(false);
     physicsBody->setCategoryBitmask(1);
-    physicsBody->setCollisionBitmask(4);
-    physicsBody->setContactTestBitmask(2);
+    physicsBody->setCollisionBitmask(4);   // 4
+    physicsBody->setContactTestBitmask(2); // 2
 
     this->node->addComponent(physicsBody);
 

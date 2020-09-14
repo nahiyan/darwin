@@ -11,8 +11,8 @@ Sprite *Food::create(const Vec2 &position)
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(false);
     physicsBody->setCategoryBitmask(2);
-    physicsBody->setCollisionBitmask(5);
-    physicsBody->setContactTestBitmask(1);
+    physicsBody->setCollisionBitmask(5);   // 1 + 4
+    physicsBody->setContactTestBitmask(1); // 1
     node->addComponent(physicsBody);
 
     return node;
