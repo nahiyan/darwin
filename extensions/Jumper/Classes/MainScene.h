@@ -14,10 +14,11 @@ private:
     cocos2d::Size visibleSize;
     std::time_t generationStartTimestamp;
     Evolution *evolutionSession;
+    int obstaclesUsed;
 
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addObstacle();
-    void prepareNextGeneration();
+    void nextGeneration();
     void onMouseMove(cocos2d::EventMouse *);
 
 public:

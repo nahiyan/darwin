@@ -15,63 +15,58 @@ Evolution::Evolution(std::vector<Jumper *> objectList)
     this->populationDivision[1] = 0.3;
 }
 
-void Evolution::nextGeneration()
+void Evolution::evolve()
 {
-    // auto visibleSize = Director::getInstance()->getVisibleSize();
+    auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    // // Reset the position of the organisms
-    // for (auto organism : *this->organismMap)
-    //     organism.second->node->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    for (auto jumper : this->objectList)
+    {
+        if (!jumper->isDead)
+            jumper->deathTimestamp = std::time(nullptr);
+    }
 
-    // // Ranking
-    // auto rankedPopulation = this->getRanked();
+    // Ranking
+    this->rank();
 
-    // // Population size
-    // int populationSize = this->organismMap->size();
+    // Population size
+    int populationSize = this->objectList.size();
 
-    // // Elitism
-    // int upperClassCount = round(populationDivision[0] * populationSize);
-    // int upperClassRange[2] = {0, upperClassCount - 1};
+    // Elitism
+    int upperClassCount = round(populationDivision[0] * populationSize);
+    int upperClassRange[2] = {0, upperClassCount - 1};
 
-    // // Best fit
-    // int middleClassCount = round(populationDivision[1] * populationSize);
-    // int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
+    // Best fit
+    int middleClassCount = round(populationDivision[1] * populationSize);
+    int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
 
-    // std::cout << "Middle class scores: ";
-    // for (int i = middleClassRange[0]; i <= middleClassRange[1]; i++)
-    // {
-    //     std::cout << to_string(rankedPopulation[i]->getFoodEaten()) << ", ";
-    // }
-    // std::cout << "\n";
+    // Reproduction
+    if (middleClassCount > 0)
+    {
+        for (int i = middleClassRange[0]; i < populationSize; i++)
+        {
+            auto parentAParameters = this->objectList[random<int>(middleClassRange[0], middleClassRange[1])]->neuralNetwork->get_parameters();
+            auto parentBParameters = this->objectList[random<int>(middleClassRange[0], middleClassRange[1])]->neuralNetwork->get_parameters();
 
-    // // Reproduction
-    // if (middleClassCount > 0)
-    // {
-    //     for (int i = middleClassRange[0]; i < populationSize; i++)
-    //     {
-    //         auto parentAParameters = rankedPopulation[random<int>(middleClassRange[0], middleClassRange[1])]->neuralNetwork->get_parameters();
-    //         auto parentBParameters = rankedPopulation[random<int>(middleClassRange[0], middleClassRange[1])]->neuralNetwork->get_parameters();
+            OpenNN::Vector<double> newParameters(parentAParameters.size());
+            for (int i = 0; i < parentAParameters.size(); i++)
+            {
+                // Crossover
+                newParameters[i] = (random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i]);
 
-    //         OpenNN::Vector<double> newParameters(parentAParameters.size());
-    //         for (int i = 0; i < parentAParameters.size(); i++)
-    //         {
-    //             // Crossover and mutation
-    //             newParameters[i] = (random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i]);
-    //             newParameters[i] += random<double>(-1, 1) * this->mutationRate * newParameters[i];
-    //         }
+                // Mutation
+                newParameters[i] += random<double>(-1, 1) * this->mutationRate * newParameters[i];
+            }
 
-    //         rankedPopulation[i]->neuralNetwork->set_parameters(newParameters);
-    //     }
-    // }
+            this->objectList[i]->neuralNetwork->set_parameters(newParameters);
+        }
+    }
 }
 
 void Evolution::rank()
 {
-    // auto sort_ = [](Jumper *a, Jumper *b) {
-    //     return a->getFoodEaten() > b->getFoodEaten();
-    // };
+    auto sort_ = [](Jumper *a, Jumper *b) {
+        return a->deathTimestamp > b->deathTimestamp;
+    };
 
-    // std::sort(this->objectList.begin(), this->objectList.end(), sort_);
-
-    // return this->objectList;
+    std::sort(this->objectList.begin(), this->objectList.end(), sort_);
 }

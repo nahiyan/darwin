@@ -14,7 +14,7 @@ private:
 
 public:
     Evolution(std::vector<Jumper *>);
-    void nextGeneration();
+    void evolve();
     void rank();
 };
 

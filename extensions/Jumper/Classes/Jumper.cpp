@@ -9,9 +9,21 @@ USING_NS_CC;
 
 Jumper::Jumper(const Vec2 &position)
 {
+    this->generateNode();
+    this->node->setPosition(position);
+
+    // Reset attributes
+    this->prepareForNewGeneration();
+
+    // Initialize neural network
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 100, 1});
+    this->neuralNetwork->randomize_parameters_normal();
+}
+
+void Jumper::generateNode()
+{
     // Create node
     this->node = Sprite::create("jumper1.png");
-    this->node->setPosition(position);
 
     auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 0.0f, 1.0f));
     physicsBody->setDynamic(true);
@@ -21,27 +33,14 @@ Jumper::Jumper(const Vec2 &position)
     physicsBody->setContactTestBitmask(2); // 2
 
     this->node->addComponent(physicsBody);
-
-    // Reset attributes
-    this->reset();
-
-    // Initialize neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 100, 1});
-    this->neuralNetwork->randomize_parameters_normal();
-
-    // Draw node for visualizing ray tracer
-    this->drawNode = DrawNode::create();
-    this->drawNode->drawLine(Vec2(65, 10), Vec2(150, 10), Color4F::BLUE);
-    this->node->addChild(this->drawNode);
 }
 
-void Jumper::reset()
+void Jumper::prepareForNewGeneration()
 {
     this->isDead = false;
     this->deathTimestamp = 0;
     this->lastJumpTimestamp = 0;
     this->rayTraceFraction = 0;
-    this->node->getPhysicsBody()->setVelocity(Vec2::ZERO);
 }
 
 Jumper::~Jumper()

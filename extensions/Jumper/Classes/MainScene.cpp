@@ -31,7 +31,7 @@ bool MainScene::init()
     if (!Scene::initWithPhysics())
         return false;
 
-    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
@@ -50,6 +50,9 @@ bool MainScene::init()
         this->addChild(jumper->node, 2, i);
     }
 
+    // Obstacles deployed
+    this->obstaclesUsed = 0;
+
     // Set scheduler to add obstacles
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addObstacle), 2.5, CC_REPEAT_FOREVER, 0);
     this->addObstacle(0);
@@ -58,7 +61,7 @@ bool MainScene::init()
     auto boundaries = Boundary::create(this->visibleSize);
     for (int i = 0; i < 4; i++)
     {
-        this->addChild(boundaries[i]);
+        this->addChild(boundaries[i], -9);
     }
     delete[] boundaries;
 
@@ -80,6 +83,12 @@ bool MainScene::init()
 
 void MainScene::update(float delta)
 {
+    if (this->obstaclesUsed == 2)
+    {
+        this->nextGeneration();
+        return;
+    }
+
     for (auto jumper : this->jumperList)
     {
         if (!jumper->isDead)
@@ -119,6 +128,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
                 auto obstacle = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
                 this->removeChild(obstacle);
+                this->obstaclesUsed++;
             });
 
             return false;
@@ -140,26 +150,42 @@ void MainScene::onMouseMove(EventMouse *e)
 
 void MainScene::addObstacle(float delta)
 {
-    this->addChild(Obstacle::create(Vec2(visibleSize.width - 30, 23)), 0);
+    auto obstacle = Obstacle::create(Vec2(visibleSize.width - 30, 23));
+    this->addChild(obstacle, 1);
 }
 
-void MainScene::prepareNextGeneration()
+void MainScene::nextGeneration()
 {
+    // Perform evolution
+    this->evolutionSession->evolve();
+
+    // Update timestamp
     this->generationStartTimestamp = std::time(nullptr);
+
+    // Remove all the obstacles and jumpers
+    auto children = this->getChildren();
+    for (auto child : children)
+    {
+        auto physicsBody = child->getPhysicsBody();
+        if (physicsBody != nullptr && physicsBody->getCategoryBitmask() <= 2)
+            this->removeChild(child);
+    }
 
     // Reset jumpers
     for (auto jumper : this->jumperList)
-        jumper->reset();
+        jumper->prepareForNewGeneration();
 
-    // Add all the food items over again
-    for (auto child : this->getChildren())
+    // Add jumpers
+    for (int i = 0; i < this->jumperList.size(); i++)
     {
-        auto physicsBody = child->getPhysicsBody();
-        if (physicsBody != nullptr && physicsBody->getCategoryBitmask() == 2)
-        {
-            this->removeChild(child);
-        }
+        this->jumperList[i]->generateNode();
+        auto node = this->jumperList[i]->node;
+        this->addChild(node, 2, i);
+        node->setPosition(40 + i * 50, 40);
     }
+
+    // Reset number of obstacles used
+    this->obstaclesUsed = 0;
 }
 
 MainScene::~MainScene()

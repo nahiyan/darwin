@@ -16,7 +16,6 @@ private:
 
 public:
     cocos2d::Sprite *node;
-    cocos2d::DrawNode *drawNode;
     bool isDead;
     std::time_t deathTimestamp;
     std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
@@ -25,10 +24,10 @@ public:
     ~Jumper();
 
     void setRayTraceFraction(float);
-    int getDeathTimestamp();
     void update(float);
-    void reset();
+    void prepareForNewGeneration();
     void setDead();
+    void generateNode();
 };
 
 #endif // __Jumper_H__
