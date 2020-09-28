@@ -1,14 +1,16 @@
 #include "Jumper.h"
 #include <iostream>
 #include <memory>
-#include <opennn.h>
+#include <opennn/opennn.h>
 #include <ctime>
 #include "MainScene.h"
 
 USING_NS_CC;
 
-Jumper::Jumper(const Vec2 &position)
+Jumper::Jumper(const Vec2 &position, int index)
 {
+    this->index = index;
+
     this->generateNode();
     this->node->setPosition(position);
 
@@ -85,4 +87,23 @@ void Jumper::update(float delta)
         auto jump = JumpBy::create(1.8, Vec2(0, 150), 150, 1);
         this->node->runAction(jump);
     }
+}
+
+int &Jumper::getIndex()
+{
+    return this->index;
+}
+
+float Jumper::getScore()
+{
+    if (this->isDead)
+        return this->generationStartTimestamp - this->deathTimestamp;
+    else
+        return 0;
+}
+
+void Jumper::kill()
+{
+    this->deathTimestamp = std::time(nullptr);
+    this->isDead = true;
 }

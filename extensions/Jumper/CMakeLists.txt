@@ -29,6 +29,11 @@ set(APP_NAME Jumper)
 
 project(${APP_NAME})
 
+# Root path
+set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../)
+set(LIBRARIES_PATH ${ROOT_PATH}/libraries)
+set(INCLUDES_PATH ${ROOT_PATH}/includes)
+
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
         SET (CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 8.0)
@@ -60,7 +65,6 @@ list(APPEND GAME_SOURCE
      Classes/MainScene.cpp
      Classes/Obstacle.cpp
      Classes/Jumper.cpp
-     Classes/Evolution.cpp
      Classes/Boundary.cpp
      )
 list(APPEND GAME_HEADER
@@ -68,7 +72,6 @@ list(APPEND GAME_HEADER
      Classes/MainScene.h
      Classes/Obstacle.h
      Classes/Jumper.h
-     Classes/Evolution.h
      Classes/Boundary.h
      )
 
@@ -137,18 +140,17 @@ else()
     target_link_libraries(${APP_NAME} -Wl,--whole-archive cpp_android_spec -Wl,--no-whole-archive)
 endif()
 
-# Link cocos2d-x and OpenNN
-set(OPENNN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../opennn/opennn)
-
+# Link libraries, and include headers
 target_link_directories(${APP_NAME}
-    PRIVATE ${OPENNN_PATH}
+    PRIVATE ${LIBRARIES_PATH}/opennn
+    PRIVATE ${LIBRARIES_PATH}/core
 )
 
-target_link_libraries(${APP_NAME} cocos2d opennn)
+target_link_libraries(${APP_NAME} cocos2d opennn core)
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
-        PRIVATE ${OPENNN_PATH}
+        PRIVATE ${INCLUDES_PATH}
 )
 
 # mark app resources

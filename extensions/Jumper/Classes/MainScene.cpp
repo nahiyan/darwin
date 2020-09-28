@@ -3,12 +3,13 @@
 #include <cmath>
 #include <cstdlib>
 #include <algorithm>
-#include <neural_network.h>
+#include <opennn/neural_network.h>
+#include <core/EvolutionSession.h>
 #include <ctime>
+#include <fstream>
 #include "MainScene.h"
 #include "Jumper.h"
 #include "Boundary.h"
-#include "Evolution.h"
 #include "Obstacle.h"
 
 USING_NS_CC;
@@ -43,9 +44,11 @@ bool MainScene::init()
     this->generationStartTimestamp = std::time(nullptr);
 
     // Jumpers
+    auto currentTime = std::time(nullptr);
     for (int i = 0; i < 18; i++)
     {
-        auto jumper = new Jumper(Vec2(40 + i * 50, 40));
+        auto jumper = new Jumper(Vec2(40 + i * 50, 40), i);
+        jumper->generationStartTimestamp = currentTime;
         this->jumperList.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
@@ -66,7 +69,7 @@ bool MainScene::init()
     delete[] boundaries;
 
     // Evolution session
-    this->evolutionSession = new Evolution(this->jumperList);
+    this->evolutionSession = new EvolutionSession<Jumper>(this->jumperList);
 
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
@@ -83,12 +86,6 @@ bool MainScene::init()
 
 void MainScene::update(float delta)
 {
-    if (this->obstaclesUsed == 2)
-    {
-        this->nextGeneration();
-        return;
-    }
-
     for (auto jumper : this->jumperList)
     {
         if (!jumper->isDead)
@@ -129,6 +126,9 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
                 auto obstacle = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
                 this->removeChild(obstacle);
                 this->obstaclesUsed++;
+
+                if (this->obstaclesUsed == 3)
+                    this->nextGeneration();
             });
 
             return false;
@@ -156,29 +156,55 @@ void MainScene::addObstacle(float delta)
 
 void MainScene::nextGeneration()
 {
-    // Perform evolution
-    this->evolutionSession->evolve();
-
-    // Update timestamp
-    this->generationStartTimestamp = std::time(nullptr);
-
     // Remove all the obstacles and jumpers
     auto children = this->getChildren();
     for (auto child : children)
     {
         auto physicsBody = child->getPhysicsBody();
         if (physicsBody != nullptr && physicsBody->getCategoryBitmask() <= 2)
+        {
+            if (physicsBody->getCategoryBitmask() == 1)
+                this->jumperList[child->getTag()]->kill();
+
             this->removeChild(child);
+        }
     }
+
+    // Crossover and mutation
+    auto crossoverAndMutate = [&](Jumper *parentA, Jumper *parentB, Jumper *offspring, float mutationRate) -> void {
+        auto parentAParameters = parentA->neuralNetwork->get_parameters();
+        auto parentBParameters = parentB->neuralNetwork->get_parameters();
+
+        OpenNN::Vector<double> newParameters(parentAParameters.size());
+
+        for (int i = 0; i < parentAParameters.size(); i++)
+        {
+            // Crossover
+            newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
+
+            // Mutation
+            newParameters[i] += random<double>(-1, 1) * mutationRate * newParameters[i];
+        }
+
+        offspring->neuralNetwork->set_parameters(newParameters);
+    };
+
+    // Perform evolution
+    this->evolutionSession->evolve(crossoverAndMutate);
+
+    // Update timestamp
+    this->generationStartTimestamp = std::time(nullptr);
 
     // Reset jumpers
     for (auto jumper : this->jumperList)
         jumper->prepareForNewGeneration();
 
     // Add jumpers
+    auto currentTime = std::time(nullptr);
     for (int i = 0; i < this->jumperList.size(); i++)
     {
         this->jumperList[i]->generateNode();
+        this->jumperList[i]->generationStartTimestamp = currentTime;
         auto node = this->jumperList[i]->node;
         this->addChild(node, 2, i);
         node->setPosition(40 + i * 50, 40);

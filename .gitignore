@@ -2,8 +2,5 @@
 /cocos2d-x
 *.code-workspace
 /.vscode
-/opennn/opennn/*.cpp
-/opennn/opennn/*.a
-/opennn/opennn/CMakeFiles
-/opennn/*.pdf
-/opennn/*.txt
+/flatbuffers-master
+/test

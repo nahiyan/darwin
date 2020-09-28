@@ -4,16 +4,16 @@
 #include "cocos2d.h"
 #include <vector>
 #include <ctime>
+#include <core/EvolutionSession.h>
 #include "Jumper.h"
 #include "Obstacle.h"
-#include "Evolution.h"
 
 class MainScene : public cocos2d::Scene
 {
 private:
     cocos2d::Size visibleSize;
     std::time_t generationStartTimestamp;
-    Evolution *evolutionSession;
+    EvolutionSession<Jumper> *evolutionSession;
     int obstaclesUsed;
 
     bool onContactBegin(cocos2d::PhysicsContact &);
