@@ -2,8 +2,11 @@
 #include <iostream>
 #include <memory>
 #include <opennn/opennn.h>
-#include <ctime>
+#include <helpers/random.h>
+#include <helpers/time.h>
 #include "MainScene.h"
+
+#define JUMP_DURATION 2
 
 USING_NS_CC;
 
@@ -18,8 +21,13 @@ Jumper::Jumper(const Vec2 &position, int index)
     this->prepareForNewGeneration();
 
     // Initialize neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 100, 1});
-    this->neuralNetwork->randomize_parameters_normal();
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 10, 1});
+
+    // Randomize parameters
+    std::vector<double> parameters;
+    for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
+        parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() + i));
+    this->neuralNetwork->set_parameters(parameters);
 }
 
 void Jumper::generateNode()
@@ -27,12 +35,13 @@ void Jumper::generateNode()
     // Create node
     this->node = Sprite::create("jumper1.png");
 
-    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 0.0f, 1.0f));
+    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 1.0f, 1.0f));
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
     physicsBody->setCollisionBitmask(6);   // 2 + 4
     physicsBody->setContactTestBitmask(2); // 2
+    physicsBody->setRotationEnable(false);
 
     this->node->addComponent(physicsBody);
 }
@@ -43,6 +52,8 @@ void Jumper::prepareForNewGeneration()
     this->deathTimestamp = 0;
     this->lastJumpTimestamp = 0;
     this->rayTraceFraction = 0;
+    this->score = 0;
+    this->jumps = 0;
 }
 
 Jumper::~Jumper()
@@ -81,11 +92,12 @@ void Jumper::update(float delta)
     input[0] = (double)this->rayTraceFraction;
     auto shouldJump = this->neuralNetwork->calculate_outputs(input)[0] > 0.5;
 
-    if (shouldJump && (std::time(nullptr) - this->lastJumpTimestamp) > 2)
+    if (shouldJump && (TimeHelper::diff(this->lastJumpTimestamp) > 2200))
     {
-        this->lastJumpTimestamp = std::time(nullptr);
-        auto jump = JumpBy::create(1.8, Vec2(0, 150), 150, 1);
+        this->lastJumpTimestamp = TimeHelper::now();
+        auto jump = JumpBy::create(JUMP_DURATION, Vec2(0, 150 + (this->node->getBoundingBox().size.height / 2)), 150, 1);
         this->node->runAction(jump);
+        this->jumps++;
     }
 }
 
@@ -94,16 +106,26 @@ int &Jumper::getIndex()
     return this->index;
 }
 
-float Jumper::getScore()
+void Jumper::setScore(long long generationStartTimestamp, long long generationDuration)
 {
     if (this->isDead)
-        return this->generationStartTimestamp - this->deathTimestamp;
+    {
+        float survivalDuration = this->deathTimestamp - generationStartTimestamp;
+        this->score = (survivalDuration / (float)generationDuration) - ((float)(this->jumps * JUMP_DURATION * 1000) / survivalDuration);
+    }
     else
-        return 0;
+    {
+        this->score = 0;
+    }
+}
+
+float Jumper::getScore()
+{
+    return this->score;
 }
 
 void Jumper::kill()
 {
-    this->deathTimestamp = std::time(nullptr);
+    this->deathTimestamp = TimeHelper::now();
     this->isDead = true;
 }

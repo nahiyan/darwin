@@ -5,12 +5,14 @@
 #include <algorithm>
 #include <opennn/neural_network.h>
 #include <core/EvolutionSession.h>
-#include <ctime>
+#include <helpers/time.h>
 #include <fstream>
 #include "MainScene.h"
 #include "Jumper.h"
 #include "Boundary.h"
 #include "Obstacle.h"
+
+#define POPULATION_SIZE 10
 
 USING_NS_CC;
 
@@ -41,23 +43,23 @@ bool MainScene::init()
     this->visibleSize = Director::getInstance()->getVisibleSize();
 
     // Timer
-    this->generationStartTimestamp = std::time(nullptr);
+    this->cGInfo.startTimestamp = TimeHelper::now();
 
     // Jumpers
-    auto currentTime = std::time(nullptr);
-    for (int i = 0; i < 18; i++)
+    for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto jumper = new Jumper(Vec2(40 + i * 50, 40), i);
-        jumper->generationStartTimestamp = currentTime;
-        this->jumperList.push_back(jumper);
+        auto jumper = new Jumper(Vec2(890, 40), i);
+        this->cGInfo.population.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
 
-    // Obstacles deployed
-    this->obstaclesUsed = 0;
+    // Current generation info
+    this->cGInfo.obstaclesUsed = 0;
+    this->cGInfo.jumpersAlive = POPULATION_SIZE;
+    this->cGInfo.totalJumps = 0;
 
     // Set scheduler to add obstacles
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addObstacle), 2.5, CC_REPEAT_FOREVER, 0);
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addObstacle), 2.3, CC_REPEAT_FOREVER, 0);
     this->addObstacle(0);
 
     // Boundary
@@ -69,7 +71,7 @@ bool MainScene::init()
     delete[] boundaries;
 
     // Evolution session
-    this->evolutionSession = new EvolutionSession<Jumper>(this->jumperList);
+    this->evolutionSession = new EvolutionSession<Jumper>(this->cGInfo.population);
 
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
@@ -86,7 +88,7 @@ bool MainScene::init()
 
 void MainScene::update(float delta)
 {
-    for (auto jumper : this->jumperList)
+    for (auto jumper : this->cGInfo.population)
     {
         if (!jumper->isDead)
             jumper->update(delta);
@@ -112,10 +114,14 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-                auto jumper = this->jumperList[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
-                jumper->deathTimestamp = std::time(nullptr);
-                jumper->isDead = true;
+                auto jumper = this->cGInfo.population[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
+                jumper->kill();
                 this->removeChild(jumper->node);
+
+                this->cGInfo.jumpersAlive--;
+
+                if (this->cGInfo.jumpersAlive == 0)
+                    this->nextGeneration();
             });
 
             return false;
@@ -125,9 +131,9 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
                 auto obstacle = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
                 this->removeChild(obstacle);
-                this->obstaclesUsed++;
+                this->cGInfo.obstaclesUsed++;
 
-                if (this->obstaclesUsed == 3)
+                if (this->cGInfo.obstaclesUsed == 2)
                     this->nextGeneration();
             });
 
@@ -150,8 +156,11 @@ void MainScene::onMouseMove(EventMouse *e)
 
 void MainScene::addObstacle(float delta)
 {
-    auto obstacle = Obstacle::create(Vec2(visibleSize.width - 30, 23));
-    this->addChild(obstacle, 1);
+    if (random<int>(0, 1))
+    {
+        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 30, 23));
+        this->addChild(obstacle, 1);
+    }
 }
 
 void MainScene::nextGeneration()
@@ -164,13 +173,19 @@ void MainScene::nextGeneration()
         if (physicsBody != nullptr && physicsBody->getCategoryBitmask() <= 2)
         {
             if (physicsBody->getCategoryBitmask() == 1)
-                this->jumperList[child->getTag()]->kill();
+                this->cGInfo.population[child->getTag()]->kill();
 
             this->removeChild(child);
         }
     }
 
-    // Crossover and mutation
+    // Score the current population
+    auto generationDuration = TimeHelper::now() - this->cGInfo.startTimestamp;
+
+    for (auto jumper : this->cGInfo.population)
+        jumper->setScore(this->cGInfo.startTimestamp, generationDuration);
+
+    // Crossover and mutation function
     auto crossoverAndMutate = [&](Jumper *parentA, Jumper *parentB, Jumper *offspring, float mutationRate) -> void {
         auto parentAParameters = parentA->neuralNetwork->get_parameters();
         auto parentBParameters = parentB->neuralNetwork->get_parameters();
@@ -193,30 +208,30 @@ void MainScene::nextGeneration()
     this->evolutionSession->evolve(crossoverAndMutate);
 
     // Update timestamp
-    this->generationStartTimestamp = std::time(nullptr);
+    this->cGInfo.startTimestamp = TimeHelper::now();
 
     // Reset jumpers
-    for (auto jumper : this->jumperList)
+    for (auto jumper : this->cGInfo.population)
         jumper->prepareForNewGeneration();
 
     // Add jumpers
-    auto currentTime = std::time(nullptr);
-    for (int i = 0; i < this->jumperList.size(); i++)
+    for (int i = 0; i < this->cGInfo.population.size(); i++)
     {
-        this->jumperList[i]->generateNode();
-        this->jumperList[i]->generationStartTimestamp = currentTime;
-        auto node = this->jumperList[i]->node;
+        this->cGInfo.population[i]->generateNode();
+        auto node = this->cGInfo.population[i]->node;
         this->addChild(node, 2, i);
-        node->setPosition(40 + i * 50, 40);
+        node->setPosition(890, 40);
     }
 
-    // Reset number of obstacles used
-    this->obstaclesUsed = 0;
+    // Reset attributes of current generation info
+    this->cGInfo.obstaclesUsed = 0;
+    this->cGInfo.jumpersAlive = this->cGInfo.population.size();
+    this->cGInfo.totalJumps = 0;
 }
 
 MainScene::~MainScene()
 {
-    for (auto jumper : this->jumperList)
+    for (auto jumper : this->cGInfo.population)
         delete jumper;
 
     delete this->evolutionSession;

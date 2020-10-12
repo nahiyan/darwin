@@ -3,7 +3,6 @@
 
 #include <sqlite3/sqlite3.h>
 #include <core/IEvolvable.h>
-#include <ctime>
 #include <vector>
 #include <functional>
 
@@ -28,7 +27,7 @@ public:
     }
     void rank()
     {
-        auto sort_ = [&](T *a, T *b) {
+        auto sort_ = [&](T *a, T *b) -> bool {
             return a->getScore() > b->getScore();
         };
 
@@ -41,6 +40,13 @@ public:
 
         // Record scores of current generation
         // this->recordScores(generationStartTime);
+
+        printf("Scores: ");
+        for (auto object : this->objectList)
+        {
+            printf("%f ", object->getScore());
+        }
+        printf("\n");
 
         // Population size
         int populationSize = this->objectList.size();

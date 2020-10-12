@@ -13,6 +13,7 @@ Sprite *Obstacle::create(const Vec2 &position)
     physicsBody->setCategoryBitmask(2);
     physicsBody->setCollisionBitmask(12);  // 4 + 8
     physicsBody->setContactTestBitmask(9); // 1 + 8
+    physicsBody->setAngularVelocity(1.8);
     node->addComponent(physicsBody);
 
     physicsBody->setVelocity(Vec2(-100, 0));

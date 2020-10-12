@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include <vector>
-#include <ctime>
 #include <core/EvolutionSession.h>
 #include "Jumper.h"
 #include "Obstacle.h"
@@ -12,9 +11,17 @@ class MainScene : public cocos2d::Scene
 {
 private:
     cocos2d::Size visibleSize;
-    std::time_t generationStartTimestamp;
     EvolutionSession<Jumper> *evolutionSession;
-    int obstaclesUsed;
+
+    struct CurrentGenerationInfo
+    {
+        std::vector<Jumper *> population;
+        int obstaclesUsed;
+        int jumpersAlive;
+        int totalJumpers;
+        long long startTimestamp;
+        int totalJumps;
+    } cGInfo;
 
     bool onContactBegin(cocos2d::PhysicsContact &);
     void addObstacle();
@@ -22,8 +29,6 @@ private:
     void onMouseMove(cocos2d::EventMouse *);
 
 public:
-    std::vector<Jumper *> jumperList;
-
     static cocos2d::Scene *createScene();
     ~MainScene();
 

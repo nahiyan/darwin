@@ -5,21 +5,21 @@
 #include <opennn/neural_network.h>
 #include <string>
 #include <memory>
-#include <ctime>
 
 class Jumper
 {
 private:
     void setGeometry();
     float rayTraceFraction;
-    std::time_t lastJumpTimestamp;
+    long long lastJumpTimestamp;
     int index;
+    float score;
+    int jumps = 0;
 
 public:
     cocos2d::Sprite *node;
     bool isDead;
-    std::time_t deathTimestamp;
-    std::time_t generationStartTimestamp;
+    long long deathTimestamp;
     std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
 
     Jumper(const cocos2d::Vec2 &, int);
@@ -31,6 +31,7 @@ public:
     void generateNode();
     int &getIndex();
     float getScore();
+    void setScore(long long, long long);
     void kill();
 };
 
