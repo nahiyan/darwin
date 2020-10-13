@@ -13,6 +13,7 @@
 #include "Obstacle.h"
 
 #define POPULATION_SIZE 10
+#define SPEED 1
 
 USING_NS_CC;
 
@@ -34,6 +35,12 @@ bool MainScene::init()
     if (!Scene::initWithPhysics())
         return false;
 
+    this->getPhysicsWorld()->setGravity(Vec2(0, -400));
+
+    // Set the speed of the simulation
+    Director::getInstance()->getScheduler()->setTimeScale(SPEED);
+    this->getPhysicsWorld()->setSpeed(SPEED);
+
     // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
@@ -41,9 +48,6 @@ bool MainScene::init()
     this->addChild(_bgColor, -10);
 
     this->visibleSize = Director::getInstance()->getVisibleSize();
-
-    // Timer
-    this->cGInfo.startTimestamp = TimeHelper::now();
 
     // Jumpers
     for (int i = 0; i < POPULATION_SIZE; i++)
@@ -54,7 +58,9 @@ bool MainScene::init()
     }
 
     // Current generation info
+    this->cGInfo.startTimestamp = TimeHelper::now();
     this->cGInfo.obstaclesUsed = 0;
+    this->cGInfo.obstaclesDeployed = 0;
     this->cGInfo.jumpersAlive = POPULATION_SIZE;
     this->cGInfo.totalJumps = 0;
 
@@ -160,6 +166,7 @@ void MainScene::addObstacle(float delta)
     {
         auto obstacle = Obstacle::create(Vec2(visibleSize.width - 30, 23));
         this->addChild(obstacle, 1);
+        this->cGInfo.obstaclesDeployed++;
     }
 }
 
@@ -183,7 +190,7 @@ void MainScene::nextGeneration()
     auto generationDuration = TimeHelper::now() - this->cGInfo.startTimestamp;
 
     for (auto jumper : this->cGInfo.population)
-        jumper->setScore(this->cGInfo.startTimestamp, generationDuration);
+        jumper->setScore(this->cGInfo.startTimestamp, generationDuration, this->cGInfo.obstaclesDeployed);
 
     // Crossover and mutation function
     auto crossoverAndMutate = [&](Jumper *parentA, Jumper *parentB, Jumper *offspring, float mutationRate) -> void {
@@ -225,6 +232,7 @@ void MainScene::nextGeneration()
 
     // Reset attributes of current generation info
     this->cGInfo.obstaclesUsed = 0;
+    this->cGInfo.obstaclesDeployed = 0;
     this->cGInfo.jumpersAlive = this->cGInfo.population.size();
     this->cGInfo.totalJumps = 0;
 }

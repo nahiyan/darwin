@@ -17,6 +17,7 @@ private:
     {
         std::vector<Jumper *> population;
         int obstaclesUsed;
+        int obstaclesDeployed;
         int jumpersAlive;
         int totalJumpers;
         long long startTimestamp;

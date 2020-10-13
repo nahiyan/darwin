@@ -31,7 +31,7 @@ public:
     void generateNode();
     int &getIndex();
     float getScore();
-    void setScore(long long, long long);
+    void setScore(long long, long long, int);
     void kill();
 };
 

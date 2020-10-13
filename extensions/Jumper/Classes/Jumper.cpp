@@ -6,7 +6,7 @@
 #include <helpers/time.h>
 #include "MainScene.h"
 
-#define JUMP_DURATION 2
+#define JUMP_DURATION 2.5
 
 USING_NS_CC;
 
@@ -26,7 +26,7 @@ Jumper::Jumper(const Vec2 &position, int index)
     // Randomize parameters
     std::vector<double> parameters;
     for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-        parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() + i));
+        parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
     this->neuralNetwork->set_parameters(parameters);
 }
 
@@ -92,11 +92,10 @@ void Jumper::update(float delta)
     input[0] = (double)this->rayTraceFraction;
     auto shouldJump = this->neuralNetwork->calculate_outputs(input)[0] > 0.5;
 
-    if (shouldJump && (TimeHelper::diff(this->lastJumpTimestamp) > 2200))
+    if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 40)
     {
         this->lastJumpTimestamp = TimeHelper::now();
-        auto jump = JumpBy::create(JUMP_DURATION, Vec2(0, 150 + (this->node->getBoundingBox().size.height / 2)), 150, 1);
-        this->node->runAction(jump);
+        this->node->getPhysicsBody()->setVelocity(Vec2(0, 350));
         this->jumps++;
     }
 }
@@ -106,12 +105,17 @@ int &Jumper::getIndex()
     return this->index;
 }
 
-void Jumper::setScore(long long generationStartTimestamp, long long generationDuration)
+void Jumper::setScore(long long generationStartTimestamp, long long generationDuration, int obstaclesDeployed)
 {
     if (this->isDead)
     {
         float survivalDuration = this->deathTimestamp - generationStartTimestamp;
-        this->score = (survivalDuration / (float)generationDuration) - ((float)(this->jumps * JUMP_DURATION * 1000) / survivalDuration);
+        float obstaclesFaced = ((float)obstaclesDeployed) * (survivalDuration / ((float)generationDuration));
+        float jumpRatio = ((float)this->jumps) / obstaclesFaced;
+        float penalty = jumpRatio * 2.0f;
+        this->score = (survivalDuration / 1000.0f) - penalty;
+
+        log("%f", this->score);
     }
     else
     {
