@@ -6,7 +6,7 @@
 class Obstacle
 {
 public:
-    static cocos2d::Sprite* create(const cocos2d::Vec2 &);
+    static cocos2d::Sprite *create(const cocos2d::Vec2 &);
 };
 
 #endif // __Obstacle_H__

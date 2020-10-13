@@ -50,7 +50,6 @@ void Jumper::prepareForNewGeneration()
 {
     this->isDead = false;
     this->deathTimestamp = 0;
-    this->lastJumpTimestamp = 0;
     this->rayTraceFraction = 0;
     this->score = 0;
     this->jumps = 0;
@@ -94,7 +93,6 @@ void Jumper::update(float delta)
 
     if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 40)
     {
-        this->lastJumpTimestamp = TimeHelper::now();
         this->node->getPhysicsBody()->setVelocity(Vec2(0, 350));
         this->jumps++;
     }

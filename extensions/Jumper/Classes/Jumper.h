@@ -11,7 +11,6 @@ class Jumper
 private:
     void setGeometry();
     float rayTraceFraction;
-    long long lastJumpTimestamp;
     int index;
     float score;
     int jumps = 0;
