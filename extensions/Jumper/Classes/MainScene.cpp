@@ -11,6 +11,8 @@
 #include "Jumper.h"
 #include "Boundary.h"
 #include "Obstacle.h"
+#include <flatbuffers/flatbuffers.h>
+#include <GenerationState_generated.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 1
@@ -211,8 +213,30 @@ void MainScene::nextGeneration()
         offspring->neuralNetwork->set_parameters(newParameters);
     };
 
+    // Contructing a FlatBuffers builder
+    flatbuffers::FlatBufferBuilder builder(1024);
+
+    auto population_ = std::vector<flatbuffers::Offset<Member>>();
+
+    for (auto object : this->evolutionSession->objectList)
+    {
+        auto chromosomes = std::vector<double>();
+        auto parameters = object->neuralNetwork->get_parameters();
+        for (auto parameter : parameters)
+        {
+            chromosomes.push_back(parameter);
+        }
+        auto member = CreateMember(builder, builder.CreateVector<double>(chromosomes), object->getScore());
+        population_.push_back(member);
+    }
+
+    auto population = builder.CreateVector(population_);
+
+    auto state = CreateGenerationState(builder, population);
+    builder.Finish(state);
+
     // Perform evolution
-    this->evolutionSession->evolve(crossoverAndMutate);
+    this->evolutionSession->evolve(crossoverAndMutate, builder.GetBufferPointer(), builder.GetSize());
 
     // Update timestamp
     this->cGInfo.startTimestamp = TimeHelper::now();

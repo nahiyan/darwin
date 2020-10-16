@@ -151,6 +151,7 @@ target_include_directories(${APP_NAME}
     PRIVATE Classes
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
     PRIVATE ${INCLUDES_PATH}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/flatbuffers
 )
 
 # mark app resources

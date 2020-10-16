@@ -5,6 +5,7 @@
 #include <core/IEvolvable.h>
 #include <vector>
 #include <functional>
+#include <flatbuffers/flatbuffers.h>
 
 template <class T>
 class EvolutionSession
@@ -25,6 +26,7 @@ public:
         this->populationDivision[1] = 0.3;
         this->generationIndex = 0;
     }
+
     void rank()
     {
         auto sort_ = [&](T *a, T *b) -> bool {
@@ -33,13 +35,14 @@ public:
 
         std::sort(this->objectList.begin(), this->objectList.end(), sort_);
     }
-    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate)
+
+    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
         // Ranking
         this->rank();
 
-        // Record scores of current generation
-        // this->recordScores(generationStartTime);
+        // Save state of tested generation
+        this->saveState(fBBufferPoint, fBBufferSize);
 
         printf("Scores: ");
         for (auto object : this->objectList)
@@ -73,7 +76,13 @@ public:
 
         this->generationIndex++;
     }
-    // void recordScores(std::time_t generationStartTime)
+
+    void saveState(uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
+    {
+        // printf("%d", fBBufferSize);
+    }
+
+    // void recordScores()
     // {
     //     std::vector<std::time_t> currentGenerationScores;
 
