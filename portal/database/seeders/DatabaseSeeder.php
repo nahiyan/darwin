@@ -15,9 +15,16 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::table('extensions')->insert([
-            'name' => 'Organism',
-        ], [
-            'name' => 'Jumper',
+            [
+                'name' => 'Organism',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ],
+            [
+                'name' => 'Jumper',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+            ],
         ]);
     }
 }

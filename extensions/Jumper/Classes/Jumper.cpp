@@ -6,7 +6,7 @@
 #include <helpers/time.h>
 #include "MainScene.h"
 
-#define JUMP_DURATION 2.5
+#define JUMP_IMPULSE 1500 * 1000
 
 USING_NS_CC;
 
@@ -35,7 +35,7 @@ void Jumper::generateNode()
     // Create node
     this->node = Sprite::create("jumper1.png");
 
-    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 1.0f, 1.0f));
+    auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 0.0f, 1.0f));
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
@@ -84,6 +84,12 @@ void Jumper::update(float delta)
 
     auto jumperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
 
+    // if (jumperPosition.y < 35)
+    //     this->node->setPositionY(35);
+
+    if (jumperPosition.y < 0)
+        log("%f ", jumperPosition.y);
+
     physicsWorld->rayCast(rayCastCB, jumperPosition + Vec2(32.6, -25), jumperPosition + Vec2(117.5, -25), this);
 
     // Neural network
@@ -93,7 +99,7 @@ void Jumper::update(float delta)
 
     if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 40)
     {
-        this->node->getPhysicsBody()->setVelocity(Vec2(0, 350));
+        this->node->getPhysicsBody()->applyImpulse(Vec2(0, JUMP_IMPULSE));
         this->jumps++;
     }
 }
@@ -112,8 +118,6 @@ void Jumper::setScore(long long generationStartTimestamp, long long generationDu
         float jumpRatio = ((float)this->jumps) / obstaclesFaced;
         float penalty = jumpRatio * 2.0f;
         this->score = (survivalDuration / 1000.0f) - penalty;
-
-        log("%f", this->score);
     }
     else
     {
