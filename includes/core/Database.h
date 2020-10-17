@@ -54,7 +54,7 @@ public:
     static int addSession(int extensionId)
     {
         sqlite3_stmt *statement;
-        std::string sql = "INSERT INTO sessions(extension_id, created_at, updated_at) VALUES(?, datetime('now', 'localtime'), datetime('now', 'localtime'))";
+        std::string sql = "INSERT INTO sessions(extension_id, created_at, updated_at) VALUES(?, datetime('now'), datetime('now'))";
 
         if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, nullptr) == SQLITE_OK)
         {
@@ -77,7 +77,7 @@ public:
     static void addGeneration(int sessionId, uint8_t *state, int stateSize)
     {
         sqlite3_stmt *statement;
-        std::string sql = "INSERT INTO generations(session_id, state, created_at, updated_at) VALUES(?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))";
+        std::string sql = "INSERT INTO generations(session_id, state, created_at, updated_at) VALUES(?, ?, datetime('now'), datetime('now'))";
 
         if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, 0) == SQLITE_OK)
         {
