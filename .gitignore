@@ -1,6 +1,5 @@
 *.sh
-/cocos2d-x
 *.code-workspace
 *.vscode
-/flatbuffers-master
 /test
+/*-build
