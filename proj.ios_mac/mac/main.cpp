@@ -25,12 +25,9 @@
 
 #include "AppDelegate.h"
 #include "cocos2d.h"
-#include "../../src/main.h"
+#include "../../src/ControlPanel.h"
 
 USING_NS_CC;
-
-IMPLEMENT_APP_NO_MAIN(MyApp);
-IMPLEMENT_WX_THEME_SUPPORT;
 
 int main(int argc, char *argv[])
 {
@@ -39,6 +36,4 @@ int main(int argc, char *argv[])
     wxTheApp->OnRun();
 
     return 0;
-    // AppDelegate app;
-    // return Application::getInstance()->run();
 }

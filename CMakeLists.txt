@@ -68,7 +68,7 @@ list(APPEND GAME_SOURCE
      ${JUMPER_PATH}/Classes/Obstacle.cpp
      ${JUMPER_PATH}/Classes/Jumper.cpp
      ${JUMPER_PATH}/Classes/Boundary.cpp
-     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.cpp
      )
 list(APPEND GAME_HEADER
      ${JUMPER_PATH}/Classes/AppDelegate.h
@@ -76,7 +76,7 @@ list(APPEND GAME_HEADER
      ${JUMPER_PATH}/Classes/Obstacle.h
      ${JUMPER_PATH}/Classes/Jumper.h
      ${JUMPER_PATH}/Classes/Boundary.h
-     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.h
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.h
      )
 
 if(ANDROID)
