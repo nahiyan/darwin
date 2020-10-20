@@ -22,10 +22,17 @@ private:
     wxListBox *sessionsListBox;
     wxListBox *generationsListBox;
     wxButton *startButton;
+    wxButton *clearSelectionButton;
+    wxStaticText *summary;
+    int initialWidth;
+
     void OnExit(wxCommandEvent &event);
     void SelectExtension(wxCommandEvent &event);
     void SelectSession(wxCommandEvent &event);
+    void SelectGeneration(wxCommandEvent &event);
     void StartEvolution(wxCommandEvent &event);
+    void ClearSelection(wxCommandEvent &event);
+    void updateSummary();
 };
 
 #endif // __MAIN_H__

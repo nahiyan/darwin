@@ -19,6 +19,7 @@
 #define SESSIONS_LIST_BOX_ID 2
 #define GENERATIONS_LIST_BOX_ID 3
 #define START_BUTTON_ID 4
+#define CLEAR_SELECTION_BUTTON_ID 5
 
 IMPLEMENT_APP_NO_MAIN(ControlPanel);
 IMPLEMENT_WX_THEME_SUPPORT;
@@ -47,14 +48,14 @@ ControlPanelFrame::ControlPanelFrame()
     this->SetSizer(frameSizer);
 
     // First row
-    auto firstRow = new wxPanel(this);
-    auto firstRowSizer = new wxBoxSizer(wxHORIZONTAL);
-    firstRow->SetSizer(firstRowSizer);
-    frameSizer->Add(firstRow);
+    auto selectionRow = new wxPanel(this);
+    auto selectionRowSizer = new wxBoxSizer(wxHORIZONTAL);
+    selectionRow->SetSizer(selectionRowSizer);
+    frameSizer->Add(selectionRow);
 
     // Extensions
-    auto extensionsPanel = new wxPanel(firstRow);
-    firstRowSizer->Add(extensionsPanel, 0, wxEXPAND | wxALL, 10);
+    auto extensionsPanel = new wxPanel(selectionRow);
+    selectionRowSizer->Add(extensionsPanel, 0, wxEXPAND | wxALL, 10);
     auto extensionsStaticBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, extensionsPanel, "Extensions");
     extensionsPanel->SetSizer(extensionsStaticBoxSizer);
 
@@ -68,8 +69,8 @@ ControlPanelFrame::ControlPanelFrame()
     extensionsStaticBoxSizer->Add(this->extensionsListBox, 0, wxEXPAND | wxALL, 5);
 
     // Sessions
-    auto sessionsPanel = new wxPanel(firstRow);
-    firstRowSizer->Add(sessionsPanel, 0, wxEXPAND | wxTOP | wxBOTTOM, 10);
+    auto sessionsPanel = new wxPanel(selectionRow);
+    selectionRowSizer->Add(sessionsPanel, 0, wxEXPAND | wxTOP | wxBOTTOM, 10);
     auto sessionsStaticBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, sessionsPanel, "Sessions");
     sessionsPanel->SetSizer(sessionsStaticBoxSizer);
 
@@ -78,8 +79,8 @@ ControlPanelFrame::ControlPanelFrame()
     sessionsStaticBoxSizer->Add(this->sessionsListBox, 0, wxEXPAND | wxALL, 5);
 
     // Generations
-    auto generationsPanel = new wxPanel(firstRow);
-    firstRowSizer->Add(generationsPanel, 0, wxEXPAND | wxALL, 10);
+    auto generationsPanel = new wxPanel(selectionRow);
+    selectionRowSizer->Add(generationsPanel, 0, wxEXPAND | wxALL, 10);
     auto generationsStaticBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, generationsPanel, "Generations");
     generationsPanel->SetSizer(generationsStaticBoxSizer);
 
@@ -87,22 +88,41 @@ ControlPanelFrame::ControlPanelFrame()
     generationsListBox->Enable(false);
     generationsStaticBoxSizer->Add(this->generationsListBox, 0, wxEXPAND | wxALL, 5);
 
-    // Second row
-    auto secondRow = new wxPanel(this);
-    frameSizer->Add(secondRow);
-    auto secondRowSizer = new wxBoxSizer(wxHORIZONTAL);
-    secondRow->SetSizer(secondRowSizer);
+    // Summary row
+    auto summaryRow = new wxPanel(this);
+    frameSizer->Add(summaryRow, 0, wxEXPAND, 0);
+    auto summaryRowSizer = new wxBoxSizer(wxHORIZONTAL);
+    summaryRow->SetSizer(summaryRowSizer);
 
-    this->startButton = new wxButton(secondRow, START_BUTTON_ID, wxT("Start"));
+    this->summary = new wxStaticText(summaryRow, wxID_ANY, wxT("No selection."));
+    summaryRowSizer->Add(this->summary, 0, wxLEFT, 10);
+
+    // Actions row
+    auto actionsRow = new wxPanel(this);
+    frameSizer->Add(actionsRow);
+    auto actionsRowSizer = new wxBoxSizer(wxHORIZONTAL);
+    actionsRow->SetSizer(actionsRowSizer);
+
+    // Start button
+    this->startButton = new wxButton(actionsRow, START_BUTTON_ID, wxT("Start"));
     this->startButton->Enable(false);
-    secondRowSizer->Add(this->startButton, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
+    actionsRowSizer->Add(this->startButton, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
+
+    // Clear selection button
+    this->clearSelectionButton = new wxButton(actionsRow, CLEAR_SELECTION_BUTTON_ID, wxT("Clear Selection"));
+    this->clearSelectionButton->Enable(false);
+    actionsRowSizer->Add(this->clearSelectionButton, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
     frameSizer->Fit(this);
+
+    this->initialWidth = this->GetSize().GetWidth();
 
     // Events
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectExtension, this, EXTENSIONS_LIST_BOX_ID);
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectSession, this, SESSIONS_LIST_BOX_ID);
+    Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectGeneration, this, GENERATIONS_LIST_BOX_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::StartEvolution, this, START_BUTTON_ID);
+    Bind(wxEVT_BUTTON, &ControlPanelFrame::ClearSelection, this, CLEAR_SELECTION_BUTTON_ID);
 }
 
 void ControlPanelFrame::OnExit(wxCommandEvent &event)
@@ -131,6 +151,10 @@ void ControlPanelFrame::SelectExtension(wxCommandEvent &event)
 
     this->sessionsListBox->Append(items);
     this->startButton->Enable(true);
+
+    this->clearSelectionButton->Enable(true);
+
+    this->updateSummary();
 }
 
 void ControlPanelFrame::SelectSession(wxCommandEvent &event)
@@ -153,10 +177,56 @@ void ControlPanelFrame::SelectSession(wxCommandEvent &event)
         this->generationsListBox->Enable(false);
 
     this->generationsListBox->Append(items);
+
+    this->updateSummary();
+}
+
+void ControlPanelFrame::SelectGeneration(wxCommandEvent &event)
+{
+
+    this->updateSummary();
 }
 
 void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
 {
     Jumper::AppDelegate app;
     cocos2d::Application::getInstance()->run();
+}
+
+void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
+{
+    extensionsListBox->SetSelection(-1);
+    sessionsListBox->SetSelection(-1);
+    sessionsListBox->Clear();
+    sessionsListBox->Enable(false);
+    generationsListBox->SetSelection(-1);
+    generationsListBox->Clear();
+    generationsListBox->Enable(false);
+    this->startButton->Enable(false);
+
+    this->updateSummary();
+}
+
+void ControlPanelFrame::updateSummary()
+{
+    std::string text = "";
+
+    if (extensionsListBox->GetSelection() == wxNOT_FOUND)
+    {
+        text = "No Selection.";
+    }
+    else
+    {
+        auto extensionName = extensionsListBox->GetStringSelection().ToStdString();
+
+        if (sessionsListBox->GetSelection() == wxNOT_FOUND)
+            text = "Evolution of " + extensionName + " will begin with new session.";
+        else if (generationsListBox->GetSelection() == wxNOT_FOUND)
+            text = "Evolution of " + extensionName + " will continue from session " + sessionsListBox->GetStringSelection() + ", deleting older generations (if any).";
+        else
+            text = "Evolution of " + extensionName + " will continue from generation " + generationsListBox->GetStringSelection() + " of session " + sessionsListBox->GetStringSelection() + ".";
+    }
+
+    this->summary->SetLabel(wxString(text));
+    this->GetSizer()->Fit(this);
 }
