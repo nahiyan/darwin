@@ -7,19 +7,19 @@
 #include <core/EvolutionSession.h>
 #include <helpers/time.h>
 #include <fstream>
-#include "MainScene.h"
-#include "Jumper.h"
-#include "Boundary.h"
-#include "Obstacle.h"
 #include <flatbuffers/flatbuffers.h>
-#include <GenerationState_generated.h>
+#include <extensions/jumper/MainScene.h>
+#include <extensions/jumper/Jumper.h>
+#include <extensions/jumper/Boundary.h>
+#include <extensions/jumper/Obstacle.h>
+#include <extensions/jumper/GenerationState_generated.h>
 
 #define POPULATION_SIZE 10
-#define SPEED 1
+#define SPEED 4
 
 USING_NS_CC;
 
-Scene *MainScene::createScene()
+Scene *Jumper::MainScene::createScene()
 {
     return MainScene::create();
 }
@@ -32,7 +32,7 @@ static void problemLoading(const char *filename)
 }
 
 // on "init" you need to initialize your instance
-bool MainScene::init()
+bool Jumper::MainScene::init()
 {
     if (!Scene::initWithPhysics())
         return false;
@@ -94,7 +94,7 @@ bool MainScene::init()
     return true;
 }
 
-void MainScene::update(float delta)
+void Jumper::MainScene::update(float delta)
 {
     for (auto jumper : this->cGInfo.population)
     {
@@ -103,13 +103,13 @@ void MainScene::update(float delta)
     }
 }
 
-void MainScene::menuCloseCallback(Ref *pSender)
+void Jumper::MainScene::menuCloseCallback(Ref *pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
 }
 
-bool MainScene::onContactBegin(PhysicsContact &contact)
+bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
 {
     auto bodyA = contact.getShapeA()->getBody();
     auto bodyB = contact.getShapeB()->getBody();
@@ -154,7 +154,7 @@ bool MainScene::onContactBegin(PhysicsContact &contact)
     return false;
 }
 
-void MainScene::onMouseMove(EventMouse *e)
+void Jumper::MainScene::onMouseMove(EventMouse *e)
 {
     // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
     // auto obstacleNewPosition = this->obstacle->getParent()->convertToNodeSpace(mousePosition);
@@ -162,7 +162,7 @@ void MainScene::onMouseMove(EventMouse *e)
     // this->obstacle->setPosition(obstacleNewPosition);
 }
 
-void MainScene::addObstacle(float delta)
+void Jumper::MainScene::addObstacle(float delta)
 {
     if (random<int>(0, 1))
     {
@@ -172,7 +172,7 @@ void MainScene::addObstacle(float delta)
     }
 }
 
-void MainScene::nextGeneration()
+void Jumper::MainScene::nextGeneration()
 {
     // Remove all the obstacles and jumpers
     auto children = this->getChildren();
@@ -261,7 +261,7 @@ void MainScene::nextGeneration()
     this->cGInfo.totalJumps = 0;
 }
 
-MainScene::~MainScene()
+Jumper::MainScene::~MainScene()
 {
     for (auto jumper : this->cGInfo.population)
         delete jumper;

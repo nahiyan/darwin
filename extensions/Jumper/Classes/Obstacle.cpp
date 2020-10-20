@@ -1,10 +1,10 @@
-#include "Obstacle.h"
+#include <extensions/jumper/Obstacle.h>
 
 #define IMPULSE -10 * 1000
 
 USING_NS_CC;
 
-Sprite *Obstacle::create(const Vec2 &position)
+Sprite *Jumper::Obstacle::create(const Vec2 &position)
 {
     auto node = Sprite::create("ball.png");
     node->setPosition(position);

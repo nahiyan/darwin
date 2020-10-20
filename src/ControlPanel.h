@@ -18,8 +18,14 @@ public:
     ControlPanelFrame();
 
 private:
+    wxListBox *extensionsListBox;
+    wxListBox *sessionsListBox;
+    wxListBox *generationsListBox;
+    wxButton *startButton;
     void OnExit(wxCommandEvent &event);
     void SelectExtension(wxCommandEvent &event);
+    void SelectSession(wxCommandEvent &event);
+    void StartEvolution(wxCommandEvent &event);
 };
 
 #endif // __MAIN_H__

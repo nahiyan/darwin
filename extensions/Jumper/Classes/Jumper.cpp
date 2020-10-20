@@ -1,16 +1,16 @@
-#include "Jumper.h"
+#include <extensions/jumper/Jumper.h>
 #include <iostream>
 #include <memory>
 #include <opennn/opennn.h>
 #include <helpers/random.h>
 #include <helpers/time.h>
-#include "MainScene.h"
+#include <extensions/jumper/MainScene.h>
 
 #define JUMP_IMPULSE 1500 * 1000
 
 USING_NS_CC;
 
-Jumper::Jumper(const Vec2 &position, int index)
+Jumper::Jumper::Jumper(const Vec2 &position, int index)
 {
     this->index = index;
 
@@ -30,7 +30,7 @@ Jumper::Jumper(const Vec2 &position, int index)
     this->neuralNetwork->set_parameters(parameters);
 }
 
-void Jumper::generateNode()
+void Jumper::Jumper::generateNode()
 {
     // Create node
     this->node = Sprite::create("jumper1.png");
@@ -46,7 +46,7 @@ void Jumper::generateNode()
     this->node->addComponent(physicsBody);
 }
 
-void Jumper::prepareForNewGeneration()
+void Jumper::Jumper::prepareForNewGeneration()
 {
     this->isDead = false;
     this->deathTimestamp = 0;
@@ -55,16 +55,16 @@ void Jumper::prepareForNewGeneration()
     this->jumps = 0;
 }
 
-Jumper::~Jumper()
+Jumper::Jumper::~Jumper()
 {
 }
 
-void Jumper::setRayTraceFraction(float fraction)
+void Jumper::Jumper::setRayTraceFraction(float fraction)
 {
     this->rayTraceFraction = fraction;
 }
 
-void Jumper::update(float delta)
+void Jumper::Jumper::update(float delta)
 {
     // Ray trace
     auto physicsWorld = ((Scene *)this->node->getParent())->getPhysicsWorld();
@@ -104,12 +104,12 @@ void Jumper::update(float delta)
     }
 }
 
-int &Jumper::getIndex()
+int &Jumper::Jumper::getIndex()
 {
     return this->index;
 }
 
-void Jumper::setScore(long long generationStartTimestamp, long long generationDuration, int obstaclesDeployed)
+void Jumper::Jumper::setScore(long long generationStartTimestamp, long long generationDuration, int obstaclesDeployed)
 {
     if (this->isDead)
     {
@@ -125,12 +125,12 @@ void Jumper::setScore(long long generationStartTimestamp, long long generationDu
     }
 }
 
-float Jumper::getScore()
+float Jumper::Jumper::getScore()
 {
     return this->score;
 }
 
-void Jumper::kill()
+void Jumper::Jumper::kill()
 {
     this->deathTimestamp = TimeHelper::now();
     this->isDead = true;

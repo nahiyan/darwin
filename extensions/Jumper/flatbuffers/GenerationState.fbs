@@ -1,3 +1,5 @@
+namespace Jumper;
+
 table GenerationState {
     population:[Member];
 }

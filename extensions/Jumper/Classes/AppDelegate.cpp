@@ -1,5 +1,5 @@
-#include "AppDelegate.h"
-#include "MainScene.h"
+#include <extensions/jumper/AppDelegate.h>
+#include <extensions/jumper/MainScene.h>
 #include <iostream>
 
 // #define USE_AUDIO_ENGINE 1
@@ -14,6 +14,8 @@ static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
+
+using namespace Jumper;
 
 AppDelegate::AppDelegate()
 {

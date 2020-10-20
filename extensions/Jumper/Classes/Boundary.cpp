@@ -1,8 +1,8 @@
-#include "Boundary.h"
+#include <extensions/jumper/Boundary.h>
 
 USING_NS_CC;
 
-DrawNode **Boundary::create(Size &visibleSize)
+DrawNode **Jumper::Boundary::create(Size &visibleSize)
 {
     const int boundaryCategoryBitmask = 4;
     const int boundaryCollisionBitmask = 3;

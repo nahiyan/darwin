@@ -23,7 +23,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "AppDelegate.h"
+#include <extensions/jumper/AppDelegate.h>
 #include "cocos2d.h"
 #include "../../src/ControlPanel.h"
 
