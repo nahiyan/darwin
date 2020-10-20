@@ -71,12 +71,6 @@ list(APPEND GAME_SOURCE
      ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.cpp
      )
 list(APPEND GAME_HEADER
-     ${JUMPER_PATH}/Classes/AppDelegate.h
-     ${JUMPER_PATH}/Classes/MainScene.h
-     ${JUMPER_PATH}/Classes/Obstacle.h
-     ${JUMPER_PATH}/Classes/Jumper.h
-     ${JUMPER_PATH}/Classes/Boundary.h
-     ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.h
      )
 
 if(ANDROID)
@@ -147,18 +141,15 @@ endif()
 # Link libraries, and include headers
 target_link_directories(${APP_NAME}
     PRIVATE ${LIBRARIES_PATH}/opennn
-    PRIVATE ${LIBRARIES_PATH}/core
     PRIVATE ${LIBRARIES_PATH}/sqlite3
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/wxwidgets)
 
-target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base sqlite3)
+target_link_libraries(${APP_NAME} cocos2d opennn wx::net wx::core wx::base sqlite3)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
-    PRIVATE ${JUMPER_PATH}/Classes
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
-    PRIVATE ${JUMPER_PATH}/flatbuffers
 )
 
 # mark app resources
