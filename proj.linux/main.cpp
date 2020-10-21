@@ -22,13 +22,18 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "../Classes/AppDelegate.h"
+#include <extensions/jumper/AppDelegate.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string>
-#include "../../src/ControlPanel.h"
+#include "../src/ControlPanel.h"
+
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 
 USING_NS_CC;
 

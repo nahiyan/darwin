@@ -23,9 +23,14 @@
  ****************************************************************************/
 
 #include "main.h"
-#include "AppDelegate.h"
+#include <extensions/jumper/AppDelegate.h>
 #include "cocos2d.h"
-#include "../../src/ControlPanel.h"
+#include "../src/ControlPanel.h"
+
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 
 USING_NS_CC;
 
@@ -37,7 +42,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    wxEntryStart(argc, argv);
+    wxEntryStart(hInstance, hPrevInstance);
     wxTheApp->CallOnInit();
     wxTheApp->OnRun();
 }

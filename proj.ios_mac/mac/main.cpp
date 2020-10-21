@@ -27,6 +27,11 @@
 #include "cocos2d.h"
 #include "../../src/ControlPanel.h"
 
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
 USING_NS_CC;
 
 int main(int argc, char *argv[])
