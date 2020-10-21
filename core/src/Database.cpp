@@ -4,28 +4,21 @@
 #include <vector>
 #include <core/Database.h>
 
-template <class T>
-std::vector<T> process_result(std::vector<T> &result)
-{
-    if (result.size() == 1 && result[0] == 0)
-        return std::vector<T>();
-    else
-        return result;
-}
+sqlite3 *Database::handle = nullptr;
 
-static void open(std::string path)
+void Database::open(std::string path)
 {
     if (sqlite3_open(path.c_str(), &Database::handle) != SQLITE_OK)
         printf("Failed to open database.\n");
 }
 
-static void close()
+void Database::close()
 {
     if (sqlite3_close(Database::handle) != SQLITE_OK)
         printf("Failed to close database.\n");
 }
 
-static void clearSession(int sessionId)
+void Database::clearSession(int sessionId)
 {
     std::string sql = "DELETE FROM generations WHERE id IN (SELECT g.id FROM sessions s LEFT JOIN generations g ON g.session_id = s.session_id WHERE s.id = ?)";
 
@@ -42,7 +35,7 @@ static void clearSession(int sessionId)
         printf("Failed to clear session.\n");
     }
 }
-static int getExtensionId(std::string name)
+int Database::getExtensionId(std::string name)
 {
     std::string sql = "SELECT id FROM extensions WHERE name = ?";
 
@@ -70,7 +63,7 @@ static int getExtensionId(std::string name)
     }
 }
 
-static std::vector<std::string> getExtensionNames()
+std::vector<std::string> Database::getExtensionNames()
 {
     std::string sql = "SELECT name FROM extensions WHERE 1";
     std::vector<std::string> names;
@@ -89,6 +82,8 @@ static std::vector<std::string> getExtensionNames()
         printf("Failed to get extension names.\n");
     }
 
+    if (names.size() == 1 && names[0] == "")
+        names.clear();
     return names;
 }
 
@@ -111,6 +106,9 @@ std::vector<int> Database::getSessionIds(std::string extensionName)
     {
         printf("Failed to get session IDs.\n");
     }
+
+    if (ids.size() == 1 && ids[0] == 0)
+        ids.clear();
 
     return ids;
 }
@@ -136,7 +134,10 @@ std::vector<int> Database::getGenerationIds(std::string extensionName, int sessi
         printf("Failed to get generation IDs.\n");
     }
 
-    return process_result<int>(ids);
+    if (ids.size() == 1 && ids[0] == 0)
+        ids.clear();
+
+    return ids;
 }
 
 int Database::addSession(int extensionId)

@@ -29,6 +29,4 @@ public:
     static void addGeneration(int, uint8_t *, int);
 };
 
-sqlite3 *Database::handle = nullptr;
-
 #endif // _DATABASE_H_

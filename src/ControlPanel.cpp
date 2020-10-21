@@ -237,7 +237,7 @@ void ControlPanelFrame::updateSummary()
         if (sessionsListBox->GetSelection() == wxNOT_FOUND)
             text = "Evolution of " + extensionName + " will begin with a new session.";
         else if (generationsListBox->GetSelection() == wxNOT_FOUND)
-            text = "Evolution of " + extensionName + " will continue from session " + sessionsListBox->GetStringSelection() + ", deleting older generations (if any).";
+            text = "Evolution of " + extensionName + " will continue from session " + sessionsListBox->GetStringSelection() + ".\nWarning: This will remove all existing generations in the session.";
         else
             text = "Evolution of " + extensionName + " will continue from generation " + generationsListBox->GetStringSelection() + " of session " + sessionsListBox->GetStringSelection() + ".";
     }
