@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <algorithm>
 #include <opennn/neural_network.h>
-#include <core/EvolutionSession.h>
 #include <helpers/time.h>
 #include <fstream>
 #include <flatbuffers/flatbuffers.h>
@@ -13,6 +12,7 @@
 #include <extensions/jumper/Boundary.h>
 #include <extensions/jumper/Obstacle.h>
 #include <extensions/jumper/GenerationState_generated.h>
+#include <core/Database.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 4
@@ -86,10 +86,22 @@ bool Jumper::MainScene::init()
     contactListener->onContactBegin = CC_CALLBACK_1(MainScene::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
-    // Mouse listener
-    // auto mouseListener = EventListenerMouse::create();
-    // mouseListener->onMouseMove = CC_CALLBACK_1(MainScene::onMouseMove, this);
-    // _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+    // Database
+    auto sessionId = UserDefault::getInstance()->getIntegerForKey("sessionId");
+    auto generationId = UserDefault::getInstance()->getIntegerForKey("generationId");
+
+    if (sessionId == 0)
+    {
+        // Create new session
+        auto extensionId = Database::getExtensionId("Jumper");
+        UserDefault::getInstance()->setIntegerForKey("extensionId", extensionId);
+        UserDefault::getInstance()->setIntegerForKey("sessionId", Database::addSession(extensionId));
+    }
+    else if (generationId == 0)
+    {
+        // Start the session over from scratch
+        Database::clearSession(sessionId);
+    }
 
     return true;
 }
@@ -236,7 +248,7 @@ void Jumper::MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(crossoverAndMutate, builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(crossoverAndMutate, UserDefault::getInstance()->getIntegerForKey("sessionId"), builder.GetBufferPointer(), builder.GetSize());
 
     // Update timestamp
     this->cGInfo.startTimestamp = TimeHelper::now();

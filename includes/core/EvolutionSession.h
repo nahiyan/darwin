@@ -2,10 +2,10 @@
 #define _EVOLUTION_SESSION_H_
 
 #include <sqlite3/sqlite3.h>
-#include <core/IEvolvable.h>
 #include <vector>
 #include <functional>
 #include <flatbuffers/flatbuffers.h>
+#include <core/Database.h>
 
 template <class T>
 class EvolutionSession
@@ -36,13 +36,13 @@ public:
         std::sort(this->objectList.begin(), this->objectList.end(), sort_);
     }
 
-    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
+    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
         // Ranking
         this->rank();
 
         // Save state of tested generation
-        this->saveState(fBBufferPoint, fBBufferSize);
+        this->saveState(sessionId, fBBufferPoint, fBBufferSize);
 
         printf("Scores: ");
         for (auto object : this->objectList)
@@ -77,33 +77,10 @@ public:
         this->generationIndex++;
     }
 
-    void saveState(uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
+    void saveState(int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
-        // printf("%d", fBBufferSize);
+        Database::addGeneration(sessionId, fBBufferPoint, (int)fBBufferSize);
     }
-
-    // void recordScores()
-    // {
-    //     std::vector<std::time_t> currentGenerationScores;
-
-    //     // Allocate spaces for each chromosome
-    //     for (int i = 0; i < this->objectList.size(); i++)
-    //     {
-    //         currentGenerationScores.push_back(0);
-    //     }
-
-    //     // Insert the chromosomes
-    //     for (auto object : this->objectList)
-    //     {
-    //         currentGenerationScores[object->getIndex()] = object->deathTimestamp - generationStartTime;
-
-    //         log("Score: %lu", object->deathTimestamp - generationStartTime);
-    //     }
-    //     log("End of scores");
-
-    //     // Insert the generation
-    //     this->scores.push_back(currentGenerationScores);
-    // }
 };
 
 #endif // _EVOLUTION_SESSION_H_

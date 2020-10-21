@@ -141,12 +141,12 @@ endif()
 # Link libraries, and include headers
 target_link_directories(${APP_NAME}
     PRIVATE ${LIBRARIES_PATH}/opennn
-    PRIVATE ${LIBRARIES_PATH}/sqlite3
 )
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/wxwidgets)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
 
-target_link_libraries(${APP_NAME} cocos2d opennn wx::net wx::core wx::base sqlite3)
+target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base sqlite3)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/

@@ -187,6 +187,16 @@ void ControlPanelFrame::SelectGeneration(wxCommandEvent &event)
 void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
 {
     auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
+    auto sessionId = 0;
+    auto generationId = 0;
+
+    if (this->sessionsListBox->GetStringSelection().ToStdString().size() != 0)
+        sessionId = std::stoi(this->sessionsListBox->GetStringSelection().ToStdString());
+    if (this->generationsListBox->GetStringSelection().ToStdString().size() != 0)
+        generationId = std::stoi(this->generationsListBox->GetStringSelection().ToStdString());
+
+    cocos2d::UserDefault::getInstance()->setIntegerForKey("sessionId", sessionId);
+    cocos2d::UserDefault::getInstance()->setIntegerForKey("generationId", generationId);
 
     if (extensionName == "Jumper")
     {
@@ -225,7 +235,7 @@ void ControlPanelFrame::updateSummary()
         auto extensionName = extensionsListBox->GetStringSelection().ToStdString();
 
         if (sessionsListBox->GetSelection() == wxNOT_FOUND)
-            text = "Evolution of " + extensionName + " will begin with new session.";
+            text = "Evolution of " + extensionName + " will begin with a new session.";
         else if (generationsListBox->GetSelection() == wxNOT_FOUND)
             text = "Evolution of " + extensionName + " will continue from session " + sessionsListBox->GetStringSelection() + ", deleting older generations (if any).";
         else
