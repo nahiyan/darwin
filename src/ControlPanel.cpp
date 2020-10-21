@@ -115,8 +115,6 @@ ControlPanelFrame::ControlPanelFrame()
 
     frameSizer->Fit(this);
 
-    this->initialWidth = this->GetSize().GetWidth();
-
     // Events
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectExtension, this, EXTENSIONS_LIST_BOX_ID);
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectSession, this, SESSIONS_LIST_BOX_ID);
@@ -183,25 +181,32 @@ void ControlPanelFrame::SelectSession(wxCommandEvent &event)
 
 void ControlPanelFrame::SelectGeneration(wxCommandEvent &event)
 {
-
     this->updateSummary();
 }
 
 void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
 {
-    Jumper::AppDelegate app;
-    cocos2d::Application::getInstance()->run();
+    auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
+
+    if (extensionName == "Jumper")
+    {
+        Jumper::AppDelegate app;
+        cocos2d::Application::getInstance()->run();
+    }
 }
 
 void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
 {
     extensionsListBox->SetSelection(-1);
+
     sessionsListBox->SetSelection(-1);
     sessionsListBox->Clear();
     sessionsListBox->Enable(false);
+
     generationsListBox->SetSelection(-1);
     generationsListBox->Clear();
     generationsListBox->Enable(false);
+
     this->startButton->Enable(false);
 
     this->updateSummary();
@@ -209,7 +214,7 @@ void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
 
 void ControlPanelFrame::updateSummary()
 {
-    std::string text = "";
+    std::string text;
 
     if (extensionsListBox->GetSelection() == wxNOT_FOUND)
     {

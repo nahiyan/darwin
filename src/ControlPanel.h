@@ -24,7 +24,6 @@ private:
     wxButton *startButton;
     wxButton *clearSelectionButton;
     wxStaticText *summary;
-    int initialWidth;
 
     void OnExit(wxCommandEvent &event);
     void SelectExtension(wxCommandEvent &event);
