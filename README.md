@@ -9,10 +9,7 @@ The extensions of Darwin usually relies on few basic components, which includes 
 Please note:
 
 - The include files for such components are located in the `/includes` directory.
-- The libraries (static or dynamic) are located in the `/libraries` directory.
 - Extensions are placed in the `/extensions` directory.
-
-The first step to get started is to build the basic components, which are required by most extensions of Darwin.
 
 ## Building
 
