@@ -30,7 +30,6 @@ set(APP_NAME Darwin)
 project(${APP_NAME})
 
 # Root path
-set(LIBRARIES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libraries)
 set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 # Extension paths
@@ -139,14 +138,11 @@ else()
 endif()
 
 # Link libraries, and include headers
-target_link_directories(${APP_NAME}
-    PRIVATE ${LIBRARIES_PATH}/opennn
-)
-
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/wxwidgets)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opennn)
 
-target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base sqlite3)
+target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/

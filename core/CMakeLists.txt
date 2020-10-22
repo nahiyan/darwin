@@ -13,5 +13,5 @@ add_library(core STATIC
 target_include_directories(core PRIVATE ${ROOT_DIRECTORY}/includes)
 
 # Libraries
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sqlite3)
 target_link_libraries(core PRIVATE sqlite3)
-target_link_directories(core PRIVATE ${ROOT_DIRECTORY}/libraries)
