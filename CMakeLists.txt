@@ -29,6 +29,12 @@ set(APP_NAME Darwin)
 
 project(${APP_NAME})
 
+# Build dependencies
+set(wxBUILD_SHARED OFF)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/wxwidgets)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opennn)
+
 # Root path
 set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
@@ -138,10 +144,6 @@ else()
 endif()
 
 # Link libraries, and include headers
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/wxwidgets)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opennn)
-
 target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
