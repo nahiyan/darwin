@@ -67,7 +67,7 @@ It's recommended to use a generator for Visual Studio. You can omit "-G \<genera
 
 Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
 
-`cmake --build <build-directory>`.
+`cmake --build <build-directory>`
 
 # Dependencies
 
