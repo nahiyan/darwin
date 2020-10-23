@@ -65,7 +65,7 @@ It's recommended to build a 32-bit version of Darwin on Windows, since that's wh
 
 This will generate the build system, based on 32-bit architecture, in a directory called `<build-directory>`.
 
-It's recommended to use a generator for Visual Studio. You can omit "-G \<generator>" from the command if Visual Studio is the default genarator.
+It's recommended to use a generator for Visual Studio. You can omit `-G <generator>` from the command if Visual Studio is the default genarator.
 
 Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
 
@@ -86,6 +86,6 @@ wxWidgets, cocos2d-x, SQLite3 are stored in `/wxwidgets`, `/cocos2d`, and `/core
 
 FlatBuffers is used for storing/retrieving states of generations, along with scores of population members, to/from the database in form of binary. 
 
-FlatBuffers schema files are included in `/extensions/<extension_name>/flatbuffers`, where "\<extension_name>" is the name of the extension. You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.
+FlatBuffers schema files are included in `/extensions/<extension_name>/flatbuffers`, where `<extension_name>` is the name of the extension. You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.
 
 Note that FlatBuffers isn't used as a library, but as a tool which generates header files. The header files are what makes serialization/deserialization of data possible.
