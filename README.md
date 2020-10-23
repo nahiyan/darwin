@@ -8,7 +8,7 @@ The extensions of Darwin usually relies on few basic components, which includes 
 
 Please note:
 
-- The include files for such components are located in the `/includes` directory.
+- The include files for all components are located in the `/includes` directory.
 - Extensions are placed in the `/extensions` directory.
 
 ## Building
@@ -17,14 +17,6 @@ There are two ways to build Darwin. You can choose any one of the methods:
 
 - CMake
 - Cocos Console
-
-### Cocos Console
-
-Darwin is technically a cocos2d-x project, so visit the website of [Cocos Project](https://www.cocos.com) to download Cocos Console, which makes it easy to build Darwin, or any other cocos2d-x project, with just one command.
-
-To build Darwin, run `cocos compile -p <platform>` inside the root directory. Replace "\<platform>" with the platform of your choice; run `cocos compile --help` for list of available platforms.
-
-Note: Since the CLI tool, Cocos Console, uses CMake to generate the files required for building, you can use CMake directly instead. In fact, using CMake directly can give you more control over the build process.
 
 ### CMake
 
@@ -35,7 +27,7 @@ Here are the details for the placeholders used in the commands of each of the me
 - `<generator>` Build-system generator.
 - `<build-directory>` Directory where the build-system files, along with the compiled files of the project, are going to be stored.
 
-Note: You can check for the default generator, along with all other available generators using the command: `cmake --help`.
+> Note: You can check for the default generator, along with all other available generators using the command: `cmake --help`.
 
 #### Linux
 
@@ -71,6 +63,14 @@ Next, you can build the project with the respective build tool, or run to let CM
 
 `cmake --build <build-directory>`
 
+### Cocos Console
+
+Darwin is technically a cocos2d-x project, so visit the website of [Cocos Project](https://www.cocos.com) to download Cocos Console, which makes it easy to build Darwin, or any other cocos2d-x project, with just one command.
+
+To build Darwin, run `cocos compile -p <platform>` inside the root directory. Replace `<platform>` with the platform of your choice; run `cocos compile --help` for list of available platforms.
+
+> Note: Since the CLI tool, Cocos Console, uses CMake to generate the files required for building, you can use CMake directly instead, as instructed in the other method of building Darwin. In fact, using CMake directly can give you more control over the build process.
+
 # Dependencies
 
 - __wxWidgets__ for cross-platform GUI of the Control Panel.
@@ -88,4 +88,4 @@ FlatBuffers is used for storing/retrieving states of generations, along with sco
 
 FlatBuffers schema files are included in `/extensions/<extension_name>/flatbuffers`, where `<extension_name>` is the name of the extension. You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.
 
-Note that FlatBuffers isn't used as a library, but as a tool which generates header files. The header files are what makes serialization/deserialization of data possible.
+> Note: FlatBuffers isn't used as a library, but as a tool which generates header files. The header files are what makes serialization/deserialization of data possible.
