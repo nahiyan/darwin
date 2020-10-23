@@ -65,7 +65,7 @@ It's recommended to build a 32-bit version of Darwin on Windows, since that's wh
 
 This will generate the build system, based on 32-bit architecture, in a directory called `<build-directory>`.
 
-It's recommended to use a generator for Visual Studio. You can omit `-G <generator>` from the command if Visual Studio is the default genarator.
+It's recommended to use a generator for __Visual Studio__ in CMake. You can omit `-G <generator>` from the command above if the default generator is what you want to use.
 
 Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
 
