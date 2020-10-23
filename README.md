@@ -13,11 +13,61 @@ Please note:
 
 ## Building
 
-Darwin is technically a cocos2d-x project, so please visit the website of [Cocos Project](https://www.cocos.com) to download Cocos Console, which is recommended for building Darwin or any other cocos2d-x project.
+There are two ways to build Darwin. You can choose any one of the methods:
+
+- CMake
+- Cocos Console
+
+### Cocos Console
+
+Darwin is technically a cocos2d-x project, so visit the website of [Cocos Project](https://www.cocos.com) to download Cocos Console, which makes it easy to build Darwin, or any other cocos2d-x project, with just one command.
 
 To build Darwin, run `cocos compile -p <platform>` inside the root directory. Replace "\<platform>" with the platform of your choice; run `cocos compile --help` for list of available platforms.
 
 Note: Since the CLI tool, Cocos Console, uses CMake to generate the files required for building, you can use CMake directly instead. In fact, using CMake directly can give you more control over the build process.
+
+### CMake
+
+Darwin is heavily based on CMake for generating the build system and invoking the build tools. Make sure your CMake version is >= 3.6.
+
+Here are the details for the placeholders used in the commands of each of the methods below:
+
+- `<generator>` Build-system generator.
+- `<build-directory>` Directory where the build-system files, along with the compiled files of the project, are going to be stored.
+
+#### Linux
+
+You can use CMake to generate build system files for Ninja, or Unix Make, or any other tool:
+
+`cmake . -G <generator> -B <build-directory>`
+
+Next, build the project with the respective build tool yourself, or letting CMake do it for you:
+
+`cmake --build <build-directory>`
+
+#### macOS
+
+You can use CMake to generate files for Xcode (recommended) or any other tool:
+
+`cmake . -G <generator> -B <build-directory>`
+
+Next, build the project with the respective build tool yourself, or letting CMake do it for you:
+
+`cmake --build <build-directory>`
+
+#### Windows
+
+It's recommended to build a 32-bit version of Darwin on Windows, since that's what cocos2d-x is designed for. To generate the build system with CMake, run in the root of the project:
+
+`cmake . -G <generator> -A Win32 -B <build-directory>`
+
+This will generate the build system, based on 32-bit architecture, in a directory called `<build-directory>`.
+
+It's recommended to use a generator for Visual Studio. You can omit "-G \<generator>" from the command if Visual Studio is the default genarator. You can check for the default generator, along with all other available generators using the command: `cmake --help`.
+
+Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
+
+`cmake --build <build-directory>`.
 
 # Dependencies
 
