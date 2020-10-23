@@ -754,7 +754,7 @@ const XMLElement* XMLNode::NextSiblingElement( const char* value ) const
 {
     for( XMLNode* element=this->_next; element; element = element->_next ) {
         if (    element->ToElement()
-                && (!value || XMLUtil::StringEqual( value, element->Value() ))) {
+                && (!value || XMLUtil::StringEqual( value, element->Value_() ))) {
             return element->ToElement();
         }
     }
@@ -766,7 +766,7 @@ const XMLElement* XMLNode::PreviousSiblingElement( const char* value ) const
 {
     for( XMLNode* element=_prev; element; element = element->_prev ) {
         if (    element->ToElement()
-                && (!value || XMLUtil::StringEqual( value, element->Value() ))) {
+                && (!value || XMLUtil::StringEqual( value, element->Value_() ))) {
             return element->ToElement();
         }
     }
@@ -827,16 +827,16 @@ char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
         XMLElement* ele = node->ToElement();
         if ( ele ) {
             if ( endTag.Empty() && ele->ClosingType() == XMLElement::OPEN ) {
-                _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value(), 0 );
+                _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value_(), 0 );
                 p = 0;
             }
             else if ( !endTag.Empty() && ele->ClosingType() != XMLElement::OPEN ) {
-                _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value(), 0 );
+                _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value_(), 0 );
                 p = 0;
             }
             else if ( !endTag.Empty() ) {
-                if ( !XMLUtil::StringEqual( endTag.GetStr(), node->Value() )) {
-                    _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value(), 0 );
+                if ( !XMLUtil::StringEqual( endTag.GetStr(), node->Value_() )) {
+                    _document->SetError( XML_ERROR_MISMATCHED_ELEMENT, node->Value_(), 0 );
                     p = 0;
                 }
             }
@@ -886,7 +886,7 @@ XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLText* text = doc->NewText( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLText* text = doc->NewText( Value_() );	// fixme: this will always allocate memory. Intern?
     text->SetCData( this->CData() );
     return text;
 }
@@ -894,7 +894,7 @@ XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
 
 bool XMLText::ShallowEqual( const XMLNode* compare ) const
 {
-    return ( compare->ToText() && XMLUtil::StringEqual( compare->ToText()->Value(), Value() ));
+    return ( compare->ToText() && XMLUtil::StringEqual( compare->ToText()->Value_(), Value_() ));
 }
 
 
@@ -933,14 +933,14 @@ XMLNode* XMLComment::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLComment* comment = doc->NewComment( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLComment* comment = doc->NewComment( Value_() );	// fixme: this will always allocate memory. Intern?
     return comment;
 }
 
 
 bool XMLComment::ShallowEqual( const XMLNode* compare ) const
 {
-    return ( compare->ToComment() && XMLUtil::StringEqual( compare->ToComment()->Value(), Value() ));
+    return ( compare->ToComment() && XMLUtil::StringEqual( compare->ToComment()->Value_(), Value_() ));
 }
 
 
@@ -980,14 +980,14 @@ XMLNode* XMLDeclaration::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLDeclaration* dec = doc->NewDeclaration( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLDeclaration* dec = doc->NewDeclaration( Value_() );	// fixme: this will always allocate memory. Intern?
     return dec;
 }
 
 
 bool XMLDeclaration::ShallowEqual( const XMLNode* compare ) const
 {
-    return ( compare->ToDeclaration() && XMLUtil::StringEqual( compare->ToDeclaration()->Value(), Value() ));
+    return ( compare->ToDeclaration() && XMLUtil::StringEqual( compare->ToDeclaration()->Value_(), Value_() ));
 }
 
 
@@ -1027,14 +1027,14 @@ XMLNode* XMLUnknown::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLUnknown* text = doc->NewUnknown( Value() );	// fixme: this will always allocate memory. Intern?
+    XMLUnknown* text = doc->NewUnknown( Value_() );	// fixme: this will always allocate memory. Intern?
     return text;
 }
 
 
 bool XMLUnknown::ShallowEqual( const XMLNode* compare ) const
 {
-    return ( compare->ToUnknown() && XMLUtil::StringEqual( compare->ToUnknown()->Value(), Value() ));
+    return ( compare->ToUnknown() && XMLUtil::StringEqual( compare->ToUnknown()->Value_(), Value_() ));
 }
 
 
@@ -1225,7 +1225,7 @@ const char* XMLElement::Attribute( const char* name, const char* value ) const
 const char* XMLElement::GetText() const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        return FirstChild()->ToText()->Value();
+        return FirstChild()->ToText()->Value_();
     }
     return 0;
 }
@@ -1234,7 +1234,7 @@ const char* XMLElement::GetText() const
 XMLError XMLElement::QueryIntText( int* ival ) const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->ToText()->Value();
+        const char* t = FirstChild()->ToText()->Value_();
         if ( XMLUtil::ToInt( t, ival ) ) {
             return XML_SUCCESS;
         }
@@ -1247,7 +1247,7 @@ XMLError XMLElement::QueryIntText( int* ival ) const
 XMLError XMLElement::QueryUnsignedText( unsigned* uval ) const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->ToText()->Value();
+        const char* t = FirstChild()->ToText()->Value_();
         if ( XMLUtil::ToUnsigned( t, uval ) ) {
             return XML_SUCCESS;
         }
@@ -1260,7 +1260,7 @@ XMLError XMLElement::QueryUnsignedText( unsigned* uval ) const
 XMLError XMLElement::QueryBoolText( bool* bval ) const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->ToText()->Value();
+        const char* t = FirstChild()->ToText()->Value_();
         if ( XMLUtil::ToBool( t, bval ) ) {
             return XML_SUCCESS;
         }
@@ -1273,7 +1273,7 @@ XMLError XMLElement::QueryBoolText( bool* bval ) const
 XMLError XMLElement::QueryDoubleText( double* dval ) const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->ToText()->Value();
+        const char* t = FirstChild()->ToText()->Value_();
         if ( XMLUtil::ToDouble( t, dval ) ) {
             return XML_SUCCESS;
         }
@@ -1286,7 +1286,7 @@ XMLError XMLElement::QueryDoubleText( double* dval ) const
 XMLError XMLElement::QueryFloatText( float* fval ) const
 {
     if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->ToText()->Value();
+        const char* t = FirstChild()->ToText()->Value_();
         if ( XMLUtil::ToFloat( t, fval ) ) {
             return XML_SUCCESS;
         }
@@ -1441,7 +1441,7 @@ XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
     if ( !doc ) {
         doc = _document;
     }
-    XMLElement* element = doc->NewElement( Value() );					// fixme: this will always allocate memory. Intern?
+    XMLElement* element = doc->NewElement( Value_() );					// fixme: this will always allocate memory. Intern?
     for( const XMLAttribute* a=FirstAttribute(); a; a=a->Next() ) {
         element->SetAttribute( a->Name(), a->Value() );					// fixme: this will always allocate memory. Intern?
     }
@@ -1452,7 +1452,7 @@ XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
 bool XMLElement::ShallowEqual( const XMLNode* compare ) const
 {
     const XMLElement* other = compare->ToElement();
-    if ( other && XMLUtil::StringEqual( other->Value(), Value() )) {
+    if ( other && XMLUtil::StringEqual( other->Value_(), Value_() )) {
 
         const XMLAttribute* a=FirstAttribute();
         const XMLAttribute* b=other->FirstAttribute();
@@ -2073,27 +2073,27 @@ bool XMLPrinter::VisitExit( const XMLElement& )
 
 bool XMLPrinter::Visit( const XMLText& text )
 {
-    PushText( text.Value(), text.CData() );
+    PushText( text.Value_(), text.CData() );
     return true;
 }
 
 
 bool XMLPrinter::Visit( const XMLComment& comment )
 {
-    PushComment( comment.Value() );
+    PushComment( comment.Value_() );
     return true;
 }
 
 bool XMLPrinter::Visit( const XMLDeclaration& declaration )
 {
-    PushDeclaration( declaration.Value() );
+    PushDeclaration( declaration.Value_() );
     return true;
 }
 
 
 bool XMLPrinter::Visit( const XMLUnknown& unknown )
 {
-    PushUnknown( unknown.Value() );
+    PushUnknown( unknown.Value_() );
     return true;
 }
 
