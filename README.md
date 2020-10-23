@@ -35,6 +35,8 @@ Here are the details for the placeholders used in the commands of each of the me
 - `<generator>` Build-system generator.
 - `<build-directory>` Directory where the build-system files, along with the compiled files of the project, are going to be stored.
 
+Note: You can check for the default generator, along with all other available generators using the command: `cmake --help`.
+
 #### Linux
 
 You can use CMake to generate build system files for Ninja, or Unix Make, or any other tool:
@@ -63,7 +65,7 @@ It's recommended to build a 32-bit version of Darwin on Windows, since that's wh
 
 This will generate the build system, based on 32-bit architecture, in a directory called `<build-directory>`.
 
-It's recommended to use a generator for Visual Studio. You can omit "-G \<generator>" from the command if Visual Studio is the default genarator. You can check for the default generator, along with all other available generators using the command: `cmake --help`.
+It's recommended to use a generator for Visual Studio. You can omit "-G \<generator>" from the command if Visual Studio is the default genarator.
 
 Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
 
