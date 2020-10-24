@@ -24,117 +24,112 @@
 #include "loss_index.h"
 #include "data_set.h"
 
-
-
 #include "tinyxml2.h"
 
 namespace OpenNN
 {
 
-/// This class represents the normalized squared error term. 
+   /// This class represents the normalized squared error term.
 
-///
-/// This error term is used in data modeling problems.
-/// If it has a value of unity then the neural network is predicting the data "in the mean",
-/// A value of zero means perfect prediction of data.
+   ///
+   /// This error term is used in data modeling problems.
+   /// If it has a value of unity then the neural network is predicting the data "in the mean",
+   /// A value of zero means perfect prediction of data.
 
-class NormalizedSquaredError : public LossIndex
-{
+   class NormalizedSquaredError : public LossIndex
+   {
 
-public:
+   public:
+      explicit NormalizedSquaredError(NeuralNetwork *, DataSet *);
 
-   explicit NormalizedSquaredError(NeuralNetwork*, DataSet*);
+      // NEURAL NETWORK CONSTRUCTOR
 
-   // NEURAL NETWORK CONSTRUCTOR
+      explicit NormalizedSquaredError(NeuralNetwork *);
 
-   explicit NormalizedSquaredError(NeuralNetwork*);
+      // DATA SET CONSTRUCTOR
 
-   // DATA SET CONSTRUCTOR
+      explicit NormalizedSquaredError(DataSet *);
 
-   explicit NormalizedSquaredError(DataSet*);
+      // DEFAULT CONSTRUCTOR
 
-   // DEFAULT CONSTRUCTOR
+      explicit NormalizedSquaredError();
 
-   explicit NormalizedSquaredError();
+      // XML CONSTRUCTOR
 
-   // XML CONSTRUCTOR
+      explicit NormalizedSquaredError(const onntinyxml2::XMLDocument &);
 
-   explicit NormalizedSquaredError(const tinyxml2::XMLDocument&);
+      virtual ~NormalizedSquaredError();
 
-   virtual ~NormalizedSquaredError();
+      // Get methods
 
-   // Get methods
+      double get_normalization_coefficient() const;
 
-    double get_normalization_coefficient() const;
+      // Set methods
 
-   // Set methods
+      void set_normalization_coefficient();
+      void set_normalization_coefficient(const double &);
 
-    void set_normalization_coefficient();
-    void set_normalization_coefficient(const double&);
+      void set_selection_normalization_coefficient();
+      void set_selection_normalization_coefficient(const double &);
 
-    void set_selection_normalization_coefficient();
-    void set_selection_normalization_coefficient(const double&);
+      void set_default();
 
-    void set_default();
+      // Normalization coefficients
 
-   // Normalization coefficients 
+      double calculate_normalization_coefficient(const Matrix<double> &, const Vector<double> &) const;
 
-   double calculate_normalization_coefficient(const Matrix<double>&, const Vector<double>&) const;
+      // Error methods
 
-   // Error methods
+      double calculate_training_error() const;
+      double calculate_training_error(const Vector<double> &) const;
 
-   double calculate_training_error() const;
-   double calculate_training_error(const Vector<double>&) const;
+      double calculate_selection_error() const;
 
-   double calculate_selection_error() const;
+      double calculate_batch_error(const Vector<size_t> &) const;
+      double calculate_batch_error(const Vector<size_t> &, const Vector<double> &) const;
 
-   double calculate_batch_error(const Vector<size_t>&) const;
-   double calculate_batch_error(const Vector<size_t>&, const Vector<double>&) const;
+      // Gradient methods
 
-   // Gradient methods
+      Tensor<double> calculate_output_gradient(const Tensor<double> &, const Tensor<double> &) const;
 
-   Tensor<double> calculate_output_gradient(const Tensor<double>&, const Tensor<double>&) const;
+      LossIndex::FirstOrderLoss calculate_first_order_loss() const;
 
-   LossIndex::FirstOrderLoss calculate_first_order_loss() const;
+      LossIndex::FirstOrderLoss calculate_batch_first_order_loss(const Vector<size_t> &) const;
 
-   LossIndex::FirstOrderLoss calculate_batch_first_order_loss(const Vector<size_t>&) const;
+      // Error terms methods
 
-   // Error terms methods
+      Vector<double> calculate_training_error_terms(const Tensor<double> &, const Tensor<double> &) const;
+      Vector<double> calculate_training_error_terms(const Vector<double> &) const;
 
-   Vector<double> calculate_training_error_terms(const Tensor<double>&, const Tensor<double>&) const;
-   Vector<double> calculate_training_error_terms(const Vector<double>&) const;
+      // Squared errors methods
 
-   // Squared errors methods
+      Vector<double> calculate_squared_errors() const;
 
-   Vector<double> calculate_squared_errors() const;
+      Vector<size_t> calculate_maximal_errors(const size_t & = 10) const;
 
-   Vector<size_t> calculate_maximal_errors(const size_t& = 10) const;
+      LossIndex::SecondOrderLoss calculate_terms_second_order_loss() const;
 
-   LossIndex::SecondOrderLoss calculate_terms_second_order_loss() const;
+      string get_error_type() const;
+      string get_error_type_text() const;
 
-   string get_error_type() const;
-   string get_error_type_text() const;
+      // Serialization methods
 
-   // Serialization methods
+      onntinyxml2::XMLDocument *to_XML() const;
+      void from_XML(const onntinyxml2::XMLDocument &);
 
-   tinyxml2::XMLDocument* to_XML() const;   
-   void from_XML(const tinyxml2::XMLDocument&);
+      void write_XML(onntinyxml2::XMLPrinter &) const;
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
+   private:
+      /// Coefficient of normalization for the calculation of the training error.
 
-private:
+      double normalization_coefficient;
 
-   /// Coefficient of normalization for the calculation of the training error.
+      double selection_normalization_coefficient;
+   };
 
-   double normalization_coefficient;
-
-   double selection_normalization_coefficient;
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.
@@ -152,4 +147,3 @@ private:
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-

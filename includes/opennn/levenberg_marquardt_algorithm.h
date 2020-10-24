@@ -29,230 +29,224 @@
 namespace OpenNN
 {
 
-/// This concrete class represents a Levenberg-Marquardt Algorithm training algorithm[1] for the sum squared error loss index for a neural network.
+   /// This concrete class represents a Levenberg-Marquardt Algorithm training algorithm[1] for the sum squared error loss index for a neural network.
 
-///
-/// \cite 1  Neural Designer "5 Algorithms to Train a Neural Network." \ref https://www.neuraldesigner.com/blog/5_algorithms_to_train_a_neural_network
+   ///
+   /// \cite 1  Neural Designer "5 Algorithms to Train a Neural Network." \ref https://www.neuraldesigner.com/blog/5_algorithms_to_train_a_neural_network
 
+   class LevenbergMarquardtAlgorithm : public OptimizationAlgorithm
+   {
 
-class LevenbergMarquardtAlgorithm : public OptimizationAlgorithm
-{
+   public:
+      // Constructors
 
-public:
+      explicit LevenbergMarquardtAlgorithm();
 
-   // Constructors
+      explicit LevenbergMarquardtAlgorithm(LossIndex *);
 
-   explicit LevenbergMarquardtAlgorithm();
+      explicit LevenbergMarquardtAlgorithm(const onntinyxml2::XMLDocument &);
 
-   explicit LevenbergMarquardtAlgorithm(LossIndex*);
+      // Destructor
 
-   explicit LevenbergMarquardtAlgorithm(const tinyxml2::XMLDocument&);
+      virtual ~LevenbergMarquardtAlgorithm();
 
-   // Destructor
+      // Get methods
 
-   virtual ~LevenbergMarquardtAlgorithm();
+      // Training parameters
 
-   // Get methods
+      const double &get_warning_parameters_norm() const;
+      const double &get_warning_gradient_norm() const;
 
-   // Training parameters
+      const double &get_error_parameters_norm() const;
+      const double &get_error_gradient_norm() const;
 
-   const double& get_warning_parameters_norm() const;
-   const double& get_warning_gradient_norm() const;
+      // Stopping criteria
 
-   const double& get_error_parameters_norm() const;
-   const double& get_error_gradient_norm() const;
+      const double &get_minimum_parameters_increment_norm() const;
 
-   // Stopping criteria
+      const double &get_minimum_loss_increase() const;
+      const double &get_loss_goal() const;
+      const double &get_gradient_norm_goal() const;
+      const size_t &get_maximum_selection_error_decreases() const;
 
-   const double& get_minimum_parameters_increment_norm() const;
+      const size_t &get_maximum_epochs_number() const;
+      const double &get_maximum_time() const;
 
-   const double& get_minimum_loss_increase() const;
-   const double& get_loss_goal() const;
-   const double& get_gradient_norm_goal() const;
-   const size_t& get_maximum_selection_error_decreases() const;
+      const bool &get_return_minimum_selection_error_neural_network() const;
+      const bool &get_apply_early_stopping() const;
 
-   const size_t& get_maximum_epochs_number() const;
-   const double& get_maximum_time() const;
+      // Reserve training history
 
-   const bool& get_return_minimum_selection_error_neural_network() const;
-   const bool& get_apply_early_stopping() const;
+      const bool &get_reserve_training_error_history() const;
+      const bool &get_reserve_selection_error_history() const;
 
-   // Reserve training history
+      // Utilities
 
-   const bool& get_reserve_training_error_history() const;
-   const bool& get_reserve_selection_error_history() const;
+      const double &get_damping_parameter() const;
 
-   // Utilities
+      const double &get_damping_parameter_factor() const;
 
-   const double& get_damping_parameter() const;
+      const double &get_minimum_damping_parameter() const;
+      const double &get_maximum_damping_parameter() const;
 
-   const double& get_damping_parameter_factor() const;
+      const Vector<double> &get_damping_parameter_history() const;
 
-   const double& get_minimum_damping_parameter() const;
-   const double& get_maximum_damping_parameter() const;
+      // Set methods
 
-   const Vector<double>& get_damping_parameter_history() const;
+      void set_default();
 
-   // Set methods
+      void set_damping_parameter(const double &);
 
-   void set_default();
+      void set_damping_parameter_factor(const double &);
 
-   void set_damping_parameter(const double&);
+      void set_minimum_damping_parameter(const double &);
+      void set_maximum_damping_parameter(const double &);
 
-   void set_damping_parameter_factor(const double&);
+      // Training parameters
 
-   void set_minimum_damping_parameter(const double&);
-   void set_maximum_damping_parameter(const double&);
+      void set_warning_parameters_norm(const double &);
+      void set_warning_gradient_norm(const double &);
 
-   // Training parameters
+      void set_error_parameters_norm(const double &);
+      void set_error_gradient_norm(const double &);
 
-   void set_warning_parameters_norm(const double&);
-   void set_warning_gradient_norm(const double&);
+      // Stopping criteria
 
-   void set_error_parameters_norm(const double&);
-   void set_error_gradient_norm(const double&);
+      void set_minimum_parameters_increment_norm(const double &);
 
-   // Stopping criteria
+      void set_minimum_loss_decrease(const double &);
+      void set_loss_goal(const double &);
+      void set_gradient_norm_goal(const double &);
+      void set_maximum_selection_error_increases(const size_t &);
 
-   void set_minimum_parameters_increment_norm(const double&);
+      void set_maximum_epochs_number(const size_t &);
+      void set_maximum_time(const double &);
 
-   void set_minimum_loss_decrease(const double&);
-   void set_loss_goal(const double&);
-   void set_gradient_norm_goal(const double&);
-   void set_maximum_selection_error_increases(const size_t&);
+      void set_return_minimum_selection_error_neural_network(const bool &);
+      void set_apply_early_stopping(const bool &);
 
-   void set_maximum_epochs_number(const size_t&);
-   void set_maximum_time(const double&);
+      // Reserve training history
 
-   void set_return_minimum_selection_error_neural_network(const bool&);
-   void set_apply_early_stopping(const bool&);
+      void set_reserve_training_error_history(const bool &);
+      void set_reserve_selection_error_history(const bool &);
 
-   // Reserve training history
+      /// Makes the training history of all variables to be reseved or not in memory.
 
-   void set_reserve_training_error_history(const bool&);
-   void set_reserve_selection_error_history(const bool&);
+      virtual void set_reserve_all_training_history(const bool &);
 
-   /// Makes the training history of all variables to be reseved or not in memory.
+      // Utilities
 
-   virtual void set_reserve_all_training_history(const bool&);
+      void set_display_period(const size_t &);
 
-   // Utilities
+      // Training methods
 
-   void set_display_period(const size_t&);
+      void check() const;
 
-   // Training methods
+      Results perform_training();
 
-   void check() const;
+      void perform_training_void();
 
-   Results perform_training();
+      string write_optimization_algorithm_type() const;
 
-   void perform_training_void();
+      // Serialization methods
 
-   string write_optimization_algorithm_type() const;
+      Matrix<string> to_string_matrix() const;
 
-   // Serialization methods
+      onntinyxml2::XMLDocument *to_XML() const;
+      void from_XML(const onntinyxml2::XMLDocument &);
 
-   Matrix<string> to_string_matrix() const;
+      void write_XML(onntinyxml2::XMLPrinter &) const;
 
-   tinyxml2::XMLDocument* to_XML() const;
-   void from_XML(const tinyxml2::XMLDocument&);
+      Vector<double> perform_Householder_QR_decomposition(const Matrix<double> &, const Vector<double> &) const;
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
-   
-   Vector<double> perform_Householder_QR_decomposition(const Matrix<double>&, const Vector<double>&) const;
+   private:
+      // MEMBERS
 
-private:
+      /// Initial Levenberg-Marquardt parameter.
 
-   // MEMBERS
+      double damping_parameter;
 
-   /// Initial Levenberg-Marquardt parameter.
+      /// Minimum Levenberg-Marquardt parameter.
 
-   double damping_parameter;
+      double minimum_damping_parameter;
 
-   /// Minimum Levenberg-Marquardt parameter.
+      /// Maximum Levenberg-Marquardt parameter.
 
-   double minimum_damping_parameter;
+      double maximum_damping_parameter;
 
-   /// Maximum Levenberg-Marquardt parameter.
+      /// Damping parameter increase/decrease factor.
 
-   double maximum_damping_parameter;
+      double damping_parameter_factor;
 
-   /// Damping parameter increase/decrease factor.
+      /// Value for the parameters norm at which a warning message is written to the screen.
 
-   double damping_parameter_factor;
+      double warning_parameters_norm;
 
-   /// Value for the parameters norm at which a warning message is written to the screen. 
+      /// Value for the gradient norm at which a warning message is written to the screen.
 
-   double warning_parameters_norm;
+      double warning_gradient_norm;
 
-   /// Value for the gradient norm at which a warning message is written to the screen. 
+      /// Value for the parameters norm at which the training process is assumed to fail.
 
-   double warning_gradient_norm;   
+      double error_parameters_norm;
 
-   /// Value for the parameters norm at which the training process is assumed to fail. 
-   
-   double error_parameters_norm;
+      /// Value for the gradient norm at which the training process is assumed to fail.
 
-   /// Value for the gradient norm at which the training process is assumed to fail. 
+      double error_gradient_norm;
 
-   double error_gradient_norm;
+      // Stopping criteria
 
+      /// Norm of the parameters increment vector at which training stops.
 
-   // Stopping criteria
+      double minimum_parameters_increment_norm;
 
-   /// Norm of the parameters increment vector at which training stops.
+      /// Minimum loss improvement between two successive iterations. It is used as a stopping criterion.
 
-   double minimum_parameters_increment_norm;
+      double minimum_loss_decrease;
 
-   /// Minimum loss improvement between two successive iterations. It is used as a stopping criterion.
+      /// Goal value for the loss. It is used as a stopping criterion.
 
-   double minimum_loss_decrease;
+      double loss_goal;
 
-   /// Goal value for the loss. It is used as a stopping criterion.
+      /// Goal value for the norm of the error function gradient. It is used as a stopping criterion.
 
-   double loss_goal;
+      double gradient_norm_goal;
 
-   /// Goal value for the norm of the error function gradient. It is used as a stopping criterion.
+      /// Maximum number of iterations at which the selection error increases.
+      /// This is an early stopping method for improving selection.
 
-   double gradient_norm_goal;
+      size_t maximum_selection_error_decreases;
 
-   /// Maximum number of iterations at which the selection error increases.
-   /// This is an early stopping method for improving selection.
+      /// Maximum number of epoch to perform_training. It is used as a stopping criterion.
 
-   size_t maximum_selection_error_decreases;
+      size_t maximum_epochs_number;
 
-   /// Maximum number of epoch to perform_training. It is used as a stopping criterion.
+      /// Maximum training time. It is used as a stopping criterion.
 
-   size_t maximum_epochs_number;
+      double maximum_time;
 
-   /// Maximum training time. It is used as a stopping criterion.
+      /// True if the final model will be the neural network with the minimum selection error, false otherwise.
 
-   double maximum_time;
+      bool return_minimum_selection_error_neural_network;
 
-   /// True if the final model will be the neural network with the minimum selection error, false otherwise.
+      /// True if the selection error decrease stopping criteria has to be taken in account, false otherwise.
 
-   bool return_minimum_selection_error_neural_network;
+      bool apply_early_stopping;
 
-   /// True if the selection error decrease stopping criteria has to be taken in account, false otherwise.
+      // TRAINING HISTORY
 
-   bool apply_early_stopping;
+      /// True if the loss history vector is to be reserved, false otherwise.
 
-   // TRAINING HISTORY
+      bool reserve_training_error_history;
 
-   /// True if the loss history vector is to be reserved, false otherwise.
+      /// True if the selection error history vector is to be reserved, false otherwise.
 
-   bool reserve_training_error_history;
+      bool reserve_selection_error_history;
+   };
 
-   /// True if the selection error history vector is to be reserved, false otherwise.
-
-   bool reserve_selection_error_history;
-
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.

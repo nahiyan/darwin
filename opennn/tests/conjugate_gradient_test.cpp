@@ -1,7 +1,7 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   C O N J U G A T E   G R A D I E N T   T E S T   C L A S S             
+//   C O N J U G A T E   G R A D I E N T   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
@@ -10,26 +10,23 @@
 
 using namespace OpenNN;
 
-
-ConjugateGradientTest::ConjugateGradientTest() : UnitTesting() 
+ConjugateGradientTest::ConjugateGradientTest() : UnitTesting()
 {
 }
-
 
 ConjugateGradientTest::~ConjugateGradientTest()
 {
 }
 
-
 void ConjugateGradientTest::test_constructor()
 {
-   cout << "test_constructor\n"; 
+   cout << "test_constructor\n";
 
    SumSquaredError sum_squared_error;
 
    // Default constructor
 
-   ConjugateGradient cg1; 
+   ConjugateGradient cg1;
    assert_true(cg1.has_loss_index() == false, LOG);
 
    // Loss index constructor
@@ -38,12 +35,10 @@ void ConjugateGradientTest::test_constructor()
    assert_true(cg2.has_loss_index() == true, LOG);
 }
 
-
 void ConjugateGradientTest::test_destructor()
 {
    cout << "test_destructor\n";
 }
-
 
 void ConjugateGradientTest::test_get_training_direction_method()
 {
@@ -58,12 +53,10 @@ void ConjugateGradientTest::test_get_training_direction_method()
    assert_true(training_direction_method == ConjugateGradient::PR, LOG);
 }
 
-
 void ConjugateGradientTest::test_get_training_direction_method_name()
 {
    cout << "test_get_training_direction_method_name\n";
 }
-
 
 void ConjugateGradientTest::test_set_training_direction_method()
 {
@@ -78,7 +71,6 @@ void ConjugateGradientTest::test_set_training_direction_method()
    assert_true(conjugate_gradient.get_training_direction_method() == ConjugateGradient::PR, LOG);
 }
 
-
 void ConjugateGradientTest::test_set_reserve_all_training_history()
 {
    cout << "test_set_reserve_all_training_history\n";
@@ -90,7 +82,6 @@ void ConjugateGradientTest::test_set_reserve_all_training_history()
    assert_true(conjugate_gradient.get_reserve_selection_error_history() == true, LOG);
 }
 
-
 /// @todo
 
 void ConjugateGradientTest::test_calculate_PR_parameter()
@@ -100,30 +91,28 @@ void ConjugateGradientTest::test_calculate_PR_parameter()
    DataSet data_set(1, 1, 2);
    data_set.randomize_data_normal();
 
-   NeuralNetwork neural_network(NeuralNetwork::Approximation, {1 ,1});
+   NeuralNetwork neural_network(NeuralNetwork::Approximation, {1, 1});
    SumSquaredError sum_squared_error(&neural_network, &data_set);
    ConjugateGradient conjugate_gradient(&sum_squared_error);
 
    neural_network.initialize_parameters(2.0);
-//   Vector<double> old_gradient = sum_squared_error.calculate_gradient();
+   //   Vector<double> old_gradient = sum_squared_error.calculate_gradient();
 
    neural_network.initialize_parameters(1.0);
-//   Vector<double> gradient = sum_squared_error.calculate_gradient();
+   //   Vector<double> gradient = sum_squared_error.calculate_gradient();
 
-//   double PR_parameter = conjugate_gradient.calculate_PR_parameter(old_gradient, gradient);
+   //   double PR_parameter = conjugate_gradient.calculate_PR_parameter(old_gradient, gradient);
 
-//   assert_true(PR_parameter >= 0.0, LOG);
-//   assert_true(PR_parameter <= 1.0, LOG);
-
+   //   assert_true(PR_parameter >= 0.0, LOG);
+   //   assert_true(PR_parameter <= 1.0, LOG);
 }
-
 
 /// @todo
 
 void ConjugateGradientTest::test_calculate_FR_parameter()
 {
    cout << "test_calculate_FR_parameter\n";
-/*
+   /*
    DataSet data_set(1, 1, 2);
    data_set.randomize_data_normal();
 
@@ -144,13 +133,12 @@ void ConjugateGradientTest::test_calculate_FR_parameter()
 */
 }
 
-
 /// @todo
 
 void ConjugateGradientTest::test_calculate_PR_training_direction()
 {
    cout << "test_calculate_PR_training_direction\n";
-/*
+   /*
    DataSet data_set(1, 1, 2);
    data_set.randomize_data_normal();
 
@@ -174,13 +162,12 @@ void ConjugateGradientTest::test_calculate_PR_training_direction()
 */
 }
 
-
 /// @todo
 
 void ConjugateGradientTest::test_calculate_FR_training_direction()
 {
    cout << "test_calculate_FR_training_direction\n";
-/*
+   /*
    DataSet data_set(1, 1, 2);
    data_set.randomize_data_normal();
 
@@ -204,13 +191,10 @@ void ConjugateGradientTest::test_calculate_FR_training_direction()
 */
 }
 
-
 void ConjugateGradientTest::test_calculate_training_direction()
 {
    cout << "test_calculate_training_direction\n";
-
 }
-
 
 void ConjugateGradientTest::test_perform_training()
 {
@@ -296,7 +280,7 @@ void ConjugateGradientTest::test_perform_training()
 
    conjugate_gradient.perform_training();
 
-   // Gradient norm goal 
+   // Gradient norm goal
 
    neural_network.initialize_parameters(-1.0);
 
@@ -311,23 +295,20 @@ void ConjugateGradientTest::test_perform_training()
 
    conjugate_gradient.perform_training();
 
-//   double gradient_norm = sum_squared_error.calculate_gradient().calculate_norm();
+   //   double gradient_norm = sum_squared_error.calculate_gradient().calculate_norm();
 
-//   assert_true(gradient_norm < gradient_norm_goal, LOG);
-
+   //   assert_true(gradient_norm < gradient_norm_goal, LOG);
 }
 
-
-void ConjugateGradientTest::test_to_XML()   
+void ConjugateGradientTest::test_to_XML()
 {
    cout << "test_to_XML\n";
 
    ConjugateGradient conjugate_gradient;
 
-   tinyxml2::XMLDocument* cgd = conjugate_gradient.to_XML();
+   onntinyxml2::XMLDocument *cgd = conjugate_gradient.to_XML();
    assert_true(cgd != nullptr, LOG);
 }
-
 
 void ConjugateGradientTest::test_from_XML()
 {
@@ -336,7 +317,7 @@ void ConjugateGradientTest::test_from_XML()
    ConjugateGradient cg1;
    ConjugateGradient cg2;
 
-   tinyxml2::XMLDocument* document;
+   onntinyxml2::XMLDocument *document;
 
    // Test
 
@@ -347,9 +328,7 @@ void ConjugateGradientTest::test_from_XML()
    cg2.from_XML(*document);
 
    delete document;
-
 }
-
 
 void ConjugateGradientTest::run_test_case()
 {
@@ -387,12 +366,11 @@ void ConjugateGradientTest::run_test_case()
 
    // Serialization methods
 
-   test_to_XML();   
+   test_to_XML();
    test_from_XML();
 
    cout << "End of conjugate gradient test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

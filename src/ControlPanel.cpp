@@ -160,7 +160,7 @@ void ControlPanelFrame::SelectSession(wxCommandEvent &event)
     auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
 
     auto sessionId = std::stoi(event.GetString().ToStdString());
-    auto ids = Database::getGenerationIds(extensionName, sessionId);
+    auto ids = Database::getGenerationIds(sessionId);
     this->generationsListBox->Clear();
 
     std::vector<wxString> items;

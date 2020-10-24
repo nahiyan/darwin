@@ -41,17 +41,15 @@ IMPLEMENT_CLASS_NODE_READER_INFO(BoneNodeReader)
 
 BoneNodeReader::BoneNodeReader()
 {
-
 }
 
 BoneNodeReader::~BoneNodeReader()
 {
-
 }
 
-static BoneNodeReader* _instanceBoneNodeReader = nullptr;
+static BoneNodeReader *_instanceBoneNodeReader = nullptr;
 
-BoneNodeReader* BoneNodeReader::getInstance()
+BoneNodeReader *BoneNodeReader::getInstance()
 {
     if (_instanceBoneNodeReader == nullptr)
     {
@@ -65,17 +63,17 @@ void BoneNodeReader::destroyInstance()
     CC_SAFE_DELETE(_instanceBoneNodeReader);
 }
 
-Offset<Table> BoneNodeReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
-    flatbuffers::FlatBufferBuilder *builder)
+Offset<Table> BoneNodeReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                           flatbuffers::FlatBufferBuilder *builder)
 {
 
     auto temp = NodeReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-    auto nodeOptions = *(Offset<WidgetOptions>*)(&temp);
+    auto nodeOptions = *(Offset<WidgetOptions> *)(&temp);
 
     float length = 0;
     cocos2d::BlendFunc blendFunc = cocos2d::BlendFunc::ALPHA_PREMULTIPLIED;
 
-    const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+    const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
     while (attribute)
     {
         std::string name = attribute->Name();
@@ -88,13 +86,13 @@ Offset<Table> BoneNodeReader::createOptionsWithFlatBuffers(const tinyxml2::XMLEl
         attribute = attribute->Next();
     }
 
-    const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+    const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
     while (child)
     {
         std::string name = child->Name();
         if (name == "BlendFunc")
         {
-            const tinyxml2::XMLAttribute* battribute = child->FirstAttribute();
+            const cctinyxml2::XMLAttribute *battribute = child->FirstAttribute();
 
             while (battribute)
             {
@@ -119,19 +117,19 @@ Offset<Table> BoneNodeReader::createOptionsWithFlatBuffers(const tinyxml2::XMLEl
     flatbuffers::BlendFunc f_blendFunc(utils::toGLBlendFactor(blendFunc.src), utils::toGLBlendFactor(blendFunc.dst));
 
     auto options = CreateBoneOptions(*builder,
-        nodeOptions,
-        length,
-        &f_blendFunc);
+                                     nodeOptions,
+                                     length,
+                                     &f_blendFunc);
 
-    return *(Offset<Table>*)(&options);
+    return *(Offset<Table> *)(&options);
 }
 
 void BoneNodeReader::setPropsWithFlatBuffers(cocos2d::Node *node,
-    const flatbuffers::Table *nodeOptions)
+                                             const flatbuffers::Table *nodeOptions)
 {
 
-    auto* bone = static_cast<BoneNode*>(node);
-    auto options = (flatbuffers::BoneOptions*)nodeOptions;
+    auto *bone = static_cast<BoneNode *>(node);
+    auto options = (flatbuffers::BoneOptions *)nodeOptions;
 
     float length = options->length();
     bone->setDebugDrawLength(length);
@@ -146,17 +144,17 @@ void BoneNodeReader::setPropsWithFlatBuffers(cocos2d::Node *node,
     }
 }
 
-cocos2d::Node*  BoneNodeReader::createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions)
+cocos2d::Node *BoneNodeReader::createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions)
 {
     auto bone = BoneNode::create();
 
     // self options
-    auto options = (flatbuffers::BoneOptions*)nodeOptions;
-    setPropsWithFlatBuffers(bone, (Table*)options);
+    auto options = (flatbuffers::BoneOptions *)nodeOptions;
+    setPropsWithFlatBuffers(bone, (Table *)options);
 
     // super options (node)
     auto nodeReader = NodeReader::getInstance();
-    nodeReader->setPropsWithFlatBuffers(bone, (Table*)options->nodeOptions());
+    nodeReader->setPropsWithFlatBuffers(bone, (Table *)options->nodeOptions());
 
     return bone;
 }

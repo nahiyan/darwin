@@ -1,25 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   P R O B A B I L I S T I C   L A Y E R   T E S T   C L A S S           
+//   P R O B A B I L I S T I C   L A Y E R   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "probabilistic_layer_test.h"
 
-
 ProbabilisticLayerTest::ProbabilisticLayerTest() : UnitTesting()
 {
-
 }
-
 
 ProbabilisticLayerTest::~ProbabilisticLayerTest()
 {
-
 }
-
 
 void ProbabilisticLayerTest::test_constructor()
 {
@@ -46,14 +41,12 @@ void ProbabilisticLayerTest::test_constructor()
    probabilistic_layer_l3.set_neurons_number(probabilistic_layer_l2.get_neurons_number());
 
    assert_true(probabilistic_layer_l3.get_neurons_number() == 3, LOG);
-
 }
 
 void ProbabilisticLayerTest::test_destructor()
 {
    cout << "test_destructor\n";
 }
-
 
 void ProbabilisticLayerTest::test_assignment_operator()
 {
@@ -69,9 +62,7 @@ void ProbabilisticLayerTest::test_assignment_operator()
    probabilistic_layer_l2.set_neurons_number(probabilistic_layer_l1.get_neurons_number());
 
    assert_true(probabilistic_layer_l2.get_neurons_number() == 2, LOG);
-
 }
-
 
 void ProbabilisticLayerTest::test_get_neurons_number()
 {
@@ -88,33 +79,27 @@ void ProbabilisticLayerTest::test_get_neurons_number()
 
    probabilistic_layer.set_neurons_number(1);
    assert_true(probabilistic_layer.get_neurons_number() == 1, LOG);
-
 }
-
 
 void ProbabilisticLayerTest::test_set()
 {
    cout << "test_set\n";
 }
 
-
 void ProbabilisticLayerTest::test_set_default()
 {
    cout << "test_set_default\n";
 }
-
 
 void ProbabilisticLayerTest::test_get_display()
 {
    cout << "test_get_display\n";
 }
 
-
 void ProbabilisticLayerTest::test_set_display()
 {
    cout << "test_set_display\n";
 }
-
 
 void ProbabilisticLayerTest::test_calculate_outputs()
 {
@@ -129,17 +114,17 @@ void ProbabilisticLayerTest::test_calculate_outputs()
 
    // Test
 
-   synaptic_weights.set(1,1,1.0);
+   synaptic_weights.set(1, 1, 1.0);
    probabilistic_layer.set_synaptic_weights(synaptic_weights);
 
-   biases.set(1,1.0);
+   biases.set(1, 1.0);
    probabilistic_layer.set_synaptic_weights(synaptic_weights);
 
    probabilistic_layer.set_neurons_number(1);
 
    probabilistic_layer.set_activation_function(ProbabilisticLayer::Binary);
 
-   inputs.set({1,1}, 0.0);
+   inputs.set({1, 1}, 0.0);
 
    outputs = probabilistic_layer.calculate_outputs(inputs);
 
@@ -151,20 +136,19 @@ void ProbabilisticLayerTest::test_calculate_outputs()
    probabilistic_layer.set_neurons_number(1);
    probabilistic_layer.set_activation_function(ProbabilisticLayer::Logistic);
 
-   inputs.set({1,1}, 0.0);
+   inputs.set({1, 1}, 0.0);
    outputs = probabilistic_layer.calculate_outputs(inputs);
 
    assert_true(outputs.size() == 1, LOG);
    assert_true(outputs[0] >= 0.0, LOG);
 }
 
-
 void ProbabilisticLayerTest::test_to_XML()
 {
    cout << "test_to_XML\n";
 
-   ProbabilisticLayer  probabilistic_layer;
-   tinyxml2::XMLDocument* pld;
+   ProbabilisticLayer probabilistic_layer;
+   onntinyxml2::XMLDocument *pld;
 
    // Test
 
@@ -191,13 +175,12 @@ void ProbabilisticLayerTest::test_to_XML()
    delete pld;
 }
 
-
 void ProbabilisticLayerTest::test_from_XML()
 {
    cout << "test_from_XML\n";
 
-   ProbabilisticLayer  probabilistic_layer;
-   tinyxml2::XMLDocument* pld;
+   ProbabilisticLayer probabilistic_layer;
+   onntinyxml2::XMLDocument *pld;
 
    // Test
 
@@ -208,51 +191,49 @@ void ProbabilisticLayerTest::test_from_XML()
    delete pld;
 }
 
-
 void ProbabilisticLayerTest::test_calculate_activation_derivatives()
 {
-    cout << "test_calculate_activation_derivatives\n";
+   cout << "test_calculate_activation_derivatives\n";
 
-    ProbabilisticLayer probabilistic_layer;
+   ProbabilisticLayer probabilistic_layer;
 
-    Tensor<double> combinations;
-    Tensor<double> derivatives;
+   Tensor<double> combinations;
+   Tensor<double> derivatives;
 
-    NumericalDifferentiation numerical_differentiation;
+   NumericalDifferentiation numerical_differentiation;
 
-    Tensor<double> activations_derivatives;
-    Tensor<double> numerical_activation_derivative;
+   Tensor<double> activations_derivatives;
+   Tensor<double> numerical_activation_derivative;
 
-    // Test
+   // Test
 
-    probabilistic_layer.set(1,1);
-    probabilistic_layer.set_activation_function(ProbabilisticLayer::Logistic);
+   probabilistic_layer.set(1, 1);
+   probabilistic_layer.set_activation_function(ProbabilisticLayer::Logistic);
 
-    combinations.set({1, 1}, 0.0);
+   combinations.set({1, 1}, 0.0);
 
-    derivatives = probabilistic_layer.calculate_activations_derivatives(combinations);
-    assert_true(abs(derivatives(0,0) - 0.25) < numeric_limits<double>::min(), LOG);
+   derivatives = probabilistic_layer.calculate_activations_derivatives(combinations);
+   assert_true(abs(derivatives(0, 0) - 0.25) < numeric_limits<double>::min(), LOG);
 
-    // Test numerical differentiation
+   // Test numerical differentiation
 
-    if(numerical_differentiation_tests)
-    {
-       probabilistic_layer.set(2, 4);
+   if (numerical_differentiation_tests)
+   {
+      probabilistic_layer.set(2, 4);
 
-       combinations.set({1,4}, 1.0);
+      combinations.set({1, 4}, 1.0);
 
-       probabilistic_layer.set_activation_function(ProbabilisticLayer::Softmax);
+      probabilistic_layer.set_activation_function(ProbabilisticLayer::Softmax);
 
-       activations_derivatives = probabilistic_layer.calculate_activations_derivatives(combinations);
+      activations_derivatives = probabilistic_layer.calculate_activations_derivatives(combinations);
 
-       numerical_differentiation.calculate_derivatives(probabilistic_layer,
-                                                       &ProbabilisticLayer::calculate_activations,
-                                                       combinations);
+      numerical_differentiation.calculate_derivatives(probabilistic_layer,
+                                                      &ProbabilisticLayer::calculate_activations,
+                                                      combinations);
 
-       assert_true((absolute_value(activations_derivatives - numerical_activation_derivative)) < 1.0e-3, LOG);
-    }
+      assert_true((absolute_value(activations_derivatives - numerical_activation_derivative)) < 1.0e-3, LOG);
+   }
 }
-
 
 void ProbabilisticLayerTest::run_test_case()
 {
@@ -304,7 +285,6 @@ void ProbabilisticLayerTest::run_test_case()
 
    cout << "End of probabilistic layer test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

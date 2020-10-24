@@ -35,21 +35,21 @@ namespace cocostudio
     class CC_STUDIO_DLL Particle3DReader : public cocos2d::Ref, public NodeReaderProtocol
     {
         DECLARE_CLASS_NODE_READER_INFO
-        
+
     public:
         Particle3DReader();
         ~Particle3DReader();
-        
-        static Particle3DReader* getInstance();
+
+        static Particle3DReader *getInstance();
         /** @deprecated Use method destroyInstance() instead */
         CC_DEPRECATED_ATTRIBUTE static void purge();
         static void destroyInstance();
-        
-        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                             flatbuffers::FlatBufferBuilder* builder);
-        void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* particle3DOptions);
-        cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* particle3DOptions);
+
+        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                             flatbuffers::FlatBufferBuilder *builder);
+        void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *particle3DOptions);
+        cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *particle3DOptions);
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__cocos2d_libs__Particle3DReader__) */

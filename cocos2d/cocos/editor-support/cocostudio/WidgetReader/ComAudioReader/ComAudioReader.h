@@ -32,27 +32,26 @@
 #include "editor-support/cocostudio/CocosStudioExport.h"
 #include "editor-support/cocostudio/WidgetReader/NodeReaderProtocol.h"
 
-
 namespace cocostudio
 {
     class CC_STUDIO_DLL ComAudioReader : public cocos2d::Ref, public NodeReaderProtocol
     {
-        
+
     public:
         ComAudioReader();
         ~ComAudioReader();
-        
-        static ComAudioReader* getInstance();
+
+        static ComAudioReader *getInstance();
         /** @deprecated Use method destroyInstance() instead */
         CC_DEPRECATED_ATTRIBUTE static void purge();
         static void destroyInstance();
-        
-        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                             flatbuffers::FlatBufferBuilder* builder);
-        void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* comAudioOptions);
-        cocos2d::Component* createComAudioWithFlatBuffers(const flatbuffers::Table* comAudioOptions);
-        cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* nodeOptions);
+
+        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                             flatbuffers::FlatBufferBuilder *builder);
+        void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *comAudioOptions);
+        cocos2d::Component *createComAudioWithFlatBuffers(const flatbuffers::Table *comAudioOptions);
+        cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions);
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__cocos2d_libs__ComAudioReader__) */

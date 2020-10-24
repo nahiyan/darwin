@@ -59,14 +59,14 @@ typedef enum
     SAX_REAL,
     SAX_STRING,
     SAX_ARRAY
-}SAXState;
+} SAXState;
 
 typedef enum
 {
     SAX_RESULT_NONE = 0,
     SAX_RESULT_DICT,
     SAX_RESULT_ARRAY
-}SAXResult;
+} SAXResult;
 
 class DictMaker : public SAXDelegator
 {
@@ -79,17 +79,16 @@ public:
     std::string _curValue; // parsed value
     SAXState _state;
 
-    ValueMap*  _curDict;
-    ValueVector* _curArray;
+    ValueMap *_curDict;
+    ValueVector *_curArray;
 
-    std::stack<ValueMap*> _dictStack;
-    std::stack<ValueVector*> _arrayStack;
-    std::stack<SAXState>  _stateStack;
+    std::stack<ValueMap *> _dictStack;
+    std::stack<ValueVector *> _arrayStack;
+    std::stack<SAXState> _stateStack;
 
 public:
     DictMaker()
-        : _resultType(SAX_RESULT_NONE)
-        , _state(SAX_NONE)
+        : _resultType(SAX_RESULT_NONE), _state(SAX_NONE)
     {
     }
 
@@ -97,7 +96,7 @@ public:
     {
     }
 
-    ValueMap dictionaryWithContentsOfFile(const std::string& fileName)
+    ValueMap dictionaryWithContentsOfFile(const std::string &fileName)
     {
         _resultType = SAX_RESULT_DICT;
         SAXParser parser;
@@ -109,7 +108,7 @@ public:
         return _rootDict;
     }
 
-    ValueMap dictionaryWithDataOfFile(const char* filedata, int filesize)
+    ValueMap dictionaryWithDataOfFile(const char *filedata, int filesize)
     {
         _resultType = SAX_RESULT_DICT;
         SAXParser parser;
@@ -121,7 +120,7 @@ public:
         return _rootDict;
     }
 
-    ValueVector arrayWithContentsOfFile(const std::string& fileName)
+    ValueVector arrayWithContentsOfFile(const std::string &fileName)
     {
         _resultType = SAX_RESULT_ARRAY;
         SAXParser parser;
@@ -136,9 +135,9 @@ public:
     void startElement(void *ctx, const char *name, const char **atts) override
     {
         const std::string sName(name);
-        if( sName == "dict" )
+        if (sName == "dict")
         {
-            if(_resultType == SAX_RESULT_DICT && _rootDict.empty())
+            if (_resultType == SAX_RESULT_DICT && _rootDict.empty())
             {
                 _curDict = &_rootDict;
             }
@@ -146,7 +145,7 @@ public:
             _state = SAX_DICT;
 
             SAXState preState = SAX_NONE;
-            if (! _stateStack.empty())
+            if (!_stateStack.empty())
             {
                 preState = _stateStack.top();
             }
@@ -160,8 +159,8 @@ public:
             else if (SAX_DICT == preState)
             {
                 // add a new dictionary into the pre dictionary
-                CCASSERT(! _dictStack.empty(), "The state is wrong!");
-                ValueMap* preDict = _dictStack.top();
+                CCASSERT(!_dictStack.empty(), "The state is wrong!");
+                ValueMap *preDict = _dictStack.top();
                 (*preDict)[_curKey] = Value(ValueMap());
                 _curDict = &(*preDict)[_curKey].asValueMap();
             }
@@ -170,19 +169,19 @@ public:
             _stateStack.push(_state);
             _dictStack.push(_curDict);
         }
-        else if(sName == "key")
+        else if (sName == "key")
         {
             _state = SAX_KEY;
         }
-        else if(sName == "integer")
+        else if (sName == "integer")
         {
             _state = SAX_INT;
         }
-        else if(sName == "real")
+        else if (sName == "real")
         {
             _state = SAX_REAL;
         }
-        else if(sName == "string")
+        else if (sName == "string")
         {
             _state = SAX_STRING;
         }
@@ -195,7 +194,7 @@ public:
                 _curArray = &_rootArray;
             }
             SAXState preState = SAX_NONE;
-            if (! _stateStack.empty())
+            if (!_stateStack.empty())
             {
                 preState = _stateStack.top();
             }
@@ -207,8 +206,8 @@ public:
             }
             else if (preState == SAX_ARRAY)
             {
-                CCASSERT(! _arrayStack.empty(), "The state is wrong!");
-                ValueVector* preArray = _arrayStack.top();
+                CCASSERT(!_arrayStack.empty(), "The state is wrong!");
+                ValueVector *preArray = _arrayStack.top();
                 preArray->push_back(Value(ValueVector()));
                 _curArray = &(_curArray->rbegin())->asValueVector();
             }
@@ -225,12 +224,12 @@ public:
     void endElement(void *ctx, const char *name) override
     {
         SAXState curState = _stateStack.empty() ? SAX_DICT : _stateStack.top();
-        const std::string sName((char*)name);
-        if( sName == "dict" )
+        const std::string sName((char *)name);
+        if (sName == "dict")
         {
             _stateStack.pop();
             _dictStack.pop();
-            if ( !_dictStack.empty())
+            if (!_dictStack.empty())
             {
                 _curDict = _dictStack.top();
             }
@@ -239,7 +238,7 @@ public:
         {
             _stateStack.pop();
             _arrayStack.pop();
-            if (! _arrayStack.empty())
+            if (!_arrayStack.empty())
             {
                 _curArray = _arrayStack.top();
             }
@@ -301,9 +300,9 @@ public:
         }
 
         SAXState curState = _stateStack.empty() ? SAX_DICT : _stateStack.top();
-        const std::string text = std::string((char*)ch,len);
+        const std::string text = std::string((char *)ch, len);
 
-        switch(_state)
+        switch (_state)
         {
         case SAX_KEY:
             _curKey = text;
@@ -311,63 +310,62 @@ public:
         case SAX_INT:
         case SAX_REAL:
         case SAX_STRING:
+        {
+            if (curState == SAX_DICT)
             {
-                if (curState == SAX_DICT)
-                {
-                    CCASSERT(!_curKey.empty(), "key not found : <integer/real>");
-                }
-
-                _curValue.append(text);
+                CCASSERT(!_curKey.empty(), "key not found : <integer/real>");
             }
-            break;
+
+            _curValue.append(text);
+        }
+        break;
         default:
             break;
         }
     }
 };
 
-ValueMap FileUtils::getValueMapFromFile(const std::string& filename) const
+ValueMap FileUtils::getValueMapFromFile(const std::string &filename) const
 {
     const std::string fullPath = fullPathForFilename(filename);
     DictMaker tMaker;
     return tMaker.dictionaryWithContentsOfFile(fullPath);
 }
 
-ValueMap FileUtils::getValueMapFromData(const char* filedata, int filesize) const
+ValueMap FileUtils::getValueMapFromData(const char *filedata, int filesize) const
 {
     DictMaker tMaker;
     return tMaker.dictionaryWithDataOfFile(filedata, filesize);
 }
 
-ValueVector FileUtils::getValueVectorFromFile(const std::string& filename) const
+ValueVector FileUtils::getValueVectorFromFile(const std::string &filename) const
 {
     const std::string fullPath = fullPathForFilename(filename);
     DictMaker tMaker;
     return tMaker.arrayWithContentsOfFile(fullPath);
 }
 
-
 /*
  * forward statement
  */
-static tinyxml2::XMLElement* generateElementForArray(const ValueVector& array, tinyxml2::XMLDocument *doc);
-static tinyxml2::XMLElement* generateElementForDict(const ValueMap& dict, tinyxml2::XMLDocument *doc);
+static cctinyxml2::XMLElement *generateElementForArray(const ValueVector &array, cctinyxml2::XMLDocument *doc);
+static cctinyxml2::XMLElement *generateElementForDict(const ValueMap &dict, cctinyxml2::XMLDocument *doc);
 
 /*
  * Use tinyxml2 to write plist files
  */
-bool FileUtils::writeToFile(const ValueMap& dict, const std::string &fullPath) const
+bool FileUtils::writeToFile(const ValueMap &dict, const std::string &fullPath) const
 {
     return writeValueMapToFile(dict, fullPath);
 }
 
-bool FileUtils::writeValueMapToFile(const ValueMap& dict, const std::string& fullPath) const
+bool FileUtils::writeValueMapToFile(const ValueMap &dict, const std::string &fullPath) const
 {
-    tinyxml2::XMLDocument *doc = new (std::nothrow)tinyxml2::XMLDocument();
+    cctinyxml2::XMLDocument *doc = new (std::nothrow) cctinyxml2::XMLDocument();
     if (nullptr == doc)
         return false;
 
-    tinyxml2::XMLDeclaration *declaration = doc->NewDeclaration("xml version=\"1.0\" encoding=\"UTF-8\"");
+    cctinyxml2::XMLDeclaration *declaration = doc->NewDeclaration("xml version=\"1.0\" encoding=\"UTF-8\"");
     if (nullptr == declaration)
     {
         delete doc;
@@ -375,10 +373,10 @@ bool FileUtils::writeValueMapToFile(const ValueMap& dict, const std::string& ful
     }
 
     doc->LinkEndChild(declaration);
-    tinyxml2::XMLElement *docType = doc->NewElement("!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
+    cctinyxml2::XMLElement *docType = doc->NewElement("!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
     doc->LinkEndChild(docType);
 
-    tinyxml2::XMLElement *rootEle = doc->NewElement("plist");
+    cctinyxml2::XMLElement *rootEle = doc->NewElement("plist");
     if (nullptr == rootEle)
     {
         delete doc;
@@ -387,7 +385,7 @@ bool FileUtils::writeValueMapToFile(const ValueMap& dict, const std::string& ful
     rootEle->SetAttribute("version", "1.0");
     doc->LinkEndChild(rootEle);
 
-    tinyxml2::XMLElement *innerDict = generateElementForDict(dict, doc);
+    cctinyxml2::XMLElement *innerDict = generateElementForDict(dict, doc);
     if (nullptr == innerDict)
     {
         delete doc;
@@ -395,19 +393,19 @@ bool FileUtils::writeValueMapToFile(const ValueMap& dict, const std::string& ful
     }
     rootEle->LinkEndChild(innerDict);
 
-    bool ret = tinyxml2::XML_SUCCESS == doc->SaveFile(getSuitableFOpen(fullPath).c_str());
+    bool ret = cctinyxml2::XML_SUCCESS == doc->SaveFile(getSuitableFOpen(fullPath).c_str());
 
     delete doc;
     return ret;
 }
 
-bool FileUtils::writeValueVectorToFile(const ValueVector& vecData, const std::string& fullPath) const
+bool FileUtils::writeValueVectorToFile(const ValueVector &vecData, const std::string &fullPath) const
 {
-    tinyxml2::XMLDocument *doc = new (std::nothrow)tinyxml2::XMLDocument();
+    cctinyxml2::XMLDocument *doc = new (std::nothrow) cctinyxml2::XMLDocument();
     if (nullptr == doc)
         return false;
 
-    tinyxml2::XMLDeclaration *declaration = doc->NewDeclaration("xml version=\"1.0\" encoding=\"UTF-8\"");
+    cctinyxml2::XMLDeclaration *declaration = doc->NewDeclaration("xml version=\"1.0\" encoding=\"UTF-8\"");
     if (nullptr == declaration)
     {
         delete doc;
@@ -415,10 +413,10 @@ bool FileUtils::writeValueVectorToFile(const ValueVector& vecData, const std::st
     }
 
     doc->LinkEndChild(declaration);
-    tinyxml2::XMLElement *docType = doc->NewElement("!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
+    cctinyxml2::XMLElement *docType = doc->NewElement("!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
     doc->LinkEndChild(docType);
 
-    tinyxml2::XMLElement *rootEle = doc->NewElement("plist");
+    cctinyxml2::XMLElement *rootEle = doc->NewElement("plist");
     if (nullptr == rootEle)
     {
         delete doc;
@@ -427,7 +425,7 @@ bool FileUtils::writeValueVectorToFile(const ValueVector& vecData, const std::st
     rootEle->SetAttribute("version", "1.0");
     doc->LinkEndChild(rootEle);
 
-    tinyxml2::XMLElement *innerDict = generateElementForArray(vecData, doc);
+    cctinyxml2::XMLElement *innerDict = generateElementForArray(vecData, doc);
     if (nullptr == innerDict)
     {
         delete doc;
@@ -435,22 +433,22 @@ bool FileUtils::writeValueVectorToFile(const ValueVector& vecData, const std::st
     }
     rootEle->LinkEndChild(innerDict);
 
-    bool ret = tinyxml2::XML_SUCCESS == doc->SaveFile(getSuitableFOpen(fullPath).c_str());
+    bool ret = cctinyxml2::XML_SUCCESS == doc->SaveFile(getSuitableFOpen(fullPath).c_str());
 
     delete doc;
     return ret;
 }
 
 /*
- * Generate tinyxml2::XMLElement for Object through a tinyxml2::XMLDocument
+ * Generate cctinyxml2::XMLElement for Object through a cctinyxml2::XMLDocument
  */
-static tinyxml2::XMLElement* generateElementForObject(const Value& value, tinyxml2::XMLDocument *doc)
+static cctinyxml2::XMLElement *generateElementForObject(const Value &value, cctinyxml2::XMLDocument *doc)
 {
     // object is String
     if (value.getType() == Value::Type::STRING)
     {
-        tinyxml2::XMLElement* node = doc->NewElement("string");
-        tinyxml2::XMLText* content = doc->NewText(value.asString().c_str());
+        cctinyxml2::XMLElement *node = doc->NewElement("string");
+        cctinyxml2::XMLText *content = doc->NewText(value.asString().c_str());
         node->LinkEndChild(content);
         return node;
     }
@@ -458,8 +456,8 @@ static tinyxml2::XMLElement* generateElementForObject(const Value& value, tinyxm
     // object is integer
     if (value.getType() == Value::Type::INTEGER)
     {
-        tinyxml2::XMLElement* node = doc->NewElement("integer");
-        tinyxml2::XMLText* content = doc->NewText(value.asString().c_str());
+        cctinyxml2::XMLElement *node = doc->NewElement("integer");
+        cctinyxml2::XMLText *content = doc->NewText(value.asString().c_str());
         node->LinkEndChild(content);
         return node;
     }
@@ -467,15 +465,16 @@ static tinyxml2::XMLElement* generateElementForObject(const Value& value, tinyxm
     // object is real
     if (value.getType() == Value::Type::FLOAT || value.getType() == Value::Type::DOUBLE)
     {
-        tinyxml2::XMLElement* node = doc->NewElement("real");
-        tinyxml2::XMLText* content = doc->NewText(value.asString().c_str());
+        cctinyxml2::XMLElement *node = doc->NewElement("real");
+        cctinyxml2::XMLText *content = doc->NewText(value.asString().c_str());
         node->LinkEndChild(content);
         return node;
     }
 
     //object is bool
-    if (value.getType() == Value::Type::BOOLEAN) {
-        tinyxml2::XMLElement* node = doc->NewElement(value.asString().c_str());
+    if (value.getType() == Value::Type::BOOLEAN)
+    {
+        cctinyxml2::XMLElement *node = doc->NewElement(value.asString().c_str());
         return node;
     }
 
@@ -492,20 +491,20 @@ static tinyxml2::XMLElement* generateElementForObject(const Value& value, tinyxm
 }
 
 /*
- * Generate tinyxml2::XMLElement for Dictionary through a tinyxml2::XMLDocument
+ * Generate cctinyxml2::XMLElement for Dictionary through a cctinyxml2::XMLDocument
  */
-static tinyxml2::XMLElement* generateElementForDict(const ValueMap& dict, tinyxml2::XMLDocument *doc)
+static cctinyxml2::XMLElement *generateElementForDict(const ValueMap &dict, cctinyxml2::XMLDocument *doc)
 {
-    tinyxml2::XMLElement* rootNode = doc->NewElement("dict");
+    cctinyxml2::XMLElement *rootNode = doc->NewElement("dict");
 
     for (const auto &iter : dict)
     {
-        tinyxml2::XMLElement* tmpNode = doc->NewElement("key");
+        cctinyxml2::XMLElement *tmpNode = doc->NewElement("key");
         rootNode->LinkEndChild(tmpNode);
-        tinyxml2::XMLText* content = doc->NewText(iter.first.c_str());
+        cctinyxml2::XMLText *content = doc->NewText(iter.first.c_str());
         tmpNode->LinkEndChild(content);
 
-        tinyxml2::XMLElement *element = generateElementForObject(iter.second, doc);
+        cctinyxml2::XMLElement *element = generateElementForObject(iter.second, doc);
         if (element)
             rootNode->LinkEndChild(element);
     }
@@ -513,14 +512,15 @@ static tinyxml2::XMLElement* generateElementForDict(const ValueMap& dict, tinyxm
 }
 
 /*
- * Generate tinyxml2::XMLElement for Array through a tinyxml2::XMLDocument
+ * Generate cctinyxml2::XMLElement for Array through a cctinyxml2::XMLDocument
  */
-static tinyxml2::XMLElement* generateElementForArray(const ValueVector& array, tinyxml2::XMLDocument *pDoc)
+static cctinyxml2::XMLElement *generateElementForArray(const ValueVector &array, cctinyxml2::XMLDocument *pDoc)
 {
-    tinyxml2::XMLElement* rootNode = pDoc->NewElement("array");
+    cctinyxml2::XMLElement *rootNode = pDoc->NewElement("array");
 
-    for(const auto &value : array) {
-        tinyxml2::XMLElement *element = generateElementForObject(value, pDoc);
+    for (const auto &value : array)
+    {
+        cctinyxml2::XMLElement *element = generateElementForObject(value, pDoc);
         if (element)
             rootNode->LinkEndChild(element);
     }
@@ -530,15 +530,15 @@ static tinyxml2::XMLElement* generateElementForArray(const ValueVector& array, t
 #else
 
 /* The subclass FileUtilsApple should override these two method. */
-ValueMap FileUtils::getValueMapFromFile(const std::string& /*filename*/) const {return ValueMap();}
-ValueMap FileUtils::getValueMapFromData(const char* /*filedata*/, int /*filesize*/) const {return ValueMap();}
-ValueVector FileUtils::getValueVectorFromFile(const std::string& /*filename*/) const {return ValueVector();}
-bool FileUtils::writeToFile(const ValueMap& /*dict*/, const std::string &/*fullPath*/) const {return false;}
+ValueMap FileUtils::getValueMapFromFile(const std::string & /*filename*/) const { return ValueMap(); }
+ValueMap FileUtils::getValueMapFromData(const char * /*filedata*/, int /*filesize*/) const { return ValueMap(); }
+ValueVector FileUtils::getValueVectorFromFile(const std::string & /*filename*/) const { return ValueVector(); }
+bool FileUtils::writeToFile(const ValueMap & /*dict*/, const std::string & /*fullPath*/) const { return false; }
 
 #endif /* (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC) */
 
 // Implement FileUtils
-FileUtils* FileUtils::s_sharedFileUtils = nullptr;
+FileUtils *FileUtils::s_sharedFileUtils = nullptr;
 
 void FileUtils::destroyInstance()
 {
@@ -562,10 +562,10 @@ FileUtils::~FileUtils()
 {
 }
 
-bool FileUtils::writeStringToFile(const std::string& dataStr, const std::string& fullPath) const
+bool FileUtils::writeStringToFile(const std::string &dataStr, const std::string &fullPath) const
 {
     Data data;
-    data.fastSet((unsigned char*)dataStr.c_str(), dataStr.size());
+    data.fastSet((unsigned char *)dataStr.c_str(), dataStr.size());
 
     bool rv = writeDataToFile(data, fullPath);
 
@@ -573,17 +573,18 @@ bool FileUtils::writeStringToFile(const std::string& dataStr, const std::string&
     return rv;
 }
 
-void FileUtils::writeStringToFile(std::string dataStr, const std::string& fullPath, std::function<void(bool)> callback) const
+void FileUtils::writeStringToFile(std::string dataStr, const std::string &fullPath, std::function<void(bool)> callback) const
 {
-    performOperationOffthread([fullPath](const std::string& dataStrIn) -> bool {
+    performOperationOffthread([fullPath](const std::string &dataStrIn) -> bool {
         return FileUtils::getInstance()->writeStringToFile(dataStrIn, fullPath);
-    }, std::move(callback),std::move(dataStr));
+    },
+                              std::move(callback), std::move(dataStr));
 }
 
-bool FileUtils::writeDataToFile(const Data& data, const std::string& fullPath) const
+bool FileUtils::writeDataToFile(const Data &data, const std::string &fullPath) const
 {
     size_t size = 0;
-    const char* mode = "wb";
+    const char *mode = "wb";
 
     CCASSERT(!fullPath.empty() && data.getSize() != 0, "Invalid parameters.");
 
@@ -605,11 +606,12 @@ bool FileUtils::writeDataToFile(const Data& data, const std::string& fullPath) c
     return false;
 }
 
-void FileUtils::writeDataToFile(Data data, const std::string& fullPath, std::function<void(bool)> callback) const
+void FileUtils::writeDataToFile(Data data, const std::string &fullPath, std::function<void(bool)> callback) const
 {
-    performOperationOffthread([fullPath](const Data& dataIn) -> bool {
+    performOperationOffthread([fullPath](const Data &dataIn) -> bool {
         return FileUtils::getInstance()->writeDataToFile(dataIn, fullPath);
-    }, std::move(callback), std::move(data));
+    },
+                              std::move(callback), std::move(data));
 }
 
 bool FileUtils::init()
@@ -627,39 +629,41 @@ void FileUtils::purgeCachedEntries()
     _fullPathCacheDir.clear();
 }
 
-std::string FileUtils::getStringFromFile(const std::string& filename) const
+std::string FileUtils::getStringFromFile(const std::string &filename) const
 {
     std::string s;
     getContents(filename, &s);
     return s;
 }
 
-void FileUtils::getStringFromFile(const std::string &path, std::function<void (std::string)> callback) const
+void FileUtils::getStringFromFile(const std::string &path, std::function<void(std::string)> callback) const
 {
     // Get the full path on the main thread, to avoid the issue that FileUtil's is not
     // thread safe, and accessing the fullPath cache and searching the search paths is not thread safe
     auto fullPath = fullPathForFilename(path);
     performOperationOffthread([fullPath]() -> std::string {
         return FileUtils::getInstance()->getStringFromFile(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-Data FileUtils::getDataFromFile(const std::string& filename) const
+Data FileUtils::getDataFromFile(const std::string &filename) const
 {
     Data d;
     getContents(filename, &d);
     return d;
 }
 
-void FileUtils::getDataFromFile(const std::string& filename, std::function<void(Data)> callback) const
+void FileUtils::getDataFromFile(const std::string &filename, std::function<void(Data)> callback) const
 {
     auto fullPath = fullPathForFilename(filename);
     performOperationOffthread([fullPath]() -> Data {
         return FileUtils::getInstance()->getDataFromFile(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableBuffer* buffer) const
+FileUtils::Status FileUtils::getContents(const std::string &filename, ResizableBuffer *buffer) const
 {
     if (filename.empty())
         return Status::NotExists;
@@ -673,11 +677,13 @@ FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableB
     std::string suitableFullPath = fs->getSuitableFOpen(fullPath);
 
     struct stat statBuf;
-    if (stat(suitableFullPath.c_str(), &statBuf) == -1) {
+    if (stat(suitableFullPath.c_str(), &statBuf) == -1)
+    {
         return Status::ReadFailed;
     }
 
-    if (!(statBuf.st_mode & S_IFREG)) { 
+    if (!(statBuf.st_mode & S_IFREG))
+    {
         return Status::NotRegularFileType;
     }
 
@@ -691,7 +697,8 @@ FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableB
     size_t readsize = fread(buffer->buffer(), 1, size, fp);
     fclose(fp);
 
-    if (readsize < size) {
+    if (readsize < size)
+    {
         buffer->resize(readsize);
         return Status::ReadFailed;
     }
@@ -699,9 +706,9 @@ FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableB
     return Status::OK;
 }
 
-unsigned char* FileUtils::getFileDataFromZip(const std::string& zipFilePath, const std::string& filename, ssize_t *size) const
+unsigned char *FileUtils::getFileDataFromZip(const std::string &zipFilePath, const std::string &filename, ssize_t *size) const
 {
-    unsigned char * buffer = nullptr;
+    unsigned char *buffer = nullptr;
     unzFile file = nullptr;
     *size = 0;
 
@@ -725,7 +732,7 @@ unsigned char* FileUtils::getFileDataFromZip(const std::string& zipFilePath, con
         ret = unzOpenCurrentFile(file);
         CC_BREAK_IF(UNZ_OK != ret);
 
-        buffer = (unsigned char*)malloc(fileInfo.uncompressed_size);
+        buffer = (unsigned char *)malloc(fileInfo.uncompressed_size);
         int CC_UNUSED readedSize = unzReadCurrentFile(file, buffer, static_cast<unsigned>(fileInfo.uncompressed_size));
         CCASSERT(readedSize == 0 || readedSize == (int)fileInfo.uncompressed_size, "the file size is wrong");
 
@@ -741,25 +748,27 @@ unsigned char* FileUtils::getFileDataFromZip(const std::string& zipFilePath, con
     return buffer;
 }
 
-void FileUtils::writeValueMapToFile(ValueMap dict, const std::string& fullPath, std::function<void(bool)> callback) const
+void FileUtils::writeValueMapToFile(ValueMap dict, const std::string &fullPath, std::function<void(bool)> callback) const
 {
-    
-    performOperationOffthread([fullPath](const ValueMap& dictIn) -> bool {
+
+    performOperationOffthread([fullPath](const ValueMap &dictIn) -> bool {
         return FileUtils::getInstance()->writeValueMapToFile(dictIn, fullPath);
-    }, std::move(callback), std::move(dict));
+    },
+                              std::move(callback), std::move(dict));
 }
 
-void FileUtils::writeValueVectorToFile(ValueVector vecData, const std::string& fullPath, std::function<void(bool)> callback) const
+void FileUtils::writeValueVectorToFile(ValueVector vecData, const std::string &fullPath, std::function<void(bool)> callback) const
 {
-    performOperationOffthread([fullPath] (const ValueVector& vecDataIn) -> bool {
+    performOperationOffthread([fullPath](const ValueVector &vecDataIn) -> bool {
         return FileUtils::getInstance()->writeValueVectorToFile(vecDataIn, fullPath);
-    }, std::move(callback), std::move(vecData));
+    },
+                              std::move(callback), std::move(vecData));
 }
 
 std::string FileUtils::getNewFilename(const std::string &filename) const
 {
     std::string newFileName;
-    
+
     DECLARE_GUARD;
 
     // in Lookup Filename dictionary ?
@@ -776,15 +785,15 @@ std::string FileUtils::getNewFilename(const std::string &filename) const
     return newFileName;
 }
 
-std::string FileUtils::getPathForFilename(const std::string& filename, const std::string& resolutionDirectory, const std::string& searchPath) const
+std::string FileUtils::getPathForFilename(const std::string &filename, const std::string &resolutionDirectory, const std::string &searchPath) const
 {
     std::string file = filename;
     std::string file_path = "";
     size_t pos = filename.find_last_of('/');
     if (pos != std::string::npos)
     {
-        file_path = filename.substr(0, pos+1);
-        file = filename.substr(pos+1);
+        file_path = filename.substr(0, pos + 1);
+        file = filename.substr(pos + 1);
     }
 
     // searchPath + file_path + resourceDirectory
@@ -804,7 +813,7 @@ std::string FileUtils::getPathForDirectory(const std::string &dir, const std::st
 
 std::string FileUtils::fullPathForFilename(const std::string &filename) const
 {
-    
+
     DECLARE_GUARD;
 
     if (filename.empty())
@@ -819,19 +828,19 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
 
     // Already Cached ?
     auto cacheIter = _fullPathCache.find(filename);
-    if(cacheIter != _fullPathCache.end())
+    if (cacheIter != _fullPathCache.end())
     {
         return cacheIter->second;
     }
 
     // Get the new file name.
-    const std::string newFilename( getNewFilename(filename) );
+    const std::string newFilename(getNewFilename(filename));
 
     std::string fullpath;
 
-    for (const auto& searchIt : _searchPathArray)
+    for (const auto &searchIt : _searchPathArray)
     {
-        for (const auto& resolutionIt : _searchResolutionsOrderArray)
+        for (const auto &resolutionIt : _searchResolutionsOrderArray)
         {
             fullpath = this->getPathForFilename(newFilename, resolutionIt, searchIt);
 
@@ -841,18 +850,17 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
                 _fullPathCache.emplace(filename, fullpath);
                 return fullpath;
             }
-
         }
     }
 
-    if(isPopupNotify()){
+    if (isPopupNotify())
+    {
         CCLOG("cocos2d: fullPathForFilename: No file found at %s. Possible missing file.", filename.c_str());
     }
 
     // The file wasn't found, return empty string.
     return "";
 }
-
 
 std::string FileUtils::fullPathForDirectory(const std::string &dir) const
 {
@@ -870,23 +878,23 @@ std::string FileUtils::fullPathForDirectory(const std::string &dir) const
 
     // Already Cached ?
     auto cacheIter = _fullPathCacheDir.find(dir);
-    if(cacheIter != _fullPathCacheDir.end())
+    if (cacheIter != _fullPathCacheDir.end())
     {
         return cacheIter->second;
     }
     std::string longdir = dir;
     std::string fullpath;
 
-    if(longdir[longdir.length() - 1] != '/')
+    if (longdir[longdir.length() - 1] != '/')
     {
-        longdir +="/";
+        longdir += "/";
     }
 
-    const std::string newdirname( getNewFilename(longdir) );
-    
-    for (const auto& searchIt : _searchPathArray)
+    const std::string newdirname(getNewFilename(longdir));
+
+    for (const auto &searchIt : _searchPathArray)
     {
-        for (const auto& resolutionIt : _searchResolutionsOrderArray)
+        for (const auto &resolutionIt : _searchResolutionsOrderArray)
         {
             fullpath = this->getPathForDirectory(newdirname, resolutionIt, searchIt);
             if (!fullpath.empty() && isDirectoryExistInternal(fullpath))
@@ -895,11 +903,11 @@ std::string FileUtils::fullPathForDirectory(const std::string &dir) const
                 _fullPathCacheDir.emplace(dir, fullpath);
                 return fullpath;
             }
-
         }
     }
 
-    if(isPopupNotify()){
+    if (isPopupNotify())
+    {
         CCLOG("cocos2d: fullPathForDirectory: No directory found at %s. Possible missing directory.", dir.c_str());
     }
 
@@ -909,10 +917,10 @@ std::string FileUtils::fullPathForDirectory(const std::string &dir) const
 
 std::string FileUtils::fullPathFromRelativeFile(const std::string &filename, const std::string &relativeFile) const
 {
-    return relativeFile.substr(0, relativeFile.rfind('/')+1) + getNewFilename(filename);
+    return relativeFile.substr(0, relativeFile.rfind('/') + 1) + getNewFilename(filename);
 }
 
-void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& searchResolutionsOrder)
+void FileUtils::setSearchResolutionsOrder(const std::vector<std::string> &searchResolutionsOrder)
 {
     DECLARE_GUARD;
 
@@ -926,7 +934,7 @@ void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& search
     _fullPathCache.clear();
     _fullPathCacheDir.clear();
     _searchResolutionsOrderArray.clear();
-    for(const auto& iter : searchResolutionsOrder)
+    for (const auto &iter : searchResolutionsOrder)
     {
         std::string resolutionDirectory = iter;
         if (!existDefault && resolutionDirectory == "")
@@ -934,7 +942,7 @@ void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& search
             existDefault = true;
         }
 
-        if (resolutionDirectory.length() > 0 && resolutionDirectory[resolutionDirectory.length()-1] != '/')
+        if (resolutionDirectory.length() > 0 && resolutionDirectory[resolutionDirectory.length() - 1] != '/')
         {
             resolutionDirectory += "/";
         }
@@ -948,18 +956,21 @@ void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& search
     }
 }
 
-void FileUtils::addSearchResolutionsOrder(const std::string &order,const bool front)
+void FileUtils::addSearchResolutionsOrder(const std::string &order, const bool front)
 {
-    
+
     DECLARE_GUARD;
 
     std::string resOrder = order;
-    if (!resOrder.empty() && resOrder[resOrder.length()-1] != '/')
+    if (!resOrder.empty() && resOrder[resOrder.length() - 1] != '/')
         resOrder.append("/");
 
-    if (front) {
+    if (front)
+    {
         _searchResolutionsOrderArray.insert(_searchResolutionsOrderArray.begin(), resOrder);
-    } else {
+    }
+    else
+    {
         _searchResolutionsOrderArray.push_back(resOrder);
     }
 }
@@ -982,7 +993,7 @@ const std::vector<std::string> FileUtils::getOriginalSearchPaths() const
     return _originalSearchPaths;
 }
 
-void FileUtils::setWritablePath(const std::string& writablePath)
+void FileUtils::setWritablePath(const std::string &writablePath)
 {
     DECLARE_GUARD;
     _writablePath = writablePath;
@@ -994,7 +1005,7 @@ const std::string FileUtils::getDefaultResourceRootPath() const
     return _defaultResRootPath;
 }
 
-void FileUtils::setDefaultResourceRootPath(const std::string& path)
+void FileUtils::setDefaultResourceRootPath(const std::string &path)
 {
     DECLARE_GUARD;
     if (_defaultResRootPath != path)
@@ -1002,7 +1013,7 @@ void FileUtils::setDefaultResourceRootPath(const std::string& path)
         _fullPathCache.clear();
         _fullPathCacheDir.clear();
         _defaultResRootPath = path;
-        if (!_defaultResRootPath.empty() && _defaultResRootPath[_defaultResRootPath.length()-1] != '/')
+        if (!_defaultResRootPath.empty() && _defaultResRootPath[_defaultResRootPath.length() - 1] != '/')
         {
             _defaultResRootPath += '/';
         }
@@ -1012,7 +1023,7 @@ void FileUtils::setDefaultResourceRootPath(const std::string& path)
     }
 }
 
-void FileUtils::setSearchPaths(const std::vector<std::string>& searchPaths)
+void FileUtils::setSearchPaths(const std::vector<std::string> &searchPaths)
 {
     DECLARE_GUARD;
     bool existDefaultRootPath = false;
@@ -1022,7 +1033,7 @@ void FileUtils::setSearchPaths(const std::vector<std::string>& searchPaths)
     _fullPathCacheDir.clear();
     _searchPathArray.clear();
 
-    for (const auto& path : _originalSearchPaths)
+    for (const auto &path : _originalSearchPaths)
     {
         std::string prefix;
         std::string fullPath;
@@ -1032,7 +1043,7 @@ void FileUtils::setSearchPaths(const std::vector<std::string>& searchPaths)
             prefix = _defaultResRootPath;
         }
         fullPath = prefix + path;
-        if (!path.empty() && path[path.length()-1] != '/')
+        if (!path.empty() && path[path.length() - 1] != '/')
         {
             fullPath += "/";
         }
@@ -1050,7 +1061,7 @@ void FileUtils::setSearchPaths(const std::vector<std::string>& searchPaths)
     }
 }
 
-void FileUtils::addSearchPath(const std::string &searchpath,const bool front)
+void FileUtils::addSearchPath(const std::string &searchpath, const bool front)
 {
     DECLARE_GUARD;
     std::string prefix;
@@ -1058,21 +1069,24 @@ void FileUtils::addSearchPath(const std::string &searchpath,const bool front)
         prefix = _defaultResRootPath;
 
     std::string path = prefix + searchpath;
-    if (!path.empty() && path[path.length()-1] != '/')
+    if (!path.empty() && path[path.length() - 1] != '/')
     {
         path += "/";
     }
 
-    if (front) {
+    if (front)
+    {
         _originalSearchPaths.insert(_originalSearchPaths.begin(), searchpath);
         _searchPathArray.insert(_searchPathArray.begin(), path);
-    } else {
+    }
+    else
+    {
         _originalSearchPaths.push_back(searchpath);
         _searchPathArray.push_back(path);
     }
 }
 
-void FileUtils::setFilenameLookupDictionary(const ValueMap& filenameLookupDict)
+void FileUtils::setFilenameLookupDictionary(const ValueMap &filenameLookupDict)
 {
     DECLARE_GUARD;
     _fullPathCache.clear();
@@ -1088,34 +1102,36 @@ void FileUtils::loadFilenameLookupDictionaryFromFile(const std::string &filename
         ValueMap dict = FileUtils::getInstance()->getValueMapFromFile(fullPath);
         if (!dict.empty())
         {
-            ValueMap& metadata =  dict["metadata"].asValueMap();
+            ValueMap &metadata = dict["metadata"].asValueMap();
             int version = metadata["version"].asInt();
             if (version != 1)
             {
                 CCLOG("cocos2d: ERROR: Invalid filenameLookup dictionary version: %d. Filename: %s", version, filename.c_str());
                 return;
             }
-            setFilenameLookupDictionary( dict["filenames"].asValueMap());
+            setFilenameLookupDictionary(dict["filenames"].asValueMap());
         }
     }
 }
 
-std::string FileUtils::getFullPathForFilenameWithinDirectory(const std::string& directory, const std::string& filename) const
+std::string FileUtils::getFullPathForFilenameWithinDirectory(const std::string &directory, const std::string &filename) const
 {
     // get directory+filename, safely adding '/' as necessary
     std::string ret = directory;
-    if (directory.size() && directory[directory.size()-1] != '/'){
+    if (directory.size() && directory[directory.size() - 1] != '/')
+    {
         ret += '/';
     }
     ret += filename;
     // if the file doesn't exist, return an empty string
-    if (!isFileExistInternal(ret)) {
+    if (!isFileExistInternal(ret))
+    {
         ret = "";
     }
     return ret;
 }
 
-bool FileUtils::isFileExist(const std::string& filename) const
+bool FileUtils::isFileExist(const std::string &filename) const
 {
     if (isAbsolutePath(filename))
     {
@@ -1131,77 +1147,85 @@ bool FileUtils::isFileExist(const std::string& filename) const
     }
 }
 
-void FileUtils::isFileExist(const std::string& filename, std::function<void(bool)> callback) const
+void FileUtils::isFileExist(const std::string &filename, std::function<void(bool)> callback) const
 {
     auto fullPath = fullPathForFilename(filename);
     performOperationOffthread([fullPath]() -> bool {
         return FileUtils::getInstance()->isFileExist(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-bool FileUtils::isAbsolutePath(const std::string& path) const
+bool FileUtils::isAbsolutePath(const std::string &path) const
 {
     return (path[0] == '/');
 }
 
-bool FileUtils::isDirectoryExist(const std::string& dirPath) const
+bool FileUtils::isDirectoryExist(const std::string &dirPath) const
 {
     CCASSERT(!dirPath.empty(), "Invalid path");
-    
+
     DECLARE_GUARD;
 
     if (isAbsolutePath(dirPath))
     {
         return isDirectoryExistInternal(dirPath);
-    } else {
+    }
+    else
+    {
         auto fullPath = fullPathForDirectory(dirPath);
         return !fullPath.empty();
     }
 }
 
-void FileUtils::isDirectoryExist(const std::string& fullPath, std::function<void(bool)> callback) const
+void FileUtils::isDirectoryExist(const std::string &fullPath, std::function<void(bool)> callback) const
 {
     CCASSERT(isAbsolutePath(fullPath), "Async isDirectoryExist only accepts absolute file paths");
     performOperationOffthread([fullPath]() -> bool {
         return FileUtils::getInstance()->isDirectoryExist(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-void FileUtils::createDirectory(const std::string& dirPath, std::function<void(bool)> callback) const
+void FileUtils::createDirectory(const std::string &dirPath, std::function<void(bool)> callback) const
 {
     performOperationOffthread([dirPath]() -> bool {
         return FileUtils::getInstance()->createDirectory(dirPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-void FileUtils::removeDirectory(const std::string& dirPath, std::function<void(bool)> callback) const
+void FileUtils::removeDirectory(const std::string &dirPath, std::function<void(bool)> callback) const
 {
     performOperationOffthread([dirPath]() -> bool {
         return FileUtils::getInstance()->removeDirectory(dirPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-void FileUtils::removeFile(const std::string &filepath, std::function<void (bool)> callback) const
+void FileUtils::removeFile(const std::string &filepath, std::function<void(bool)> callback) const
 {
     auto fullPath = fullPathForFilename(filepath);
     performOperationOffthread([fullPath]() -> bool {
         return FileUtils::getInstance()->removeFile(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
 void FileUtils::renameFile(const std::string &path, const std::string &oldname, const std::string &name, std::function<void(bool)> callback) const
 {
     performOperationOffthread([path, oldname, name]() -> bool {
         return FileUtils::getInstance()->renameFile(path, oldname, name);
-    }, std::move(callback));
-                                
+    },
+                              std::move(callback));
 }
 
 void FileUtils::renameFile(const std::string &oldfullpath, const std::string &newfullpath, std::function<void(bool)> callback) const
 {
     performOperationOffthread([oldfullpath, newfullpath]() {
         return FileUtils::getInstance()->renameFile(oldfullpath, newfullpath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
 void FileUtils::getFileSize(const std::string &filepath, std::function<void(long)> callback) const
@@ -1209,42 +1233,45 @@ void FileUtils::getFileSize(const std::string &filepath, std::function<void(long
     auto fullPath = fullPathForFilename(filepath);
     performOperationOffthread([fullPath]() {
         return FileUtils::getInstance()->getFileSize(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-void FileUtils::listFilesAsync(const std::string& dirPath, std::function<void(std::vector<std::string>)> callback) const
+void FileUtils::listFilesAsync(const std::string &dirPath, std::function<void(std::vector<std::string>)> callback) const
 {
     auto fullPath = fullPathForDirectory(dirPath);
     performOperationOffthread([fullPath]() {
         return FileUtils::getInstance()->listFiles(fullPath);
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
-void FileUtils::listFilesRecursivelyAsync(const std::string& dirPath, std::function<void(std::vector<std::string>)> callback) const
+void FileUtils::listFilesRecursivelyAsync(const std::string &dirPath, std::function<void(std::vector<std::string>)> callback) const
 {
     auto fullPath = fullPathForDirectory(dirPath);
     performOperationOffthread([fullPath]() {
         std::vector<std::string> retval;
         FileUtils::getInstance()->listFilesRecursively(fullPath, &retval);
         return retval;
-    }, std::move(callback));
+    },
+                              std::move(callback));
 }
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 // windows os implement should override in platform specific FileUtiles class
-bool FileUtils::isDirectoryExistInternal(const std::string& dirPath) const
+bool FileUtils::isDirectoryExistInternal(const std::string &dirPath) const
 {
     CCASSERT(false, "FileUtils not support isDirectoryExistInternal");
     return false;
 }
 
-bool FileUtils::createDirectory(const std::string& path) const
+bool FileUtils::createDirectory(const std::string &path) const
 {
     CCASSERT(false, "FileUtils not support createDirectory");
     return false;
 }
 
-bool FileUtils::removeDirectory(const std::string& path) const
+bool FileUtils::removeDirectory(const std::string &path) const
 {
     CCASSERT(false, "FileUtils not support removeDirectory");
     return false;
@@ -1256,7 +1283,7 @@ bool FileUtils::removeFile(const std::string &path) const
     return false;
 }
 
-bool FileUtils::renameFile(const std::string &oldfullpath, const std::string& newfullpath) const
+bool FileUtils::renameFile(const std::string &oldfullpath, const std::string &newfullpath) const
 {
     CCASSERT(false, "FileUtils not support renameFile");
     return false;
@@ -1268,7 +1295,7 @@ bool FileUtils::renameFile(const std::string &path, const std::string &oldname, 
     return false;
 }
 
-std::string FileUtils::getSuitableFOpen(const std::string& filenameUtf8) const
+std::string FileUtils::getSuitableFOpen(const std::string &filenameUtf8) const
 {
     CCASSERT(false, "getSuitableFOpen should be override by platform FileUtils");
     return filenameUtf8;
@@ -1280,13 +1307,13 @@ long FileUtils::getFileSize(const std::string &filepath) const
     return 0;
 }
 
-std::vector<std::string> FileUtils::listFiles(const std::string& dirPath) const
+std::vector<std::string> FileUtils::listFiles(const std::string &dirPath) const
 {
     CCASSERT(false, "FileUtils not support listFiles");
     return std::vector<std::string>();
 }
 
-void FileUtils::listFilesRecursively(const std::string& dirPath, std::vector<std::string> *files) const
+void FileUtils::listFilesRecursively(const std::string &dirPath, std::vector<std::string> *files) const
 {
     CCASSERT(false, "FileUtils not support listFilesRecursively");
     return;
@@ -1304,7 +1331,7 @@ void FileUtils::listFilesRecursively(const std::string& dirPath, std::vector<std
 #include <ftw.h>
 #endif
 
-bool FileUtils::isDirectoryExistInternal(const std::string& dirPath) const
+bool FileUtils::isDirectoryExistInternal(const std::string &dirPath) const
 {
     struct stat st;
     if (stat(dirPath.c_str(), &st) == 0)
@@ -1314,7 +1341,7 @@ bool FileUtils::isDirectoryExistInternal(const std::string& dirPath) const
     return false;
 }
 
-bool FileUtils::createDirectory(const std::string& path) const
+bool FileUtils::createDirectory(const std::string &path) const
 {
     CCASSERT(!path.empty(), "Invalid path");
 
@@ -1334,7 +1361,7 @@ bool FileUtils::createDirectory(const std::string& path) const
             subpath = path.substr(start, found - start + 1);
             if (!subpath.empty())
                 dirs.push_back(subpath);
-            start = found+1;
+            start = found + 1;
             found = path.find_first_of("/\\", start);
             if (found == std::string::npos)
             {
@@ -1351,7 +1378,7 @@ bool FileUtils::createDirectory(const std::string& path) const
 
     // Create path recursively
     subpath = "";
-    for (const auto& iter : dirs)
+    for (const auto &iter : dirs)
     {
         subpath += iter;
         dir = opendir(subpath.c_str());
@@ -1383,16 +1410,16 @@ namespace
     int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
     {
         int rv = remove(fpath);
-        
+
         if (rv)
             perror(fpath);
-        
+
         return rv;
     }
 #endif
-}
+} // namespace
 
-bool FileUtils::removeDirectory(const std::string& path) const
+bool FileUtils::removeDirectory(const std::string &path) const
 {
 #if !defined(CC_TARGET_OS_TVOS)
 
@@ -1418,9 +1445,12 @@ bool FileUtils::removeDirectory(const std::string& path) const
 
 bool FileUtils::removeFile(const std::string &path) const
 {
-    if (remove(path.c_str())) {
+    if (remove(path.c_str()))
+    {
         return false;
-    } else {
+    }
+    else
+    {
         return true;
     }
 }
@@ -1449,7 +1479,7 @@ bool FileUtils::renameFile(const std::string &path, const std::string &oldname, 
     return this->renameFile(oldPath, newPath);
 }
 
-std::string FileUtils::getSuitableFOpen(const std::string& filenameUtf8) const
+std::string FileUtils::getSuitableFOpen(const std::string &filenameUtf8) const
 {
     return filenameUtf8;
 }
@@ -1482,7 +1512,7 @@ long FileUtils::getFileSize(const std::string &filepath) const
     }
 }
 
-std::vector<std::string> FileUtils::listFiles(const std::string& dirPath) const
+std::vector<std::string> FileUtils::listFiles(const std::string &dirPath) const
 {
     std::vector<std::string> files;
     std::string fullpath = fullPathForDirectory(dirPath);
@@ -1521,7 +1551,7 @@ std::vector<std::string> FileUtils::listFiles(const std::string& dirPath) const
     return files;
 }
 
-void FileUtils::listFilesRecursively(const std::string& dirPath, std::vector<std::string> *files) const
+void FileUtils::listFilesRecursively(const std::string &dirPath, std::vector<std::string> *files) const
 {
     std::string fullpath = fullPathForDirectory(dirPath);
     if (isDirectoryExist(fullpath))
@@ -1584,7 +1614,7 @@ bool FileUtils::isPopupNotify() const
     return s_popupNotify;
 }
 
-std::string FileUtils::getFileExtension(const std::string& filePath) const
+std::string FileUtils::getFileExtension(const std::string &filePath) const
 {
     std::string fileExtension;
     size_t pos = filePath.find_last_of('.');
@@ -1598,11 +1628,11 @@ std::string FileUtils::getFileExtension(const std::string& filePath) const
     return fileExtension;
 }
 
-void FileUtils::valueMapCompact(ValueMap& /*valueMap*/) const
+void FileUtils::valueMapCompact(ValueMap & /*valueMap*/) const
 {
 }
 
-void FileUtils::valueVectorCompact(ValueVector& /*valueVector*/) const
+void FileUtils::valueVectorCompact(ValueVector & /*valueVector*/) const
 {
 }
 

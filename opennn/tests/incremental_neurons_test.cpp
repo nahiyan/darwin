@@ -4,20 +4,17 @@
 //   I N C R E M E N T A L   N E U R O N S   T E S T   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
-//   artelnics@artelnics.com                                           
+//   artelnics@artelnics.com
 
 #include "incremental_neurons_test.h"
-
 
 IncrementalNeuronsTest::IncrementalNeuronsTest() : UnitTesting()
 {
 }
 
-
 IncrementalNeuronsTest::~IncrementalNeuronsTest()
 {
 }
-
 
 void IncrementalNeuronsTest::test_constructor()
 {
@@ -32,25 +29,21 @@ void IncrementalNeuronsTest::test_constructor()
     IncrementalNeurons io2;
 
     assert_true(!io2.has_training_strategy(), LOG);
-
 }
-
 
 void IncrementalNeuronsTest::test_destructor()
 {
     cout << "test_destructor\n";
 
-    IncrementalNeurons* io = new IncrementalNeurons;
+    IncrementalNeurons *io = new IncrementalNeurons;
 
     delete io;
 }
-
 
 void IncrementalNeuronsTest::test_set_default()
 {
     cout << "test_set_default\n";
 }
-
 
 void IncrementalNeuronsTest::test_perform_neurons_selection()
 {
@@ -66,36 +59,36 @@ void IncrementalNeuronsTest::test_perform_neurons_selection()
 
     IncrementalNeurons io(&ts);
 
-    IncrementalNeurons::IncrementalNeuronsResults* results = nullptr;
+    IncrementalNeurons::IncrementalNeuronsResults *results = nullptr;
 
     // Test
 
-    str =   "-1 0\n"
-            "-0.9 0\n"
-            "-0.8 0\n"
-            "-0.7 0\n"
-            "-0.6 0\n"
-            "-0.5 0\n"
-            "-0.4 0\n"
-            "-0.3 0\n"
-            "-0.2 0\n"
-            "-0.1 0\n"
-            "0.0 0\n"
-            "0.1 0\n"
-            "0.2 0\n"
-            "0.3 0\n"
-            "0.4 0\n"
-            "0.5 0\n"
-            "0.6 0\n"
-            "0.7 0\n"
-            "0.8 0\n"
-            "0.9 0\n"
-            "1 0\n";
+    str = "-1 0\n"
+          "-0.9 0\n"
+          "-0.8 0\n"
+          "-0.7 0\n"
+          "-0.6 0\n"
+          "-0.5 0\n"
+          "-0.4 0\n"
+          "-0.3 0\n"
+          "-0.2 0\n"
+          "-0.1 0\n"
+          "0.0 0\n"
+          "0.1 0\n"
+          "0.2 0\n"
+          "0.3 0\n"
+          "0.4 0\n"
+          "0.5 0\n"
+          "0.6 0\n"
+          "0.7 0\n"
+          "0.8 0\n"
+          "0.9 0\n"
+          "1 0\n";
 
     data.parse(str);
     data_set.set(data);
 
-    data_set.set_columns_uses({"Input","Target"});
+    data_set.set_columns_uses({"Input", "Target"});
 
     neural_network.set(NeuralNetwork::Approximation, {1, 3, 1});
     neural_network.initialize_parameters(0.0);
@@ -115,32 +108,33 @@ void IncrementalNeuronsTest::test_perform_neurons_selection()
 
     assert_true(neural_network.get_layers_neurons_numbers()[0] == 1, LOG);
     assert_true(results->stopping_condition ==
-                NeuronsSelection::SelectionErrorGoal, LOG);
+                    NeuronsSelection::SelectionErrorGoal,
+                LOG);
 
     // Test
 
     str =
-            "-1 -1\n"
-            "-0.9 -0.9\n"
-            "-0.8 -0.8\n"
-            "-0.7 -0.7\n"
-            "-0.6 -0.6\n"
-            "-0.5 -0.5\n"
-            "-0.4 -0.4\n"
-            "-0.3 -0.3\n"
-            "-0.2 -0.2\n"
-            "-0.1 -0.1\n"
-            "0.0 0.0\n"
-            "0.1 0.1\n"
-            "0.2 0.2\n"
-            "0.3 0.3\n"
-            "0.4 0.4\n"
-            "0.5 0.5\n"
-            "0.6 0.6\n"
-            "0.7 0.7\n"
-            "0.8 0.8\n"
-            "0.9 0.9\n"
-            "1 1\n";
+        "-1 -1\n"
+        "-0.9 -0.9\n"
+        "-0.8 -0.8\n"
+        "-0.7 -0.7\n"
+        "-0.6 -0.6\n"
+        "-0.5 -0.5\n"
+        "-0.4 -0.4\n"
+        "-0.3 -0.3\n"
+        "-0.2 -0.2\n"
+        "-0.1 -0.1\n"
+        "0.0 0.0\n"
+        "0.1 0.1\n"
+        "0.2 0.2\n"
+        "0.3 0.3\n"
+        "0.4 0.4\n"
+        "0.5 0.5\n"
+        "0.6 0.6\n"
+        "0.7 0.7\n"
+        "0.8 0.8\n"
+        "0.9 0.9\n"
+        "1 1\n";
 
     data.parse(str);
     data_set.set(data);
@@ -164,9 +158,7 @@ void IncrementalNeuronsTest::test_perform_neurons_selection()
 
     assert_true(neural_network.get_layers_neurons_numbers()[0] == 1, LOG);
     assert_true(results->stopping_condition == NeuronsSelection::AlgorithmFinished, LOG);
-
 }
-
 
 void IncrementalNeuronsTest::test_to_XML()
 {
@@ -174,11 +166,10 @@ void IncrementalNeuronsTest::test_to_XML()
 
     IncrementalNeurons io;
 
-    tinyxml2::XMLDocument* document = io.to_XML();
+    onntinyxml2::XMLDocument *document = io.to_XML();
     assert_true(document != nullptr, LOG);
 
     delete document;
-
 }
 
 void IncrementalNeuronsTest::test_from_XML()
@@ -187,11 +178,10 @@ void IncrementalNeuronsTest::test_from_XML()
 
     IncrementalNeurons io;
 
-    tinyxml2::XMLDocument* document = io.to_XML();
+    onntinyxml2::XMLDocument *document = io.to_XML();
     io.from_XML(*document);
 
     delete document;
-
 }
 
 // Unit testing methods
@@ -220,5 +210,4 @@ void IncrementalNeuronsTest::run_test_case()
     test_from_XML();
 
     cout << "End of incremental order test case.\n";
-
 }

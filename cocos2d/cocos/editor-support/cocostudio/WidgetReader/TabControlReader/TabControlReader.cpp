@@ -23,7 +23,6 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-
 #include "tinyxml2.h"
 #include "flatbuffers/flatbuffers.h"
 #include "editor-support/cocostudio/WidgetReader/WidgetReader.h"
@@ -35,7 +34,6 @@
 #include "platform/CCFileUtils.h"
 #include "2d/CCSpriteFrameCache.h"
 
-
 USING_NS_CC;
 using namespace cocostudio;
 using namespace flatbuffers;
@@ -45,15 +43,14 @@ IMPLEMENT_CLASS_NODE_READER_INFO(TabControlReader)
 
 TabControlReader::TabControlReader()
 {
-    
 }
 
-TabControlReader* TabControlReader::_tabReaderInstance = nullptr;
-TabControlReader* TabControlReader::getInstance()
+TabControlReader *TabControlReader::_tabReaderInstance = nullptr;
+TabControlReader *TabControlReader::getInstance()
 {
     if (_tabReaderInstance == nullptr)
     {
-        _tabReaderInstance = new  (std::nothrow) TabControlReader();
+        _tabReaderInstance = new (std::nothrow) TabControlReader();
     }
     return _tabReaderInstance;
 }
@@ -64,11 +61,11 @@ void TabControlReader::destroyInstance()
 }
 
 flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatBuffers(
-                                                                                       const tinyxml2::XMLElement* objectData, flatbuffers::FlatBufferBuilder* builder)
+    const cctinyxml2::XMLElement *objectData, flatbuffers::FlatBufferBuilder *builder)
 {
     auto temp = WidgetReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-    auto nodeOptions = *(Offset<WidgetOptions>*)(&temp);
-    
+    auto nodeOptions = *(Offset<WidgetOptions> *)(&temp);
+
     int headerPlace = 0;
     int headerWidth = 50;
     int headerHeight = 20;
@@ -76,13 +73,13 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
     int selectedIndex = 0;
     bool ignoretexturesize = true;
 
-    std::vector<Offset<TabItemOption>>  tabItems;
-    const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+    std::vector<Offset<TabItemOption>> tabItems;
+    const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
     while (attribute)
     {
         std::string attriname = attribute->Name();
         std::string value = attribute->Value();
-        
+
         if (attriname == "HeaderPlace")
         {
             auto placeStr = value.c_str();
@@ -117,9 +114,9 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
         }
         attribute = attribute->Next();
     }
-    
+
     bool containChildrenElement = false;
-    const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+    const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
     while (child)
     {
         if (strcmp("Children", child->Name()) == 0)
@@ -127,22 +124,22 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
             containChildrenElement = true;
             break;
         }
-        
+
         child = child->NextSiblingElement();
     }
-    
+
     if (containChildrenElement)
     {
         child = child->FirstChildElement(); //first child
         bool hasItem = true;
         while (child && hasItem)
         {
-            const tinyxml2::XMLAttribute* childattribute = child->FirstAttribute();
+            const cctinyxml2::XMLAttribute *childattribute = child->FirstAttribute();
             while (childattribute)
             {
                 std::string attriname = childattribute->Name();
                 std::string value = childattribute->Value();
-                
+
                 if (attriname == "ctype")
                 {
                     if (value.compare("TabItemObjectData") == 0)
@@ -153,7 +150,7 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
                     }
                     else
                         hasItem = false;
-                    
+
                     break;
                 }
                 childattribute = childattribute->Next();
@@ -161,7 +158,7 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
             child = child->NextSiblingElement();
         }
     }
-    
+
     auto options = CreateTabControlOption(*builder,
                                           nodeOptions,
                                           headerPlace,
@@ -171,63 +168,59 @@ flatbuffers::Offset<flatbuffers::Table> TabControlReader::createOptionsWithFlatB
                                           selectedIndex,
                                           ignoretexturesize,
                                           builder->CreateVector(tabItems));
-    
-    return *(Offset<Table>*)(&options);
+
+    return *(Offset<Table> *)(&options);
 }
 
-void TabControlReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* nodeOption)
+void TabControlReader::setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *nodeOption)
 {
-    auto tabControl = static_cast<cocos2d::ui::TabControl*>(node);
-    auto options = (flatbuffers::TabControlOption*)nodeOption;
-    
+    auto tabControl = static_cast<cocos2d::ui::TabControl *>(node);
+    auto options = (flatbuffers::TabControlOption *)nodeOption;
+
     int headerPlace = options->headerPlace();
     tabControl->ignoreHeadersTextureSize(options->ignoreHeaderTextureSize() != 0);
     tabControl->setHeaderDockPlace((cocos2d::ui::TabControl::Dock)headerPlace);
     tabControl->setHeaderWidth(options->headerWidth());
     tabControl->setHeaderHeight(options->headerHeight());
     tabControl->setHeaderSelectedZoom(options->selectedTabZoom());
-    
+
     int tabItemCount = options->tabItems()->size();
     for (int i = 0; i < tabItemCount; i++)
     {
         auto item = options->tabItems()->Get(i);
-        auto header = TabHeaderReader::getInstance()->createNodeWithFlatBuffers((Table*)item->header());
+        auto header = TabHeaderReader::getInstance()->createNodeWithFlatBuffers((Table *)item->header());
         auto container = CSLoader::getInstance()->nodeWithFlatBuffers(item->container());
-        tabControl->insertTab(i, (TabHeader*)header, (Layout*)container);
+        tabControl->insertTab(i, (TabHeader *)header, (Layout *)container);
     }
     tabControl->setSelectTab(options->selectedTabIndex());
 }
 
-cocos2d::Node* TabControlReader::createNodeWithFlatBuffers(const flatbuffers::Table* nodeOptions)
+cocos2d::Node *TabControlReader::createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions)
 {
     auto node = cocos2d::ui::TabControl::create();
-    
-    auto taboptions = (flatbuffers::TabControlOption*)nodeOptions;
+
+    auto taboptions = (flatbuffers::TabControlOption *)nodeOptions;
     setPropsWithFlatBuffers(node, nodeOptions);
-    
+
     auto nodereader = WidgetReader::getInstance();
-    nodereader->setPropsWithFlatBuffers(node, (Table*)taboptions->nodeOptions());
+    nodereader->setPropsWithFlatBuffers(node, (Table *)taboptions->nodeOptions());
     return node;
 }
 
 TabControlReader::~TabControlReader()
 {
-    
 }
-
 
 TabHeaderReader::TabHeaderReader()
 {
-    
 }
 
 TabHeaderReader::~TabHeaderReader()
 {
-    
 }
 
-TabHeaderReader* TabHeaderReader::_tabheaderReaderInstance = nullptr;
-TabHeaderReader* TabHeaderReader::getInstance()
+TabHeaderReader *TabHeaderReader::_tabheaderReaderInstance = nullptr;
+TabHeaderReader *TabHeaderReader::getInstance()
 {
     if (_tabheaderReaderInstance == nullptr)
     {
@@ -242,48 +235,46 @@ void TabHeaderReader::destroyInstance()
 }
 
 flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBuffers(
-                                                                                      const tinyxml2::XMLElement* objectData, flatbuffers::FlatBufferBuilder* builder)
+    const cctinyxml2::XMLElement *objectData, flatbuffers::FlatBufferBuilder *builder)
 {
     auto temp = WidgetReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-    auto nodeOptions = *(Offset<WidgetOptions>*)(&temp);
-    
-    
+    auto nodeOptions = *(Offset<WidgetOptions> *)(&temp);
+
     int fontsize = 12;
     std::string text = "";
     cocos2d::Color4B textColor(255, 255, 255, 255);
     std::string fontName;
-    
+
     int backgroundboxResourceType = 0;
     std::string backgroundboxPath = "";
     std::string backgroundboxPlistFile = "";
-    
+
     int backGroundBoxSelectedResourceType = 0;
     std::string backGroundBoxSelectedPath = "";
     std::string backGroundBoxSelectedPlistFile = "";
-    
+
     int frontCrossResourceType = 0;
     std::string frontCrossPath = "";
     std::string frontCrossPlistFile = "";
-    
+
     int backGroundBoxDisabledResourceType = 0;
     std::string backGroundBoxDisabledPath = "";
     std::string backGroundBoxDisabledPlistFile = "";
-    
+
     int frontCrossDisabledResourceType = 0;
     std::string frontCrossDisabledPath = "";
     std::string frontCrossDisabledPlistFile = "";
-    
-    
+
     std::string fontResourcePath = "";
     std::string fontResourcePlistFile = "";
     int fontResourceResourceType = 0;
-    
-    const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+
+    const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
     while (attribute)
     {
         std::string attriname = attribute->Name();
         std::string value = attribute->Value();
-        
+
         if (attriname.compare("FontSize") == 0)
         {
             fontsize = atoi(value.c_str());
@@ -294,13 +285,12 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         }
         attribute = attribute->Next();
     }
-    
-    
-    const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+
+    const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
     while (child)
     {
         std::string name = child->Name();
-        
+
         if (name == "TextColor")
         {
             attribute = child->FirstAttribute();
@@ -308,7 +298,7 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "R")
                 {
                     textColor.r = atoi(value.c_str());
@@ -321,7 +311,7 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                 {
                     textColor.b = atoi(value.c_str());
                 }
-                
+
                 attribute = attribute->Next();
             }
         }
@@ -329,14 +319,14 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         {
             std::string texture = "";
             std::string texturePng = "";
-            
+
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     backgroundboxPath = value;
@@ -350,13 +340,13 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                     backgroundboxPlistFile = value;
                     texture = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
-            
+
             if (backgroundboxResourceType == 1)
             {
-                FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                 fbs->_textures.push_back(builder->CreateString(texture));
             }
         }
@@ -364,14 +354,14 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         {
             std::string texture = "";
             std::string texturePng = "";
-            
+
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     backGroundBoxSelectedPath = value;
@@ -385,13 +375,13 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                     backGroundBoxSelectedPlistFile = value;
                     texture = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
-            
+
             if (backGroundBoxSelectedResourceType == 1)
             {
-                FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                 fbs->_textures.push_back(builder->CreateString(texture));
             }
         }
@@ -399,14 +389,14 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         {
             std::string texture = "";
             std::string texturePng = "";
-            
+
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     frontCrossPath = value;
@@ -420,13 +410,13 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                     frontCrossPlistFile = value;
                     texture = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
-            
+
             if (frontCrossResourceType == 1)
             {
-                FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                 fbs->_textures.push_back(builder->CreateString(texture));
             }
         }
@@ -434,14 +424,14 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         {
             std::string texture = "";
             std::string texturePng = "";
-            
+
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     backGroundBoxDisabledPath = value;
@@ -455,13 +445,13 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                     backGroundBoxDisabledPlistFile = value;
                     texture = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
-            
+
             if (backGroundBoxDisabledResourceType == 1)
             {
-                FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                 fbs->_textures.push_back(builder->CreateString(texture));
             }
         }
@@ -469,14 +459,14 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
         {
             std::string texture = "";
             std::string texturePng = "";
-            
+
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     frontCrossDisabledPath = value;
@@ -490,25 +480,25 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                     frontCrossDisabledPlistFile = value;
                     texture = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
-            
+
             if (frontCrossDisabledResourceType == 1)
             {
-                FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                 fbs->_textures.push_back(builder->CreateString(texture));
             }
         }
         else if (name == "FontResource")
         {
             attribute = child->FirstAttribute();
-            
+
             while (attribute)
             {
                 name = attribute->Name();
                 std::string value = attribute->Value();
-                
+
                 if (name == "Path")
                 {
                     fontResourcePath = value;
@@ -521,11 +511,11 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                 {
                     fontResourcePlistFile = value;
                 }
-                
+
                 attribute = attribute->Next();
             }
         }
-        
+
         child = child->NextSiblingElement();
     }
     Color f_textColor(255, textColor.r, textColor.g, textColor.b);
@@ -557,23 +547,22 @@ flatbuffers::Offset<flatbuffers::Table> TabHeaderReader::createOptionsWithFlatBu
                                         CreateResourceData(*builder,
                                                            builder->CreateString(frontCrossDisabledPath),
                                                            builder->CreateString(frontCrossDisabledPlistFile),
-                                                           frontCrossDisabledResourceType)
-                                        );
-    
-    return  *(Offset<Table>*)(&option);
+                                                           frontCrossDisabledResourceType));
+
+    return *(Offset<Table> *)(&option);
 }
 
-void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* nodeOption)
+void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *nodeOption)
 {
-    auto header = static_cast<cocos2d::ui::TabHeader*>(node);
-    auto options = (flatbuffers::TabHeaderOption*)nodeOption;
-    
+    auto header = static_cast<cocos2d::ui::TabHeader *>(node);
+    auto options = (flatbuffers::TabHeaderOption *)nodeOption;
+
     header->setTitleFontSize(options->fontSize());
     header->setTitleText(options->titleText()->c_str());
     auto textColor = options->textColor();
     Color4B titleColor(textColor->r(), textColor->g(), textColor->b(), textColor->a());
     header->setTitleColor(titleColor);
-    
+
     auto resourceData = options->fontRes();
     bool fileExist = false;
     std::string errorFilePath = "";
@@ -594,7 +583,7 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
             header->setTitleFontName(path);
         }
     }
-    
+
     bool backGroundFileExist = false;
     std::string backGroundErrorFilePath = "";
     auto backGroundDic = options->normalBackFile();
@@ -602,57 +591,57 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     std::string backGroundTexturePath = backGroundDic->path()->c_str();
     switch (backGroundType)
     {
-        case 0:
+    case 0:
+    {
+        if (FileUtils::getInstance()->isFileExist(backGroundTexturePath))
         {
-            if (FileUtils::getInstance()->isFileExist(backGroundTexturePath))
+            backGroundFileExist = true;
+        }
+        else
+        {
+            backGroundErrorFilePath = backGroundTexturePath;
+            backGroundFileExist = false;
+        }
+        break;
+    }
+
+    case 1:
+    {
+        std::string plist = backGroundDic->plistFile()->c_str();
+        SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundTexturePath);
+        if (spriteFrame)
+        {
+            backGroundFileExist = true;
+        }
+        else
+        {
+            if (FileUtils::getInstance()->isFileExist(plist))
             {
-                backGroundFileExist = true;
+                ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
+                ValueMap metadata = value["metadata"].asValueMap();
+                std::string textureFileName = metadata["textureFileName"].asString();
+                if (!FileUtils::getInstance()->isFileExist(textureFileName))
+                {
+                    backGroundErrorFilePath = textureFileName;
+                }
             }
             else
             {
-                backGroundErrorFilePath = backGroundTexturePath;
-                backGroundFileExist = false;
+                backGroundErrorFilePath = plist;
             }
-            break;
+            backGroundFileExist = false;
         }
-            
-        case 1:
-        {
-            std::string plist = backGroundDic->plistFile()->c_str();
-            SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundTexturePath);
-            if (spriteFrame)
-            {
-                backGroundFileExist = true;
-            }
-            else
-            {
-                if (FileUtils::getInstance()->isFileExist(plist))
-                {
-                    ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
-                    ValueMap metadata = value["metadata"].asValueMap();
-                    std::string textureFileName = metadata["textureFileName"].asString();
-                    if (!FileUtils::getInstance()->isFileExist(textureFileName))
-                    {
-                        backGroundErrorFilePath = textureFileName;
-                    }
-                }
-                else
-                {
-                    backGroundErrorFilePath = plist;
-                }
-                backGroundFileExist = false;
-            }
-            break;
-        }
-            
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
     if (backGroundFileExist)
     {
         header->loadTextureBackGround(backGroundTexturePath, (Widget::TextureResType)backGroundType);
     }
-    
+
     //load background selected image
     bool backGroundSelectedfileExist = false;
     std::string backGroundSelectedErrorFilePath = "";
@@ -661,57 +650,57 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     std::string backGroundSelectedTexturePath = backGroundSelectedDic->path()->c_str();
     switch (backGroundSelectedType)
     {
-        case 0:
+    case 0:
+    {
+        if (FileUtils::getInstance()->isFileExist(backGroundSelectedTexturePath))
         {
-            if (FileUtils::getInstance()->isFileExist(backGroundSelectedTexturePath))
+            backGroundSelectedfileExist = true;
+        }
+        else
+        {
+            backGroundSelectedErrorFilePath = backGroundSelectedTexturePath;
+            backGroundSelectedfileExist = false;
+        }
+        break;
+    }
+
+    case 1:
+    {
+        std::string plist = backGroundSelectedDic->plistFile()->c_str();
+        SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundSelectedTexturePath);
+        if (spriteFrame)
+        {
+            backGroundSelectedfileExist = true;
+        }
+        else
+        {
+            if (FileUtils::getInstance()->isFileExist(plist))
             {
-                backGroundSelectedfileExist = true;
+                ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
+                ValueMap metadata = value["metadata"].asValueMap();
+                std::string textureFileName = metadata["textureFileName"].asString();
+                if (!FileUtils::getInstance()->isFileExist(textureFileName))
+                {
+                    backGroundSelectedErrorFilePath = textureFileName;
+                }
             }
             else
             {
-                backGroundSelectedErrorFilePath = backGroundSelectedTexturePath;
-                backGroundSelectedfileExist = false;
+                backGroundSelectedErrorFilePath = plist;
             }
-            break;
+            backGroundSelectedfileExist = false;
         }
-            
-        case 1:
-        {
-            std::string plist = backGroundSelectedDic->plistFile()->c_str();
-            SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundSelectedTexturePath);
-            if (spriteFrame)
-            {
-                backGroundSelectedfileExist = true;
-            }
-            else
-            {
-                if (FileUtils::getInstance()->isFileExist(plist))
-                {
-                    ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
-                    ValueMap metadata = value["metadata"].asValueMap();
-                    std::string textureFileName = metadata["textureFileName"].asString();
-                    if (!FileUtils::getInstance()->isFileExist(textureFileName))
-                    {
-                        backGroundSelectedErrorFilePath = textureFileName;
-                    }
-                }
-                else
-                {
-                    backGroundSelectedErrorFilePath = plist;
-                }
-                backGroundSelectedfileExist = false;
-            }
-            break;
-        }
-            
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
     if (backGroundSelectedfileExist)
     {
         header->loadTextureBackGroundSelected(backGroundSelectedTexturePath, (cocos2d::ui::Widget::TextureResType)backGroundSelectedType);
     }
-    
+
     //load frontCross image
     bool frontCrossFileExist = false;
     std::string frontCrossErrorFilePath = "";
@@ -720,57 +709,57 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     std::string frontCrossFileName = frontCrossDic->path()->c_str();
     switch (frontCrossType)
     {
-        case 0:
+    case 0:
+    {
+        if (FileUtils::getInstance()->isFileExist(frontCrossFileName))
         {
-            if (FileUtils::getInstance()->isFileExist(frontCrossFileName))
+            frontCrossFileExist = true;
+        }
+        else
+        {
+            frontCrossErrorFilePath = frontCrossFileName;
+            frontCrossFileExist = false;
+        }
+        break;
+    }
+
+    case 1:
+    {
+        std::string plist = frontCrossDic->plistFile()->c_str();
+        SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frontCrossFileName);
+        if (spriteFrame)
+        {
+            frontCrossFileExist = true;
+        }
+        else
+        {
+            if (FileUtils::getInstance()->isFileExist(plist))
             {
-                frontCrossFileExist = true;
+                ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
+                ValueMap metadata = value["metadata"].asValueMap();
+                std::string textureFileName = metadata["textureFileName"].asString();
+                if (!FileUtils::getInstance()->isFileExist(textureFileName))
+                {
+                    frontCrossErrorFilePath = textureFileName;
+                }
             }
             else
             {
-                frontCrossErrorFilePath = frontCrossFileName;
-                frontCrossFileExist = false;
+                frontCrossErrorFilePath = plist;
             }
-            break;
+            frontCrossFileExist = false;
         }
-            
-        case 1:
-        {
-            std::string plist = frontCrossDic->plistFile()->c_str();
-            SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frontCrossFileName);
-            if (spriteFrame)
-            {
-                frontCrossFileExist = true;
-            }
-            else
-            {
-                if (FileUtils::getInstance()->isFileExist(plist))
-                {
-                    ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
-                    ValueMap metadata = value["metadata"].asValueMap();
-                    std::string textureFileName = metadata["textureFileName"].asString();
-                    if (!FileUtils::getInstance()->isFileExist(textureFileName))
-                    {
-                        frontCrossErrorFilePath = textureFileName;
-                    }
-                }
-                else
-                {
-                    frontCrossErrorFilePath = plist;
-                }
-                frontCrossFileExist = false;
-            }
-            break;
-        }
-            
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
     if (frontCrossFileExist)
     {
         header->loadTextureFrontCross(frontCrossFileName, (Widget::TextureResType)frontCrossType);
     }
-    
+
     //load backGroundBoxDisabledData
     bool backGroundBoxDisabledFileExist = false;
     std::string backGroundBoxDisabledErrorFilePath = "";
@@ -779,57 +768,57 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     std::string backGroundDisabledFileName = backGroundDisabledDic->path()->c_str();
     switch (backGroundDisabledType)
     {
-        case 0:
+    case 0:
+    {
+        if (FileUtils::getInstance()->isFileExist(backGroundDisabledFileName))
         {
-            if (FileUtils::getInstance()->isFileExist(backGroundDisabledFileName))
+            backGroundBoxDisabledFileExist = true;
+        }
+        else
+        {
+            backGroundBoxDisabledErrorFilePath = backGroundDisabledFileName;
+            backGroundBoxDisabledFileExist = false;
+        }
+        break;
+    }
+
+    case 1:
+    {
+        std::string plist = backGroundDisabledDic->plistFile()->c_str();
+        SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundDisabledFileName);
+        if (spriteFrame)
+        {
+            backGroundBoxDisabledFileExist = true;
+        }
+        else
+        {
+            if (FileUtils::getInstance()->isFileExist(plist))
             {
-                backGroundBoxDisabledFileExist = true;
+                ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
+                ValueMap metadata = value["metadata"].asValueMap();
+                std::string textureFileName = metadata["textureFileName"].asString();
+                if (!FileUtils::getInstance()->isFileExist(textureFileName))
+                {
+                    backGroundBoxDisabledErrorFilePath = textureFileName;
+                }
             }
             else
             {
-                backGroundBoxDisabledErrorFilePath = backGroundDisabledFileName;
-                backGroundBoxDisabledFileExist = false;
+                backGroundBoxDisabledErrorFilePath = plist;
             }
-            break;
+            backGroundBoxDisabledFileExist = false;
         }
-            
-        case 1:
-        {
-            std::string plist = backGroundDisabledDic->plistFile()->c_str();
-            SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(backGroundDisabledFileName);
-            if (spriteFrame)
-            {
-                backGroundBoxDisabledFileExist = true;
-            }
-            else
-            {
-                if (FileUtils::getInstance()->isFileExist(plist))
-                {
-                    ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
-                    ValueMap metadata = value["metadata"].asValueMap();
-                    std::string textureFileName = metadata["textureFileName"].asString();
-                    if (!FileUtils::getInstance()->isFileExist(textureFileName))
-                    {
-                        backGroundBoxDisabledErrorFilePath = textureFileName;
-                    }
-                }
-                else
-                {
-                    backGroundBoxDisabledErrorFilePath = plist;
-                }
-                backGroundBoxDisabledFileExist = false;
-            }
-            break;
-        }
-            
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
     if (backGroundBoxDisabledFileExist)
     {
         header->loadTextureBackGroundDisabled(backGroundDisabledFileName, (Widget::TextureResType)backGroundDisabledType);
     }
-    
+
     ///load frontCrossDisabledData
     bool frontCrossDisabledFileExist = false;
     std::string frontCrossDisabledErrorFilePath = "";
@@ -838,51 +827,51 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     std::string frontCrossDisabledFileName = frontCrossDisabledDic->path()->c_str();
     switch (frontCrossDisabledType)
     {
-        case 0:
+    case 0:
+    {
+        if (FileUtils::getInstance()->isFileExist(frontCrossDisabledFileName))
         {
-            if (FileUtils::getInstance()->isFileExist(frontCrossDisabledFileName))
+            frontCrossDisabledFileExist = true;
+        }
+        else
+        {
+            frontCrossDisabledErrorFilePath = frontCrossDisabledFileName;
+            frontCrossDisabledFileExist = false;
+        }
+        break;
+    }
+
+    case 1:
+    {
+        std::string plist = frontCrossDisabledDic->plistFile()->c_str();
+        SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frontCrossDisabledFileName);
+        if (spriteFrame)
+        {
+            frontCrossDisabledFileExist = true;
+        }
+        else
+        {
+            if (FileUtils::getInstance()->isFileExist(plist))
             {
-                frontCrossDisabledFileExist = true;
+                ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
+                ValueMap metadata = value["metadata"].asValueMap();
+                std::string textureFileName = metadata["textureFileName"].asString();
+                if (!FileUtils::getInstance()->isFileExist(textureFileName))
+                {
+                    frontCrossDisabledErrorFilePath = textureFileName;
+                }
             }
             else
             {
-                frontCrossDisabledErrorFilePath = frontCrossDisabledFileName;
-                frontCrossDisabledFileExist = false;
+                frontCrossDisabledErrorFilePath = plist;
             }
-            break;
+            frontCrossDisabledFileExist = false;
         }
-            
-        case 1:
-        {
-            std::string plist = frontCrossDisabledDic->plistFile()->c_str();
-            SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(frontCrossDisabledFileName);
-            if (spriteFrame)
-            {
-                frontCrossDisabledFileExist = true;
-            }
-            else
-            {
-                if (FileUtils::getInstance()->isFileExist(plist))
-                {
-                    ValueMap value = FileUtils::getInstance()->getValueMapFromFile(plist);
-                    ValueMap metadata = value["metadata"].asValueMap();
-                    std::string textureFileName = metadata["textureFileName"].asString();
-                    if (!FileUtils::getInstance()->isFileExist(textureFileName))
-                    {
-                        frontCrossDisabledErrorFilePath = textureFileName;
-                    }
-                }
-                else
-                {
-                    frontCrossDisabledErrorFilePath = plist;
-                }
-                frontCrossDisabledFileExist = false;
-            }
-            break;
-        }
-            
-        default:
-            break;
+        break;
+    }
+
+    default:
+        break;
     }
     if (frontCrossDisabledFileExist)
     {
@@ -890,15 +879,15 @@ void TabHeaderReader::setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuf
     }
 }
 
-cocos2d::Node* TabHeaderReader::createNodeWithFlatBuffers(const flatbuffers::Table* nodeOptions)
+cocos2d::Node *TabHeaderReader::createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions)
 {
     auto node = cocos2d::ui::TabHeader::create();
-    
-    auto taboptions = (flatbuffers::TabHeaderOption*)nodeOptions;
+
+    auto taboptions = (flatbuffers::TabHeaderOption *)nodeOptions;
     setPropsWithFlatBuffers(node, nodeOptions);
-    
+
     auto nodereader = WidgetReader::getInstance();
-    nodereader->setPropsWithFlatBuffers(node, (Table*)taboptions->nodeOptions());
+    nodereader->setPropsWithFlatBuffers(node, (Table *)taboptions->nodeOptions());
     return node;
 }
 
@@ -906,10 +895,10 @@ int TabHeaderReader::getResourceType(std::string key)
 {
     if (key == "Normal" || key == "Default")
     {
-        return 	0;
+        return 0;
     }
-    
-    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+
+    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
     if (fbs->_isSimulator)
     {
         if (key == "MarkedSubImage")
@@ -922,15 +911,13 @@ int TabHeaderReader::getResourceType(std::string key)
 
 TabItemReader::TabItemReader()
 {
-    
 }
 
 TabItemReader::~TabItemReader()
 {
-    
 }
-TabItemReader* TabItemReader::_tabItemReaderInstance = nullptr;
-TabItemReader* TabItemReader::getInstance()
+TabItemReader *TabItemReader::_tabItemReaderInstance = nullptr;
+TabItemReader *TabItemReader::getInstance()
 {
     if (_tabItemReaderInstance == nullptr)
     {
@@ -944,23 +931,22 @@ void TabItemReader::destroyInstance()
     CC_SAFE_DELETE(_tabItemReaderInstance);
 }
 
-
 flatbuffers::Offset<flatbuffers::TabItemOption> TabItemReader::createTabItemOptionWithFlatBuffers(
-                                                                                                  const tinyxml2::XMLElement* objectData, flatbuffers::FlatBufferBuilder* builder)
+    const cctinyxml2::XMLElement *objectData, flatbuffers::FlatBufferBuilder *builder)
 {
-    
+
     flatbuffers::Offset<Table> header;
     flatbuffers::Offset<NodeTree> container;
-    tinyxml2::XMLElement* containerData = nullptr;
-    tinyxml2::XMLElement* containerChildrenData = nullptr;
-    
-    const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+    cctinyxml2::XMLElement *containerData = nullptr;
+    cctinyxml2::XMLElement *containerChildrenData = nullptr;
+
+    const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
     while (child)
     {
         std::string attriName = child->Name();
         if (attriName.compare("Children") == 0)
         {
-            containerChildrenData = const_cast<tinyxml2::XMLElement*>(child);
+            containerChildrenData = const_cast<cctinyxml2::XMLElement *>(child);
         }
         if (attriName.compare("Header") == 0)
         {
@@ -968,40 +954,39 @@ flatbuffers::Offset<flatbuffers::TabItemOption> TabItemReader::createTabItemOpti
         }
         else if (attriName.compare("Container") == 0)
         {
-            containerData = const_cast<tinyxml2::XMLElement*>(child);
+            containerData = const_cast<cctinyxml2::XMLElement *>(child);
         }
         child = child->NextSiblingElement();
     }
-    
+
     if (containerChildrenData != nullptr)
     {
         containerData->InsertEndChild(containerChildrenData);
     }
-    
+
     container = FlatBuffersSerialize::getInstance()->createNodeTree(containerData, "PanelObjectData");
-    
+
     auto options = CreateTabItemOption(*builder,
-                                       *(Offset<flatbuffers::TabHeaderOption>*)(&header),
-                                       container
-                                       );
-    return  *(&options);
+                                       *(Offset<flatbuffers::TabHeaderOption> *)(&header),
+                                       container);
+    return *(&options);
 }
 
-void TabItemReader::setPropsWithFlatBuffers(cocos2d::Node* /*node*/, const flatbuffers::Table* /*nodeOption*/)
+void TabItemReader::setPropsWithFlatBuffers(cocos2d::Node * /*node*/, const flatbuffers::Table * /*nodeOption*/)
 {
     // do nothing
 }
 
-cocos2d::Node* TabItemReader::createNodeWithFlatBuffers(const flatbuffers::Table* /*nodeOptions*/)
+cocos2d::Node *TabItemReader::createNodeWithFlatBuffers(const flatbuffers::Table * /*nodeOptions*/)
 {
     // do nothing
     return nullptr;
 }
 
 flatbuffers::Offset<flatbuffers::Table> TabItemReader::createOptionsWithFlatBuffers(
-                                                                                    const tinyxml2::XMLElement* /*objectData*/, flatbuffers::FlatBufferBuilder* /*builder*/)
+    const cctinyxml2::XMLElement * /*objectData*/, flatbuffers::FlatBufferBuilder * /*builder*/)
 {
-    
+
     // nothing
     return flatbuffers::Offset<flatbuffers::Table>();
 }

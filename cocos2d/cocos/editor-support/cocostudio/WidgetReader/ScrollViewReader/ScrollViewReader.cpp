@@ -22,8 +22,6 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-
-
 #include "editor-support/cocostudio/WidgetReader/ScrollViewReader/ScrollViewReader.h"
 
 #include "ui/UIScrollView.h"
@@ -42,26 +40,24 @@ using namespace flatbuffers;
 
 namespace cocostudio
 {
-    static const char* P_InnerWidth = "innerWidth";
-    static const char* P_InnerHeight = "innerHeight";
-    static const char* P_Direction = "direction";
-    static const char* P_BounceEnable = "bounceEnable";
+    static const char *P_InnerWidth = "innerWidth";
+    static const char *P_InnerHeight = "innerHeight";
+    static const char *P_Direction = "direction";
+    static const char *P_BounceEnable = "bounceEnable";
 
-    static ScrollViewReader* instanceScrollViewReader = nullptr;
+    static ScrollViewReader *instanceScrollViewReader = nullptr;
 
     IMPLEMENT_CLASS_NODE_READER_INFO(ScrollViewReader)
 
-        ScrollViewReader::ScrollViewReader()
+    ScrollViewReader::ScrollViewReader()
     {
-
     }
 
     ScrollViewReader::~ScrollViewReader()
     {
-
     }
 
-    ScrollViewReader* ScrollViewReader::getInstance()
+    ScrollViewReader *ScrollViewReader::getInstance()
     {
         if (!instanceScrollViewReader)
         {
@@ -75,43 +71,46 @@ namespace cocostudio
         CC_SAFE_DELETE(instanceScrollViewReader);
     }
 
-    void ScrollViewReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *cocoLoader, stExpCocoNode* cocoNode)
+    void ScrollViewReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *cocoLoader, stExpCocoNode *cocoNode)
     {
         //TODO: need to refactor...
         LayoutReader::setPropsFromBinary(widget, cocoLoader, cocoNode);
 
-        ScrollView* scrollView = static_cast<ScrollView*>(widget);
+        ScrollView *scrollView = static_cast<ScrollView *>(widget);
 
         stExpCocoNode *stChildArray = cocoNode->GetChildArray(cocoLoader);
         float innerWidth;
         float innerHeight;
-        for (int i = 0; i < cocoNode->GetChildNum(); ++i) {
+        for (int i = 0; i < cocoNode->GetChildNum(); ++i)
+        {
             std::string key = stChildArray[i].GetName(cocoLoader);
             std::string value = stChildArray[i].GetValue(cocoLoader);
-            if (key == P_InnerWidth) {
+            if (key == P_InnerWidth)
+            {
                 innerWidth = valueToFloat(value);
             }
-            else if (key == P_InnerHeight) {
+            else if (key == P_InnerHeight)
+            {
                 innerHeight = valueToFloat(value);
             }
-            else if (key == P_Direction) {
+            else if (key == P_Direction)
+            {
                 scrollView->setDirection((ScrollView::Direction)valueToInt(value));
             }
-            else if (key == P_BounceEnable) {
+            else if (key == P_BounceEnable)
+            {
                 scrollView->setBounceEnabled(valueToBool(value));
             }
 
         } //end of for loop
         scrollView->setInnerContainerSize(Size(innerWidth, innerHeight));
-
     }
 
     void ScrollViewReader::setPropsFromJsonDictionary(Widget *widget, const rapidjson::Value &options)
     {
         LayoutReader::setPropsFromJsonDictionary(widget, options);
 
-
-        ScrollView* scrollView = static_cast<ScrollView*>(widget);
+        ScrollView *scrollView = static_cast<ScrollView *>(widget);
         float innerWidth = DICTOOL->getFloatValue_json(options, P_InnerWidth, 200);
         float innerHeight = DICTOOL->getFloatValue_json(options, P_InnerHeight, 200);
         scrollView->setInnerContainerSize(Size(innerWidth, innerHeight));
@@ -119,15 +118,14 @@ namespace cocostudio
         scrollView->setDirection((ScrollView::Direction)direction);
         scrollView->setBounceEnabled(DICTOOL->getBooleanValue_json(options, P_BounceEnable));
 
-
         LayoutReader::setColorPropsFromJsonDictionary(widget, options);
     }
 
-    Offset<Table> ScrollViewReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
-        flatbuffers::FlatBufferBuilder *builder)
+    Offset<Table> ScrollViewReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                 flatbuffers::FlatBufferBuilder *builder)
     {
         auto temp = WidgetReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-        auto widgetOptions = *(Offset<WidgetOptions>*)(&temp);
+        auto widgetOptions = *(Offset<WidgetOptions> *)(&temp);
 
         std::string path = "";
         std::string plistFile = "";
@@ -151,7 +149,7 @@ namespace cocostudio
         float scrollbarAutoHideTime = 0.2f;
 
         // attributes
-        const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+        const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
         while (attribute)
         {
             std::string name = attribute->Name();
@@ -224,7 +222,7 @@ namespace cocostudio
         }
 
         // child elements
-        const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+        const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
         while (child)
         {
             std::string name = child->Name();
@@ -396,7 +394,7 @@ namespace cocostudio
 
                 if (resourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(texture));
                 }
             }
@@ -411,7 +409,7 @@ namespace cocostudio
         CapInsets f_capInsets(capInsets.origin.x, capInsets.origin.y, capInsets.size.width, capInsets.size.height);
         FlatSize f_scale9Size(scale9Size.width, scale9Size.height);
         FlatSize f_innerSize(innerSize.width, innerSize.height);
-        
+
         auto options = CreateScrollViewOptions(*builder,
                                                widgetOptions,
                                                CreateResourceData(*builder,
@@ -434,21 +432,20 @@ namespace cocostudio
                                                scrollbarEnabled,
                                                scrollbarAutoHide,
                                                scrollbarAutoHideTime);
-        
-        return *(Offset<Table>*)(&options);
+
+        return *(Offset<Table> *)(&options);
     }
 
     void ScrollViewReader::setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *scrollViewOptions)
     {
-        ScrollView* scrollView = static_cast<ScrollView*>(node);
-        auto options = (ScrollViewOptions*)scrollViewOptions;
+        ScrollView *scrollView = static_cast<ScrollView *>(node);
+        auto options = (ScrollViewOptions *)scrollViewOptions;
 
         bool clipEnabled = options->clipEnabled() != 0;
         scrollView->setClippingEnabled(clipEnabled);
 
         bool backGroundScale9Enabled = options->backGroundScale9Enabled() != 0;
         scrollView->setBackGroundImageScale9Enabled(backGroundScale9Enabled);
-
 
         auto f_bgColor = options->bgColor();
         Color3B bgColor(f_bgColor->r(), f_bgColor->g(), f_bgColor->b());
@@ -469,7 +466,6 @@ namespace cocostudio
         scrollView->setBackGroundColor(bgStartColor, bgEndColor);
         scrollView->setBackGroundColor(bgColor);
         scrollView->setBackGroundColorOpacity(bgColorOpacity);
-
 
         bool fileExist = false;
         std::string errorFilePath = "";
@@ -497,7 +493,7 @@ namespace cocostudio
             case 1:
             {
                 std::string plist = imageFileNameDic->plistFile()->c_str();
-                SpriteFrame* spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(imageFileName);
+                SpriteFrame *spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(imageFileName);
                 if (spriteFrame)
                 {
                     fileExist = true;
@@ -559,7 +555,7 @@ namespace cocostudio
         }
 
         auto widgetReader = WidgetReader::getInstance();
-        widgetReader->setPropsWithFlatBuffers(node, (Table*)options->widgetOptions());
+        widgetReader->setPropsWithFlatBuffers(node, (Table *)options->widgetOptions());
 
         if (backGroundScale9Enabled)
         {
@@ -579,14 +575,13 @@ namespace cocostudio
                 scrollView->setContentSize(contentSize);
             }
         }
-
     }
 
-    Node* ScrollViewReader::createNodeWithFlatBuffers(const flatbuffers::Table *scrollViewOptions)
+    Node *ScrollViewReader::createNodeWithFlatBuffers(const flatbuffers::Table *scrollViewOptions)
     {
-        ScrollView* scrollView = ScrollView::create();
+        ScrollView *scrollView = ScrollView::create();
 
-        setPropsWithFlatBuffers(scrollView, (Table*)scrollViewOptions);
+        setPropsWithFlatBuffers(scrollView, (Table *)scrollViewOptions);
 
         return scrollView;
     }
@@ -595,10 +590,10 @@ namespace cocostudio
     {
         if (key == "Normal" || key == "Default")
         {
-            return 	0;
+            return 0;
         }
 
-        FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+        FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
         if (fbs->_isSimulator)
         {
             if (key == "MarkedSubImage")
@@ -609,4 +604,4 @@ namespace cocostudio
         return 1;
     }
 
-}
+} // namespace cocostudio

@@ -1,48 +1,40 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   U N S C A L I N G   L A Y E R   T E S T   C L A S S                   
+//   U N S C A L I N G   L A Y E R   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "unscaling_layer_test.h"
 
-
 UnscalingLayerTest::UnscalingLayerTest() : UnitTesting()
 {
 }
-
 
 UnscalingLayerTest::~UnscalingLayerTest()
 {
 }
 
-
 void UnscalingLayerTest::test_constructor()
 {
    cout << "test_constructor\n";
-
 }
-
 
 void UnscalingLayerTest::test_destructor()
 {
    cout << "test_destructor\n";
 }
 
-
 void UnscalingLayerTest::test_assignment_operator()
 {
    cout << "test_assignment_operator\n";
 
-//   UnscalingLayer mlp_1;
-//   UnscalingLayer mlp_2 = mlp_1;
+   //   UnscalingLayer mlp_1;
+   //   UnscalingLayer mlp_2 = mlp_1;
 
-//   assert_true(mlp_2.get_neurons_number() == 0, LOG);
-
+   //   assert_true(mlp_2.get_neurons_number() == 0, LOG);
 }
-
 
 void UnscalingLayerTest::test_get_neurons_number()
 {
@@ -53,18 +45,15 @@ void UnscalingLayerTest::test_get_neurons_number()
    assert_true(ul.get_neurons_number() == 0, LOG);
 }
 
-
 void UnscalingLayerTest::test_set()
 {
    cout << "test_set\n";
 }
 
-
 void UnscalingLayerTest::test_set_default()
 {
    cout << "test_set_default\n";
 }
-
 
 void UnscalingLayerTest::test_get_means()
 {
@@ -72,9 +61,8 @@ void UnscalingLayerTest::test_get_means()
 
    UnscalingLayer ul;
 
-//   assert_true(ul.get_means() == 0, LOG);
+   //   assert_true(ul.get_means() == 0, LOG);
 }
-
 
 void UnscalingLayerTest::test_get_standard_deviations()
 {
@@ -82,45 +70,38 @@ void UnscalingLayerTest::test_get_standard_deviations()
 
    UnscalingLayer ul;
 
-//   assert_true(ul.get_standard_deviations() == 0, LOG);
+   //   assert_true(ul.get_standard_deviations() == 0, LOG);
 }
-
 
 void UnscalingLayerTest::test_get_mean()
 {
    cout << "test_get_mean\n";
 }
 
-
 void UnscalingLayerTest::test_get_standard_deviation()
 {
    cout << "test_get_standard_deviation\n";
 }
-
 
 void UnscalingLayerTest::test_get_minimums()
 {
    cout << "test_get_minimums\n";
 }
 
-
 void UnscalingLayerTest::test_get_maximums()
 {
    cout << "test_get_maximums\n";
 }
-
 
 void UnscalingLayerTest::test_get_minimum()
 {
    cout << "test_get_minimum\n";
 }
 
-
 void UnscalingLayerTest::test_get_maximum()
 {
    cout << "test_get_maximum\n";
 }
-
 
 void UnscalingLayerTest::test_get_descriptives()
 {
@@ -137,78 +118,65 @@ void UnscalingLayerTest::test_get_descriptives()
    assert_true(descriptives.size() == 0, LOG);
 }
 
-
 void UnscalingLayerTest::test_get_display()
 {
    cout << "test_get_display\n";
 }
-
 
 void UnscalingLayerTest::test_set_unscaling_method()
 {
    cout << "test_set_unscaling_method\n";
 }
 
-
 void UnscalingLayerTest::test_set_means()
 {
    cout << "test_set_means\n";
 }
-
 
 void UnscalingLayerTest::test_set_standard_deviations()
 {
    cout << "test_set_standard_deviations\n";
 }
 
-
 void UnscalingLayerTest::test_set_mean()
 {
    cout << "test_set_mean\n";
 }
-
 
 void UnscalingLayerTest::test_set_standard_deviation()
 {
    cout << "test_set_standard_deviation\n";
 }
 
-
 void UnscalingLayerTest::test_set_minimums()
 {
    cout << "test_set_minimums\n";
 }
-
 
 void UnscalingLayerTest::test_set_maximums()
 {
    cout << "test_set_outputs_maximum\n";
 }
 
-
 void UnscalingLayerTest::test_set_minimum()
 {
    cout << "test_set_minimum\n";
 }
-
 
 void UnscalingLayerTest::test_set_maximum()
 {
    cout << "test_set_maximum\n";
 }
 
-
 void UnscalingLayerTest::test_set_statistics()
 {
    cout << "test_set_statistics\n";
 }
 
-
 void UnscalingLayerTest::test_set_display()
 {
    cout << "test_set_display\n";
 }
-
 
 void UnscalingLayerTest::test_calculate_outputs()
 {
@@ -237,7 +205,6 @@ void UnscalingLayerTest::test_calculate_outputs()
    //assert_true(ul.calculate_outputs(inputs.to_row_matrix()) == inputs, LOG);
 }
 
-
 void UnscalingLayerTest::test_write_expression()
 {
    cout << "test_write_expression\n";
@@ -260,7 +227,6 @@ void UnscalingLayerTest::test_write_expression()
    assert_true(expression.empty() == false, LOG);
 }
 
-
 void UnscalingLayerTest::test_get_unscaling_method()
 {
    cout << "test_get_unscaling_method\n";
@@ -280,21 +246,19 @@ void UnscalingLayerTest::test_get_unscaling_method()
    assert_true(ul.get_unscaling_method() == UnscalingLayer::MinimumMaximum, LOG);
 }
 
-
 void UnscalingLayerTest::test_get_unscaling_method_name()
 {
    cout << "test_get_outputs_method_name\n";
 }
 
-
 void UnscalingLayerTest::test_to_XML()
 {
    cout << "test_to_XML\n";
 
-   UnscalingLayer  ul;
+   UnscalingLayer ul;
 
-   tinyxml2::XMLDocument* uld;
-   
+   onntinyxml2::XMLDocument *uld;
+
    // Test
 
    uld = ul.to_XML();
@@ -304,24 +268,22 @@ void UnscalingLayerTest::test_to_XML()
    delete uld;
 }
 
-
 void UnscalingLayerTest::test_from_XML()
 {
    cout << "test_from_XML\n";
 
-   UnscalingLayer  ul;
+   UnscalingLayer ul;
 
-   tinyxml2::XMLDocument* uld;
-   
+   onntinyxml2::XMLDocument *uld;
+
    // Test
 
    uld = ul.to_XML();
 
    ul.from_XML(*uld);
- 
+
    delete uld;
 }
-
 
 void UnscalingLayerTest::run_test_case()
 {
@@ -411,7 +373,6 @@ void UnscalingLayerTest::run_test_case()
 
    cout << "End of unscaling layer test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

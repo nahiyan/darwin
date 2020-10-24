@@ -1,13 +1,11 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   P R I N C I P A L   C O M P O N E N T S   L A Y E R   C L A S S   H E A D E R  
+//   P R I N C I P A L   C O M P O N E N T S   L A Y E R   C L A S S   H E A D E R
 //
-//   Pablo Martin                                                          
+//   Pablo Martin
 //   Artificial Intelligence Techniques SL
-//   artelnics@artelnics.com                                             
-
-
+//   artelnics@artelnics.com
 
 #ifndef PrincipalComponentsLayer_H
 #define PrincipalComponentsLayer_H
@@ -28,152 +26,148 @@
 #include "metrics.h"
 #include "layer.h"
 
-
-
 #include "tinyxml2.h"
 
 namespace OpenNN
 {
 
-/// This class represents the layer of principal component analysis.
+   /// This class represents the layer of principal component analysis.
 
-///
-/// This layer is used to reduce the dimension of a dataset.
+   ///
+   /// This layer is used to reduce the dimension of a dataset.
 
-class PrincipalComponentsLayer : public Layer
-{
+   class PrincipalComponentsLayer : public Layer
+   {
 
-public:
+   public:
+      // DEFAULT CONSTRUCTOR
 
-   // DEFAULT CONSTRUCTOR
+      explicit PrincipalComponentsLayer();
 
-   explicit PrincipalComponentsLayer();
+      // INPUTS AND PRINCIPAL COMPONENTS NUMBER CONSTRUCTOR
 
-   // INPUTS AND PRINCIPAL COMPONENTS NUMBER CONSTRUCTOR
+      explicit PrincipalComponentsLayer(const size_t &, const size_t &);
 
-   explicit PrincipalComponentsLayer(const size_t&, const size_t&);
+      // COPY CONSTRUCTOR
 
-   // COPY CONSTRUCTOR
+      PrincipalComponentsLayer(const PrincipalComponentsLayer &);
 
-   PrincipalComponentsLayer(const PrincipalComponentsLayer&);
+      virtual ~PrincipalComponentsLayer();
 
-   
+      // Enumerations
 
-   virtual ~PrincipalComponentsLayer();
+      /// Enumeration of available methods for apply the principal components layer.
 
-   // Enumerations
+      enum PrincipalComponentsMethod
+      {
+         NoPrincipalComponents,
+         PrincipalComponents
+      };
 
-   /// Enumeration of available methods for apply the principal components layer.
+      // Principal components state methods
 
-   enum PrincipalComponentsMethod{NoPrincipalComponents, PrincipalComponents};
+      const PrincipalComponentsMethod &get_principal_components_method() const;
 
-   // Principal components state methods
+      string write_principal_components_method() const;
+      string write_principal_components_method_text() const;
 
-   const PrincipalComponentsMethod& get_principal_components_method() const;
+      // Get methods
 
-   string write_principal_components_method() const;
-   string write_principal_components_method_text() const;
+      Matrix<double> get_principal_components() const;
+      Vector<double> get_means() const;
 
-   // Get methods
+      Vector<double> get_explained_variance() const;
 
-   Matrix<double> get_principal_components() const;
-   Vector<double> get_means() const;
+      size_t get_inputs_number() const;
+      size_t get_principal_components_number() const;
+      size_t get_neurons_number() const;
 
-   Vector<double> get_explained_variance() const;
+      // Inputs principal components function
 
-   size_t get_inputs_number() const;
-   size_t get_principal_components_number() const;
-   size_t get_neurons_number() const;
+      // Display messages
 
+      const bool &get_display() const;
 
-   // Inputs principal components function
+      // Set methods
 
-   // Display messages
+      void set();
+      void set(const size_t &, const size_t &);
+      void set(const PrincipalComponentsLayer &);
 
-   const bool& get_display() const;
+      void set_inputs_number(const size_t &);
+      void set_principal_components_number(const size_t &);
 
-   // Set methods
+      void set_principal_component(const size_t &, const Vector<double> &);
+      void set_principal_components(const Matrix<double> &);
 
-   void set();
-   void set(const size_t&, const size_t&);
-   void set(const PrincipalComponentsLayer&);
+      void set_means(const Vector<double> &);
+      void set_means(const size_t &, const double &);
 
-   void set_inputs_number(const size_t&);
-   void set_principal_components_number(const size_t&);
+      void set_explained_variance(const Vector<double> &);
 
-   void set_principal_component(const size_t&, const Vector<double>&);
-   void set_principal_components(const Matrix<double>&);
+      virtual void set_default();
 
-   void set_means(const Vector<double>&);
-   void set_means(const size_t&, const double&);
+      void set_principal_components_method(const PrincipalComponentsMethod &);
+      void set_principal_components_method(const string &);
 
-   void set_explained_variance(const Vector<double>&);
+      // Display messages
 
-   virtual void set_default();
+      void set_display(const bool &);
 
-   void set_principal_components_method(const PrincipalComponentsMethod&);
-   void set_principal_components_method(const string&);
+      // Check methods
 
-   // Display messages
+      // Inputs principal components function
 
-   void set_display(const bool&);
+      Tensor<double> calculate_outputs(const Tensor<double> &);
 
-   // Check methods
+      // Expression methods
 
-   // Inputs principal components function
+      string write_expression(const Vector<string> &, const Vector<string> &) const;
 
-   Tensor<double> calculate_outputs(const Tensor<double>&);
+      string write_no_principal_components_expression(const Vector<string> &, const Vector<string> &) const;
+      string write_principal_components_expression(const Vector<string> &, const Vector<string> &) const;
 
-   // Expression methods
+      // Serialization methods
 
-   string write_expression(const Vector<string>&, const Vector<string>&) const;
+      onntinyxml2::XMLDocument *to_XML() const;
+      virtual void from_XML(const onntinyxml2::XMLDocument &);
 
-   string write_no_principal_components_expression(const Vector<string>&, const Vector<string>&) const;
-   string write_principal_components_expression(const Vector<string>&, const Vector<string>&) const;
+      void write_XML(onntinyxml2::XMLPrinter &) const;
 
-   // Serialization methods
+   protected:
+      // MEMBERS
 
-   tinyxml2::XMLDocument* to_XML() const;
-   virtual void from_XML(const tinyxml2::XMLDocument&);
+      /// Inputs number
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
-   
+      size_t inputs_number;
 
-protected:
+      /// Principal components number
 
-   // MEMBERS
+      size_t principal_components_number;
 
-   /// Inputs number
+      /// Means of the input variables
 
-   size_t inputs_number;
+      Vector<double> means;
 
-   /// Principal components number
+      /// Contains all the principal components getd in rows and sorted
+      /// according to their relative explained variance.
 
-   size_t principal_components_number;
+      Matrix<double> principal_components;
 
-   /// Means of the input variables
+      /// Explained variances for every of the principal components
 
-   Vector<double> means;
+      Vector<double> explained_variance;
 
-   /// Contains all the principal components getd in rows and sorted
-   /// according to their relative explained variance.
+      /// Principal components layer method
 
-   Matrix<double> principal_components;
+      PrincipalComponentsMethod principal_components_method;
 
-   /// Explained variances for every of the principal components
+      /// Display warning messages to screen.
 
-   Vector<double> explained_variance;
+      bool display;
+   };
 
-   /// Principal components layer method
-
-   PrincipalComponentsMethod principal_components_method;
-
-   /// Display warning messages to screen.
-
-   bool display;
-};
-
-}
+} // namespace OpenNN
 
 #endif
 

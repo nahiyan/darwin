@@ -20,19 +20,21 @@ void Database::close()
 
 void Database::clearSession(int sessionId)
 {
-    std::string sql = "DELETE FROM generations WHERE id IN (SELECT g.id FROM sessions s LEFT JOIN generations g ON g.session_id = s.session_id WHERE s.id = ?)";
-
-    sqlite3_stmt *statement;
-    if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, 0) == SQLITE_OK)
+    if (Database::getGenerationIds(sessionId).size() > 0)
     {
-        sqlite3_bind_int(statement, 1, sessionId);
+        std::string sql = "DELETE FROM generations WHERE id IN (SELECT g.id FROM sessions s LEFT JOIN generations g ON g.session_id = s.id WHERE s.id = ?);";
 
-        if (sqlite3_step(statement) != SQLITE_ROW)
+        sqlite3_stmt *statement;
+        if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, nullptr) == SQLITE_OK)
+        {
+            sqlite3_bind_int(statement, 1, sessionId);
+
+            sqlite3_step(statement);
+        }
+        else
+        {
             printf("Failed to clear session.\n");
-    }
-    else
-    {
-        printf("Failed to clear session.\n");
+        }
     }
 }
 int Database::getExtensionId(std::string name)
@@ -113,16 +115,15 @@ std::vector<int> Database::getSessionIds(std::string extensionName)
     return ids;
 }
 
-std::vector<int> Database::getGenerationIds(std::string extensionName, int sessionId)
+std::vector<int> Database::getGenerationIds(int sessionId)
 {
-    std::string sql = "SELECT g.id FROM extensions e LEFT JOIN sessions s ON e.id = s.extension_id LEFT JOIN generations g ON g.session_id = s.id WHERE e.name = ? AND s.id = ? ORDER BY g.id DESC";
+    std::string sql = "SELECT g.id FROM extensions e LEFT JOIN sessions s ON e.id = s.extension_id LEFT JOIN generations g ON g.session_id = s.id WHERE s.id = ? ORDER BY g.id DESC";
     std::vector<int> ids;
 
     sqlite3_stmt *statement;
     if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, 0) == SQLITE_OK)
     {
-        sqlite3_bind_text(statement, 1, extensionName.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int(statement, 2, sessionId);
+        sqlite3_bind_int(statement, 1, sessionId);
 
         while (sqlite3_step(statement) == SQLITE_ROW)
             ids.push_back(sqlite3_column_int(statement, 0));

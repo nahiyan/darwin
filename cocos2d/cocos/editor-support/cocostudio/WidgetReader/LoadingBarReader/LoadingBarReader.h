@@ -34,26 +34,25 @@ namespace cocostudio
     class CC_STUDIO_DLL LoadingBarReader : public WidgetReader
     {
         DECLARE_CLASS_NODE_READER_INFO
-        
+
     public:
         LoadingBarReader();
         virtual ~LoadingBarReader();
-        
-        static LoadingBarReader* getInstance();
+
+        static LoadingBarReader *getInstance();
         /** @deprecated Use method destroyInstance() instead */
         CC_DEPRECATED_ATTRIBUTE static void purge();
         static void destroyInstance();
-        
-        virtual void setPropsFromJsonDictionary(cocos2d::ui::Widget* widget, const rapidjson::Value& options);
-        virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* cocoLoader,  stExpCocoNode*	pCocoNode) ;        
-        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                             flatbuffers::FlatBufferBuilder* builder);
-        void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* loadingBarOptions);
-        cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* loadingBarOptions);
-        
+
+        virtual void setPropsFromJsonDictionary(cocos2d::ui::Widget *widget, const rapidjson::Value &options);
+        virtual void setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
+        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                             flatbuffers::FlatBufferBuilder *builder);
+        void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *loadingBarOptions);
+        cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *loadingBarOptions);
+
         int getResourceType(std::string key);
-        
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__TestCpp__LoadingBarReader__) */

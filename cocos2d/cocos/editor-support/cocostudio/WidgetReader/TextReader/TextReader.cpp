@@ -22,8 +22,6 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-
-
 #include "editor-support/cocostudio/WidgetReader/TextReader/TextReader.h"
 
 #include "ui/UIText.h"
@@ -42,30 +40,28 @@ using namespace flatbuffers;
 
 namespace cocostudio
 {
-    static const char* P_TouchScaleEnable = "touchScaleEnable";
-    static const char* P_Text = "text";
-    static const char* P_FontSize = "fontSize";
-    static const char* P_FontName = "fontName";
-    static const char* P_AreaWidth = "areaWidth";
-    static const char* P_AreaHeight = "areaHeight";
-    static const char* P_HAlignment = "hAlignment";
-    static const char* P_VAlignment = "vAlignment";
-    
-    static TextReader* instanceTextReader = nullptr;
-    
+    static const char *P_TouchScaleEnable = "touchScaleEnable";
+    static const char *P_Text = "text";
+    static const char *P_FontSize = "fontSize";
+    static const char *P_FontName = "fontName";
+    static const char *P_AreaWidth = "areaWidth";
+    static const char *P_AreaHeight = "areaHeight";
+    static const char *P_HAlignment = "hAlignment";
+    static const char *P_VAlignment = "vAlignment";
+
+    static TextReader *instanceTextReader = nullptr;
+
     IMPLEMENT_CLASS_NODE_READER_INFO(TextReader)
-    
+
     TextReader::TextReader()
     {
-        
     }
-    
+
     TextReader::~TextReader()
     {
-        
     }
-    
-    TextReader* TextReader::getInstance()
+
+    TextReader *TextReader::getInstance()
     {
         if (!instanceTextReader)
         {
@@ -73,24 +69,24 @@ namespace cocostudio
         }
         return instanceTextReader;
     }
-    
+
     void TextReader::destroyInstance()
     {
         CC_SAFE_DELETE(instanceTextReader);
     }
-    
+
     void TextReader::setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *cocoLoader, stExpCocoNode *cocoNode)
     {
         this->beginSetBasicProperties(widget);
-        
+
         stExpCocoNode *stChildArray = cocoNode->GetChildArray(cocoLoader);
-        
-        Text* label = static_cast<Text*>(widget);
-        
+
+        Text *label = static_cast<Text *>(widget);
+
         std::string binaryFilePath = GUIReader::getInstance()->getFilePath();
 
-        
-        for (int i = 0; i < cocoNode->GetChildNum(); ++i) {
+        for (int i = 0; i < cocoNode->GetChildNum(); ++i)
+        {
             std::string key = stChildArray[i].GetName(cocoLoader);
             std::string value = stChildArray[i].GetValue(cocoLoader);
             //read all basic properties of widget
@@ -98,67 +94,84 @@ namespace cocostudio
             //read all color related properties of widget
             CC_COLOR_PROPERTY_BINARY_READER
 
-            else if (key == P_TouchScaleEnable) {
+            else if (key == P_TouchScaleEnable)
+            {
                 label->setTouchScaleChangeEnabled(valueToBool(value));
             }
-            
-            else if(key == P_Text){
+
+            else if (key == P_Text)
+            {
                 label->setString(value);
-            }else if(key == P_FontSize){
+            }
+            else if (key == P_FontSize)
+            {
                 label->setFontSize(valueToInt(value));
-            }else if(key == P_FontName){
+            }
+            else if (key == P_FontName)
+            {
                 std::string fontFilePath;
                 fontFilePath = binaryFilePath.append(value);
-                if (FileUtils::getInstance()->isFileExist(fontFilePath)) {
+                if (FileUtils::getInstance()->isFileExist(fontFilePath))
+                {
                     label->setFontName(fontFilePath);
-                }else{
+                }
+                else
+                {
                     label->setFontName(value);
                 }
-            }else if(key == P_AreaWidth){
+            }
+            else if (key == P_AreaWidth)
+            {
                 label->setTextAreaSize(Size(valueToFloat(value), label->getTextAreaSize().height));
-            }else if(key == P_AreaHeight){
+            }
+            else if (key == P_AreaHeight)
+            {
                 label->setTextAreaSize(Size(label->getTextAreaSize().width, valueToFloat(value)));
-            }else if(key == P_HAlignment){
+            }
+            else if (key == P_HAlignment)
+            {
                 label->setTextHorizontalAlignment((TextHAlignment)valueToInt(value));
-            }else if(key == P_VAlignment){
+            }
+            else if (key == P_VAlignment)
+            {
                 label->setTextVerticalAlignment((TextVAlignment)valueToInt(value));
             }
-            
+
         } //end of for loop
         this->endSetBasicProperties(widget);
     }
-    
+
     void TextReader::setPropsFromJsonDictionary(Widget *widget, const rapidjson::Value &options)
     {
         WidgetReader::setPropsFromJsonDictionary(widget, options);
-        
-        
+
         std::string jsonPath = GUIReader::getInstance()->getFilePath();
-        
-        Text* label = static_cast<Text*>(widget);
+
+        Text *label = static_cast<Text *>(widget);
         bool touchScaleChangeAble = DICTOOL->getBooleanValue_json(options, P_TouchScaleEnable);
         label->setTouchScaleChangeEnabled(touchScaleChangeAble);
-        const char* text = DICTOOL->getStringValue_json(options, P_Text,"Text Label");
+        const char *text = DICTOOL->getStringValue_json(options, P_Text, "Text Label");
         label->setString(text);
-      
-        label->setFontSize(DICTOOL->getIntValue_json(options, P_FontSize,20));
-       
+
+        label->setFontSize(DICTOOL->getIntValue_json(options, P_FontSize, 20));
+
         std::string fontName = DICTOOL->getStringValue_json(options, P_FontName, "");
-        
+
         std::string fontFilePath = jsonPath.append(fontName);
-		if (FileUtils::getInstance()->isFileExist(fontFilePath))
-		{
-			label->setFontName(fontFilePath);
-		}
-		else{
-			label->setFontName(fontName);
-		}
-        
+        if (FileUtils::getInstance()->isFileExist(fontFilePath))
+        {
+            label->setFontName(fontFilePath);
+        }
+        else
+        {
+            label->setFontName(fontName);
+        }
+
         bool aw = DICTOOL->checkObjectExist_json(options, P_AreaWidth);
         bool ah = DICTOOL->checkObjectExist_json(options, P_AreaHeight);
         if (aw && ah)
         {
-            Size size = Size(DICTOOL->getFloatValue_json(options, P_AreaWidth),DICTOOL->getFloatValue_json(options,P_AreaHeight));
+            Size size = Size(DICTOOL->getFloatValue_json(options, P_AreaWidth), DICTOOL->getFloatValue_json(options, P_AreaHeight));
             label->setTextAreaSize(size);
         }
         bool ha = DICTOOL->checkObjectExist_json(options, P_HAlignment);
@@ -171,17 +184,16 @@ namespace cocostudio
         {
             label->setTextVerticalAlignment((TextVAlignment)DICTOOL->getIntValue_json(options, P_VAlignment));
         }
-        
-        
+
         WidgetReader::setColorPropsFromJsonDictionary(widget, options);
-    }        
-    
-    Offset<Table> TextReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
+    }
+
+    Offset<Table> TextReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
                                                            flatbuffers::FlatBufferBuilder *builder)
     {
         auto temp = WidgetReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-        auto widgetOptions = *(Offset<WidgetOptions>*)(&temp);
-        
+        auto widgetOptions = *(Offset<WidgetOptions> *)(&temp);
+
         bool touchScaleEnabled = false;
         bool isCustomSize = false;
         std::string fontName = "";
@@ -199,18 +211,18 @@ namespace cocostudio
         Color4B shadowColor = Color4B::BLACK;
         Size shadowOffset = Size(2, -2);
         int shadowBlurRadius = 0;
-        
+
         std::string path = "";
         std::string plistFile = "";
         int resourceType = 0;
-        
+
         // attributes
-        const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+        const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
         while (attribute)
         {
             std::string name = attribute->Name();
             std::string value = attribute->Value();
-            
+
             if (name == "TouchScaleChangeAble")
             {
                 touchScaleEnabled = (value == "True") ? true : false;
@@ -297,25 +309,25 @@ namespace cocostudio
             {
                 shadowBlurRadius = atoi(value.c_str());
             }
-            
+
             attribute = attribute->Next();
         }
-        
+
         // child elements
-        const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+        const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
         while (child)
         {
             std::string name = child->Name();
-            
+
             if (name == "FontResource")
             {
                 attribute = child->FirstAttribute();
-                
+
                 while (attribute)
                 {
                     name = attribute->Name();
                     std::string value = attribute->Value();
-                    
+
                     if (name == "Path")
                     {
                         path = value;
@@ -328,19 +340,19 @@ namespace cocostudio
                     {
                         plistFile = value;
                     }
-                    
+
                     attribute = attribute->Next();
                 }
             }
             else if (name == "OutlineColor")
             {
                 attribute = child->FirstAttribute();
-                
+
                 while (attribute)
                 {
                     name = attribute->Name();
                     std::string value = attribute->Value();
-                    
+
                     if (name == "A")
                     {
                         outlineColor.a = atoi(value.c_str());
@@ -357,19 +369,19 @@ namespace cocostudio
                     {
                         outlineColor.b = atoi(value.c_str());
                     }
-                    
+
                     attribute = attribute->Next();
                 }
             }
             else if (name == "ShadowColor")
             {
                 attribute = child->FirstAttribute();
-                
+
                 while (attribute)
                 {
                     name = attribute->Name();
                     std::string value = attribute->Value();
-                    
+
                     if (name == "A")
                     {
                         shadowColor.a = atoi(value.c_str());
@@ -386,17 +398,17 @@ namespace cocostudio
                     {
                         shadowColor.b = atoi(value.c_str());
                     }
-                    
+
                     attribute = attribute->Next();
                 }
             }
-            
+
             child = child->NextSiblingElement();
         }
-        
+
         flatbuffers::Color f_outlineColor(outlineColor.a, outlineColor.r, outlineColor.g, outlineColor.b);
         flatbuffers::Color f_shadowColor(shadowColor.a, shadowColor.r, shadowColor.g, shadowColor.b);
-        
+
         auto options = CreateTextOptions(*builder,
                                          widgetOptions,
                                          CreateResourceData(*builder,
@@ -421,18 +433,18 @@ namespace cocostudio
                                          shadowOffset.height,
                                          shadowBlurRadius,
                                          isLocalized);
-        
-        return *(Offset<Table>*)(&options);
+
+        return *(Offset<Table> *)(&options);
     }
-    
+
     void TextReader::setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *textOptions)
     {
-        Text* label = static_cast<Text*>(node);
-        auto options = (TextOptions*)textOptions;
-        
+        Text *label = static_cast<Text *>(node);
+        auto options = (TextOptions *)textOptions;
+
         bool touchScaleEnabled = options->touchScaleEnable() != 0;
         label->setTouchScaleChangeEnabled(touchScaleEnabled);
-        
+
         int fontSize = options->fontSize();
         label->setFontSize(fontSize);
 
@@ -453,7 +465,7 @@ namespace cocostudio
             std::string fontName = options->fontName()->c_str();
             label->setFontName(fontName);
         }
-        
+
         TextHAlignment h_alignment = (TextHAlignment)options->hAlignment();
         label->setTextHorizontalAlignment(h_alignment);
 
@@ -470,7 +482,7 @@ namespace cocostudio
                 label->enableOutline(outlineColor, options->outlineSize());
             }
         }
-        
+
         bool shadowEnabled = options->shadowEnabled() != 0;
         if (shadowEnabled)
         {
@@ -486,7 +498,7 @@ namespace cocostudio
         bool isLocalized = options->isLocalized() != 0;
         if (isLocalized)
         {
-            ILocalizationManager* lm = LocalizationHelper::getCurrentManager();
+            ILocalizationManager *lm = LocalizationHelper::getCurrentManager();
             label->setString(lm->getLocalizationString(text));
         }
         else
@@ -498,20 +510,20 @@ namespace cocostudio
         auto oldColor = node->getColor();
 
         auto widgetReader = WidgetReader::getInstance();
-        widgetReader->setPropsWithFlatBuffers(node, (Table*)options->widgetOptions());
+        widgetReader->setPropsWithFlatBuffers(node, (Table *)options->widgetOptions());
 
         // restore node color and set color to text to fix shadow & outline color won't show correct bug
         node->setColor(oldColor);
-        auto optionsWidget = (WidgetOptions*)options->widgetOptions();
+        auto optionsWidget = (WidgetOptions *)options->widgetOptions();
         auto f_color = optionsWidget->color();
         Color4B color(f_color->r(), f_color->g(), f_color->b(), f_color->a());
         ((Text *)node)->setTextColor(color);
 
         label->setUnifySizeEnabled(false);
-        
+
         bool IsCustomSize = options->isCustomSize() != 0;
         label->ignoreContentAdaptWithSize(!IsCustomSize);
-        
+
         auto widgetOptions = options->widgetOptions();
         if (!label->isIgnoreContentAdaptWithSize())
         {
@@ -519,14 +531,14 @@ namespace cocostudio
             label->setContentSize(contentSize);
         }
     }
-    
-    Node* TextReader::createNodeWithFlatBuffers(const flatbuffers::Table *textOptions)
+
+    Node *TextReader::createNodeWithFlatBuffers(const flatbuffers::Table *textOptions)
     {
-        Text* text = Text::create();
-        
-        setPropsWithFlatBuffers(text, (Table*)textOptions);
-        
+        Text *text = Text::create();
+
+        setPropsWithFlatBuffers(text, (Table *)textOptions);
+
         return text;
     }
-    
-}
+
+} // namespace cocostudio

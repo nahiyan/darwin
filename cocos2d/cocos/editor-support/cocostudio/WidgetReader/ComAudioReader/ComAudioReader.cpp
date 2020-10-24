@@ -39,57 +39,55 @@ namespace cocostudio
 {
     ComAudioReader::ComAudioReader()
     {
-        
     }
-    
+
     ComAudioReader::~ComAudioReader()
     {
-        
     }
-    
-    static ComAudioReader* _instanceComAudioReader = nullptr;
-    
-    ComAudioReader* ComAudioReader::getInstance()
+
+    static ComAudioReader *_instanceComAudioReader = nullptr;
+
+    ComAudioReader *ComAudioReader::getInstance()
     {
         if (!_instanceComAudioReader)
         {
             _instanceComAudioReader = new ComAudioReader();
         }
-        
+
         return _instanceComAudioReader;
     }
-    
+
     void ComAudioReader::purge()
     {
         CC_SAFE_DELETE(_instanceComAudioReader);
     }
-    
+
     void ComAudioReader::destroyInstance()
     {
         CC_SAFE_DELETE(_instanceComAudioReader);
     }
-    
-    Offset<Table> ComAudioReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
+
+    Offset<Table> ComAudioReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
                                                                flatbuffers::FlatBufferBuilder *builder)
     {
         auto temp = NodeReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-        auto nodeOptions = *(Offset<WidgetOptions>*)(&temp);
-        
+        auto nodeOptions = *(Offset<WidgetOptions> *)(&temp);
+
         std::string name = "";
         bool enabled = false;
         bool loop = false;
         float volume = 0;
-        
+
         std::string path = "";
         std::string plist = "";
         int resourceType = 0;
-        
-        const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+
+        const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
         while (attribute)
         {
             std::string attriname = attribute->Name();
             std::string value = attribute->Value();
-            
+
             if (attriname == "Loop")
             {
                 loop = (value == "True") ? true : false;
@@ -102,25 +100,25 @@ namespace cocostudio
             {
                 name = value;
             }
-            
+
             attribute = attribute->Next();
         }
-        
+
         // FileData
-        const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+        const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
         while (child)
         {
             std::string attriname = child->Name();
-            
+
             if (attriname == "FileData")
             {
                 attribute = child->FirstAttribute();
-                
+
                 while (attribute)
                 {
                     attriname = attribute->Name();
                     std::string value = attribute->Value();
-                    
+
                     if (attriname == "Path")
                     {
                         path = value;
@@ -133,14 +131,14 @@ namespace cocostudio
                     {
                         plist = value;
                     }
-                    
+
                     attribute = attribute->Next();
                 }
             }
-            
+
             child = child->NextSiblingElement();
         }
-        
+
         auto options = CreateComAudioOptions(*builder,
                                              nodeOptions,
                                              builder->CreateString(name),
@@ -151,52 +149,52 @@ namespace cocostudio
                                                                 builder->CreateString(path),
                                                                 builder->CreateString(plist),
                                                                 resourceType));
-        
-        return *(Offset<Table>*)(&options);
+
+        return *(Offset<Table> *)(&options);
     }
-    
+
     void ComAudioReader::setPropsWithFlatBuffers(cocos2d::Node *node,
                                                  const flatbuffers::Table *comAudioOptions)
     {
-        auto options = (ComAudioOptions*)comAudioOptions;
-        
+        auto options = (ComAudioOptions *)comAudioOptions;
+
         auto nodeReader = NodeReader::getInstance();
-        nodeReader->setPropsWithFlatBuffers(node, (Table*)(options->nodeOptions()));
+        nodeReader->setPropsWithFlatBuffers(node, (Table *)(options->nodeOptions()));
     }
-    
-    Component* ComAudioReader::createComAudioWithFlatBuffers(const flatbuffers::Table *comAudioOptions)
+
+    Component *ComAudioReader::createComAudioWithFlatBuffers(const flatbuffers::Table *comAudioOptions)
     {
-        auto options = (ComAudioOptions*)comAudioOptions;
-        
-        Component* component = ComAudio::create();
-        ComAudio* audio = static_cast<ComAudio*>(component);
-        
+        auto options = (ComAudioOptions *)comAudioOptions;
+
+        Component *component = ComAudio::create();
+        ComAudio *audio = static_cast<ComAudio *>(component);
+
         auto fileNameData = options->fileNameData();
-        
+
         int resourceType = fileNameData->resourceType();
         switch (resourceType)
         {
-            case 0:
-            {
-                std::string path = fileNameData->path()->c_str();
-                audio->setFile(path.c_str());
-                break;
-            }
-                
-            default:
-                break;
+        case 0:
+        {
+            std::string path = fileNameData->path()->c_str();
+            audio->setFile(path.c_str());
+            break;
         }
-        
+
+        default:
+            break;
+        }
+
         bool loop = options->loop() != 0;
         audio->setLoop(loop);
-        
+
         audio->setName(options->name()->c_str());
-        
+
         return component;
     }
-    
-    Node* ComAudioReader::createNodeWithFlatBuffers(const flatbuffers::Table* /*nodeOptions*/)
+
+    Node *ComAudioReader::createNodeWithFlatBuffers(const flatbuffers::Table * /*nodeOptions*/)
     {
         return nullptr;
     }
-}
+} // namespace cocostudio

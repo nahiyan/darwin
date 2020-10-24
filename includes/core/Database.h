@@ -22,7 +22,7 @@ public:
 
     static std::vector<int> getSessionIds(std::string);
 
-    static std::vector<int> getGenerationIds(std::string, int);
+    static std::vector<int> getGenerationIds(int);
 
     static int addSession(int);
 

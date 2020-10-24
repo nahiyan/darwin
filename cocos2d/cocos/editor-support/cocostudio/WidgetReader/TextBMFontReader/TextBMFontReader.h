@@ -34,24 +34,23 @@ namespace cocostudio
     class CC_STUDIO_DLL TextBMFontReader : public WidgetReader
     {
         DECLARE_CLASS_NODE_READER_INFO
-        
+
     public:
         TextBMFontReader();
         virtual ~TextBMFontReader();
-        
-        static TextBMFontReader* getInstance();
+
+        static TextBMFontReader *getInstance();
         /** @deprecated Use method destroyInstance() instead */
         CC_DEPRECATED_ATTRIBUTE static void purge();
         static void destroyInstance();
-        
-        virtual void setPropsFromJsonDictionary(cocos2d::ui::Widget* widget, const rapidjson::Value& options);
-        virtual void setPropsFromBinary(cocos2d::ui::Widget* widget, CocoLoader* cocoLoader,  stExpCocoNode*	pCocoNode) ;
-        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                             flatbuffers::FlatBufferBuilder* builder);
-        void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* textBMFontOptions);
-        cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* textBMFontOptions);
 
+        virtual void setPropsFromJsonDictionary(cocos2d::ui::Widget *widget, const rapidjson::Value &options);
+        virtual void setPropsFromBinary(cocos2d::ui::Widget *widget, CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
+        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                             flatbuffers::FlatBufferBuilder *builder);
+        void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *textBMFontOptions);
+        cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *textBMFontOptions);
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__TestCpp__TextBMFontReader__) */

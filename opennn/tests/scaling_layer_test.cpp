@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   S C A L I N G   L A Y E R   T E S T   C L A S S                       
+//   S C A L I N G   L A Y E R   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "scaling_layer_test.h"
 
-
 ScalingLayerTest::ScalingLayerTest() : UnitTesting()
 {
 }
 
-
 ScalingLayerTest::~ScalingLayerTest()
 {
 }
-
 
 void ScalingLayerTest::test_constructor()
 {
@@ -46,20 +43,15 @@ void ScalingLayerTest::test_constructor()
    assert_true(sl4.get_type() == Layer::Scaling, LOG);
 }
 
-
 void ScalingLayerTest::test_destructor()
 {
    cout << "test_destructor\n";
-
 }
-
 
 void ScalingLayerTest::test_assignment_operator()
 {
    cout << "test_assignment_operator\n";
-
 }
-
 
 void ScalingLayerTest::test_get_neurons_number()
 {
@@ -78,18 +70,15 @@ void ScalingLayerTest::test_get_neurons_number()
    assert_true(sl1.get_neurons_number() == 3, LOG);
 }
 
-
 void ScalingLayerTest::test_set()
 {
    cout << "test_set\n";
 }
 
-
 void ScalingLayerTest::test_set_default()
 {
    cout << "test_set_default\n";
 }
-
 
 void ScalingLayerTest::test_get_means()
 {
@@ -111,27 +100,25 @@ void ScalingLayerTest::test_get_means()
    sl.set_mean(0, 2.0);
 
    means = sl.get_means();
- 
+
    assert_true(means.size() == 1, LOG);
    assert_true(means == 2.0, LOG);
 }
 
-
 void ScalingLayerTest::test_get_standard_deviations()
 {
-    cout << "test_get_standard_deviations\n";
+   cout << "test_get_standard_deviations\n";
 
-    ScalingLayer sl;
+   ScalingLayer sl;
 
-    assert_true(sl.get_standard_deviations().empty(), LOG);
+   assert_true(sl.get_standard_deviations().empty(), LOG);
 
-    sl.set(1);
+   sl.set(1);
 
-    sl.set_standard_deviation(0, 3.0);
+   sl.set_standard_deviation(0, 3.0);
 
-    assert_true(sl.get_standard_deviations() == 3.0, LOG);
+   assert_true(sl.get_standard_deviations() == 3.0, LOG);
 }
-
 
 void ScalingLayerTest::test_get_minimums()
 {
@@ -148,7 +135,6 @@ void ScalingLayerTest::test_get_minimums()
    assert_true(sl1.get_minimums() == 2.0, LOG);
 }
 
-
 void ScalingLayerTest::test_get_maximums()
 {
    cout << "test_get_maximums\n";
@@ -164,12 +150,10 @@ void ScalingLayerTest::test_get_maximums()
    assert_true(sl1.get_maximums() == 2.0, LOG);
 }
 
-
 void ScalingLayerTest::test_get_display_inputs_warning()
 {
    cout << "test_get_display_inputs_warning\n";
 }
-
 
 void ScalingLayerTest::test_get_display()
 {
@@ -180,78 +164,65 @@ void ScalingLayerTest::test_get_display()
    assert_true(sl.get_display(), LOG);
 }
 
-
 void ScalingLayerTest::test_set_scaling_method()
 {
    cout << "test_set_scaling_method\n";
 }
-
 
 void ScalingLayerTest::test_set_means()
 {
    cout << "test_set_means\n";
 }
 
-
 void ScalingLayerTest::test_set_standard_deviations()
 {
    cout << "test_set_standard_deviations\n";
 }
-
 
 void ScalingLayerTest::test_set_mean()
 {
    cout << "test_set_mean\n";
 }
 
-
 void ScalingLayerTest::test_set_standard_deviation()
 {
    cout << "test_set_standard_deviation\n";
 }
-
 
 void ScalingLayerTest::test_set_minimums()
 {
    cout << "test_set_minimums\n";
 }
 
-
 void ScalingLayerTest::test_set_maximums()
 {
    cout << "test_set_maximums\n";
 }
-
 
 void ScalingLayerTest::test_set_minimum()
 {
    cout << "test_set_minimum\n";
 }
 
-
 void ScalingLayerTest::test_set_maximum()
 {
    cout << "test_set_maximum\n";
 }
-
 
 void ScalingLayerTest::test_set_statistics()
 {
    cout << "test_set_statistics\n";
 }
 
-
 void ScalingLayerTest::test_set_display_inputs_warning()
 {
    cout << "test_set_display_inputs_warning\n";
 }
 
-
 void ScalingLayerTest::test_set_display()
 {
    cout << "test_set_display\n";
 }
-
 
 void ScalingLayerTest::test_check_range()
 {
@@ -266,16 +237,14 @@ void ScalingLayerTest::test_check_range()
 
    inputs.set(1, 0.0);
    sl.check_range(inputs);
-
 }
-
 
 void ScalingLayerTest::test_calculate_outputs()
 {
    cout << "test_calculate_outputs\n";
 
    ScalingLayer scaling_layer;
-   
+
    Tensor<double> inputs;
 
    scaling_layer.set_display(false);
@@ -286,33 +255,30 @@ void ScalingLayerTest::test_calculate_outputs()
 
    scaling_layer.set(1);
 
-   inputs.set({1,1}, 0.0);
- 
+   inputs.set({1, 1}, 0.0);
+
    assert_true(scaling_layer.calculate_outputs(inputs) == inputs, LOG);
 
    // Test
 
    scaling_layer.set_scaling_methods(ScalingLayer::MeanStandardDeviation);
- 
+
    scaling_layer.set(1);
 
-   inputs.set({1,1}, 0.0);
+   inputs.set({1, 1}, 0.0);
 
    assert_true(scaling_layer.calculate_outputs(inputs) == inputs, LOG);
 }
-
 
 void ScalingLayerTest::test_calculate_minimum_maximum_output()
 {
    cout << "test_calculate_minimum_maximum_output\n";
 }
 
-
 void ScalingLayerTest::test_calculate_mean_standard_deviation_output()
 {
    cout << "test_calculate_mean_standard_deviation_output\n";
 }
-
 
 void ScalingLayerTest::test_write_expression()
 {
@@ -334,9 +300,7 @@ void ScalingLayerTest::test_write_expression()
    expression = sl.write_expression(inputs_names, outputs_names);
 
    assert_true(expression.empty() == false, LOG);
-
 }
-
 
 void ScalingLayerTest::test_get_scaling_method()
 {
@@ -357,21 +321,19 @@ void ScalingLayerTest::test_get_scaling_method()
    assert_true(sl.get_scaling_methods()[0] == ScalingLayer::MinimumMaximum, LOG);
 }
 
-
 void ScalingLayerTest::test_get_scaling_method_name()
 {
    cout << "test_get_scaling_method_name\n";
 }
 
-
 void ScalingLayerTest::test_to_XML()
 {
    cout << "test_to_XML\n";
 
-   ScalingLayer  sl;
+   ScalingLayer sl;
 
-   tinyxml2::XMLDocument* sld;
-   
+   onntinyxml2::XMLDocument *sld;
+
    // Test
 
    sld = sl.to_XML();
@@ -381,15 +343,14 @@ void ScalingLayerTest::test_to_XML()
    delete sld;
 }
 
-
 void ScalingLayerTest::test_from_XML()
 {
    cout << "test_from_XML\n";
 
-   ScalingLayer  sl;
+   ScalingLayer sl;
 
-   tinyxml2::XMLDocument* sld;
-   
+   onntinyxml2::XMLDocument *sld;
+
    // Test
 
    sld = sl.to_XML();
@@ -398,7 +359,6 @@ void ScalingLayerTest::test_from_XML()
 
    delete sld;
 }
-
 
 void ScalingLayerTest::run_test_case()
 {
@@ -434,7 +394,7 @@ void ScalingLayerTest::run_test_case()
    test_get_scaling_method();
    test_get_scaling_method_name();
 
-   // Display warning 
+   // Display warning
 
    test_get_display_inputs_warning();
 
@@ -496,7 +456,6 @@ void ScalingLayerTest::run_test_case()
 
    cout << "End of scaling layer test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

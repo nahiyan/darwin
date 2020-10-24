@@ -105,7 +105,7 @@ static const int TIXML2_PATCHVERSION = 0;
 #define TINYXML2_MINOR_VERSION 1
 #define TINYXML2_PATCHVERSION 0
 
-namespace tinyxml2
+namespace onntinyxml2
 {
 class XMLDocument;
 class XMLElement;

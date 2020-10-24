@@ -31,12 +31,13 @@
 namespace flatbuffers
 {
     class FlatBufferBuilder;
-    template<typename T> struct Offset;
-    
-    class Table;
-}
+    template <typename T>
+    struct Offset;
 
-namespace tinyxml2
+    class Table;
+} // namespace flatbuffers
+
+namespace cctinyxml2
 {
     class XMLElement;
 }
@@ -51,14 +52,14 @@ namespace cocostudio
     class CC_STUDIO_DLL NodeReaderProtocol
     {
     public:
-        NodeReaderProtocol() {};
-        virtual ~NodeReaderProtocol() {};
-        
-        virtual flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                                     flatbuffers::FlatBufferBuilder* builder) = 0;
-        virtual void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* nodeOptions) = 0;
-        virtual cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* nodeOptions) = 0;
+        NodeReaderProtocol(){};
+        virtual ~NodeReaderProtocol(){};
+
+        virtual flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                                     flatbuffers::FlatBufferBuilder *builder) = 0;
+        virtual void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *nodeOptions) = 0;
+        virtual cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions) = 0;
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__cocos2d_libs__NodeReaderProtocol__) */

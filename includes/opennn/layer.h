@@ -27,119 +27,128 @@
 
 #include "tinyxml2.h"
 
-namespace OpenNN {
-
-/// This abstract class represents the concept of layer of neurons in OpenNN.
-
-///
-/// A layer is composed by a set of internal parameters sharing the same inputs.
-/// Also is used to store information about the layers of the different architectures of NeuralNetworks.
-
-class Layer
+namespace OpenNN
 {
 
-public:
+    /// This abstract class represents the concept of layer of neurons in OpenNN.
 
-    // Enumerations
+    ///
+    /// A layer is composed by a set of internal parameters sharing the same inputs.
+    /// Also is used to store information about the layers of the different architectures of NeuralNetworks.
 
-    /// This enumeration represents the possible types of layers.
-
-    enum LayerType{Scaling, Convolutional, Perceptron, Pooling, Probabilistic, LongShortTermMemory,Recurrent, Unscaling, Bounding, PrincipalComponents};
-
-    struct FirstOrderActivations
+    class Layer
     {
-        /// Default constructor.
 
-        explicit FirstOrderActivations()
+    public:
+        // Enumerations
+
+        /// This enumeration represents the possible types of layers.
+
+        enum LayerType
         {
-        }
+            Scaling,
+            Convolutional,
+            Perceptron,
+            Pooling,
+            Probabilistic,
+            LongShortTermMemory,
+            Recurrent,
+            Unscaling,
+            Bounding,
+            PrincipalComponents
+        };
 
-
-        virtual ~FirstOrderActivations()
+        struct FirstOrderActivations
         {
-        }
+            /// Default constructor.
 
-        void print() const
-        {
-            cout << "Activations:" << endl;
-            cout << activations << endl;
+            explicit FirstOrderActivations()
+            {
+            }
 
-            cout << "Activation derivatives:" << endl;
-            cout << activations_derivatives << endl;
-        }
+            virtual ~FirstOrderActivations()
+            {
+            }
 
-        Tensor<double> activations;
+            void print() const
+            {
+                cout << "Activations:" << endl;
+                cout << activations << endl;
 
-        Tensor<double> activations_derivatives;
-    };
+                cout << "Activation derivatives:" << endl;
+                cout << activations_derivatives << endl;
+            }
 
+            Tensor<double> activations;
 
-    // Constructor
+            Tensor<double> activations_derivatives;
+        };
 
-    explicit Layer() {}
+        // Constructor
 
-    // Destructor
+        explicit Layer() {}
 
-    virtual ~Layer() {}
+        // Destructor
 
-    // Parameters initialization methods
+        virtual ~Layer() {}
 
-    virtual void initialize_parameters(const double&);
+        // Parameters initialization methods
 
-    virtual void randomize_parameters_uniform(const double& = -1.0, const double& = 1.0);
-    virtual void randomize_parameters_normal(const double& = 0.0, const double& = 1.0);
+        virtual void initialize_parameters(const double &);
 
-    // Architecture
+        virtual void randomize_parameters_uniform(const double & = -1.0, const double & = 1.0);
+        virtual void randomize_parameters_normal(const double & = 0.0, const double & = 1.0);
 
-    virtual Vector<double> get_parameters() const;
-    virtual size_t get_parameters_number() const;
+        // Architecture
 
-    virtual void set_parameters(const Vector<double>&);
+        virtual Vector<double> get_parameters() const;
+        virtual size_t get_parameters_number() const;
 
-    // Outputs
+        virtual void set_parameters(const Vector<double> &);
 
-    virtual Tensor<double> calculate_outputs(const Tensor<double>&);
-    virtual Tensor<double> calculate_outputs(const Tensor<double>&, const Vector<double>&);
+        // Outputs
 
-    virtual Vector<double> calculate_error_gradient(const Tensor<double>&, const Layer::FirstOrderActivations&, const Tensor<double>&);
+        virtual Tensor<double> calculate_outputs(const Tensor<double> &);
+        virtual Tensor<double> calculate_outputs(const Tensor<double> &, const Vector<double> &);
 
-    virtual FirstOrderActivations calculate_first_order_activations(const Tensor<double>&);
+        virtual Vector<double> calculate_error_gradient(const Tensor<double> &, const Layer::FirstOrderActivations &, const Tensor<double> &);
 
-    // Deltas
+        virtual FirstOrderActivations calculate_first_order_activations(const Tensor<double> &);
 
-    virtual Tensor<double> calculate_output_delta(const Tensor<double>&, const Tensor<double>&) const;
+        // Deltas
 
-    virtual Tensor<double> calculate_hidden_delta(Layer*,
-                                                  const Tensor<double>&,
-                                                  const Tensor<double>&,
-                                                  const Tensor<double>&) const;
+        virtual Tensor<double> calculate_output_delta(const Tensor<double> &, const Tensor<double> &) const;
 
-    // Get neurons number
+        virtual Tensor<double> calculate_hidden_delta(Layer *,
+                                                      const Tensor<double> &,
+                                                      const Tensor<double> &,
+                                                      const Tensor<double> &) const;
 
-    virtual Vector<size_t> get_input_variables_dimensions() const;
+        // Get neurons number
 
-    virtual size_t get_inputs_number() const;
-    virtual size_t get_neurons_number() const;
+        virtual Vector<size_t> get_input_variables_dimensions() const;
 
-    virtual void set_inputs_number(const size_t&);
-    virtual void set_neurons_number(const size_t&);
+        virtual size_t get_inputs_number() const;
+        virtual size_t get_neurons_number() const;
 
-    virtual string object_to_string() const;
+        virtual void set_inputs_number(const size_t &);
+        virtual void set_neurons_number(const size_t &);
 
-    // Layer type
+        virtual string object_to_string() const;
 
-    LayerType get_type() const;
+        // Layer type
 
-    string get_type_string() const;
+        LayerType get_type() const;
 
-    virtual void write_XML(tinyxml2::XMLPrinter&) const {}
+        string get_type_string() const;
 
-protected:
+        virtual void write_XML(onntinyxml2::XMLPrinter &) const {}
 
+    protected:
         /// Layer type object.
 
         LayerType layer_type = Perceptron;
-};
-}
+    };
+} // namespace OpenNN
 
 #endif // __LAYER_H

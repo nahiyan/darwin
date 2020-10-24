@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   M I N K O W S K I   E R R O R   T E S T   C L A S S                   
+//   M I N K O W S K I   E R R O R   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "minkowski_error_test.h"
 
-
-MinkowskiErrorTest::MinkowskiErrorTest() : UnitTesting() 
+MinkowskiErrorTest::MinkowskiErrorTest() : UnitTesting()
 {
 }
 
-
-MinkowskiErrorTest::~MinkowskiErrorTest() 
+MinkowskiErrorTest::~MinkowskiErrorTest()
 {
 }
-
 
 void MinkowskiErrorTest::test_constructor()
 {
@@ -48,12 +45,10 @@ void MinkowskiErrorTest::test_constructor()
    assert_true(me3.has_data_set() == true, LOG);
 }
 
-
 void MinkowskiErrorTest::test_destructor()
 {
    cout << "test_destructor\n";
 }
-
 
 void MinkowskiErrorTest::test_get_Minkowski_parameter()
 {
@@ -62,16 +57,14 @@ void MinkowskiErrorTest::test_get_Minkowski_parameter()
    MinkowskiError me;
 
    me.set_Minkowski_parameter(1.0);
-   
+
    assert_true(me.get_Minkowski_parameter() == 1.0, LOG);
 }
-
 
 void MinkowskiErrorTest::test_set_Minkowski_parameter()
 {
    cout << "test_set_Minkowski_parameter\n";
 }
-
 
 void MinkowskiErrorTest::test_calculate_training_error()
 {
@@ -79,10 +72,10 @@ void MinkowskiErrorTest::test_calculate_training_error()
 
    Vector<double> parameters;
 
-   NeuralNetwork neural_network(NeuralNetwork::Approximation, {1,1,1});
+   NeuralNetwork neural_network(NeuralNetwork::Approximation, {1, 1, 1});
    neural_network.initialize_parameters(0.0);
 
-   DataSet data_set(1,1,1);
+   DataSet data_set(1, 1, 1);
    data_set.initialize_data(0.0);
 
    MinkowskiError minkowski_error(&neural_network, &data_set);
@@ -102,12 +95,10 @@ void MinkowskiErrorTest::test_calculate_training_error()
    assert_true(abs(minkowski_error.calculate_training_error() - minkowski_error.calculate_training_error(parameters)) < numeric_limits<double>::min(), LOG);
 }
 
-
 void MinkowskiErrorTest::test_calculate_selection_error()
 {
-   cout << "test_calculate_selection_error\n";  
+   cout << "test_calculate_selection_error\n";
 }
-
 
 void MinkowskiErrorTest::test_calculate_training_error_gradient()
 {
@@ -127,141 +118,140 @@ void MinkowskiErrorTest::test_calculate_training_error_gradient()
    size_t outputs_number;
    size_t hidden_neurons;
 
-   ScalingLayer* scaling_layer = new ScalingLayer;
+   ScalingLayer *scaling_layer = new ScalingLayer;
 
-   RecurrentLayer* recurrent_layer = new RecurrentLayer;
+   RecurrentLayer *recurrent_layer = new RecurrentLayer;
 
-   LongShortTermMemoryLayer* long_short_term_memory_layer = new LongShortTermMemoryLayer;
+   LongShortTermMemoryLayer *long_short_term_memory_layer = new LongShortTermMemoryLayer;
 
-   PerceptronLayer* hidden_perceptron_layer = new PerceptronLayer;
-   PerceptronLayer* output_perceptron_layer = new PerceptronLayer;
+   PerceptronLayer *hidden_perceptron_layer = new PerceptronLayer;
+   PerceptronLayer *output_perceptron_layer = new PerceptronLayer;
 
-   ProbabilisticLayer* probabilistic_layer = new ProbabilisticLayer;
+   ProbabilisticLayer *probabilistic_layer = new ProbabilisticLayer;
 
    // Test trivial
-{
-   instances_number = 10;
-   inputs_number = 1;
-   outputs_number = 1;
+   {
+      instances_number = 10;
+      inputs_number = 1;
+      outputs_number = 1;
 
-   data_set.set(instances_number, inputs_number, outputs_number);
+      data_set.set(instances_number, inputs_number, outputs_number);
 
-   data_set.initialize_data(0.0);
+      data_set.initialize_data(0.0);
 
-   hidden_perceptron_layer->set(inputs_number, outputs_number);
-   neural_network.add_layer(hidden_perceptron_layer);
+      hidden_perceptron_layer->set(inputs_number, outputs_number);
+      neural_network.add_layer(hidden_perceptron_layer);
 
-   neural_network.initialize_parameters(0.0);
+      neural_network.initialize_parameters(0.0);
 
-   numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
+      numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
 
-   error_gradient = me.calculate_training_error_gradient();
+      error_gradient = me.calculate_training_error_gradient();
 
-   assert_true(error_gradient.size() == neural_network.get_parameters_number(), LOG);
-   assert_true(error_gradient == 0.0, LOG);
-}
+      assert_true(error_gradient.size() == neural_network.get_parameters_number(), LOG);
+      assert_true(error_gradient == 0.0, LOG);
+   }
 
    neural_network.set();
 
    // Test perceptron and probabilistic
-{
-   instances_number = 10;
-   inputs_number = 3;
-   outputs_number = 2;
-   hidden_neurons = 2;
+   {
+      instances_number = 10;
+      inputs_number = 3;
+      outputs_number = 2;
+      hidden_neurons = 2;
 
-   data_set.set(instances_number, inputs_number, outputs_number);
+      data_set.set(instances_number, inputs_number, outputs_number);
 
-   data_set.randomize_data_normal();
+      data_set.randomize_data_normal();
 
-   data_set.set_training();
+      data_set.set_training();
 
-   hidden_perceptron_layer->set(inputs_number, hidden_neurons);
-   output_perceptron_layer->set(hidden_neurons, outputs_number);
-   probabilistic_layer->set(outputs_number, outputs_number);
+      hidden_perceptron_layer->set(inputs_number, hidden_neurons);
+      output_perceptron_layer->set(hidden_neurons, outputs_number);
+      probabilistic_layer->set(outputs_number, outputs_number);
 
-   neural_network.add_layer(hidden_perceptron_layer);
-   neural_network.add_layer(output_perceptron_layer);
-   neural_network.add_layer(probabilistic_layer);
+      neural_network.add_layer(hidden_perceptron_layer);
+      neural_network.add_layer(output_perceptron_layer);
+      neural_network.add_layer(probabilistic_layer);
 
-   neural_network.randomize_parameters_normal();
+      neural_network.randomize_parameters_normal();
 
-   error_gradient = me.calculate_training_error_gradient();
+      error_gradient = me.calculate_training_error_gradient();
 
-   numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
+      numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
 
-   assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
-}
+      assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
+   }
 
    neural_network.set();
 
    // Test lstm
-{
-   instances_number = 10;
-   inputs_number = 3;
-   outputs_number = 2;
-   hidden_neurons = 2;
+   {
+      instances_number = 10;
+      inputs_number = 3;
+      outputs_number = 2;
+      hidden_neurons = 2;
 
-   data_set.set(instances_number, inputs_number, outputs_number);
+      data_set.set(instances_number, inputs_number, outputs_number);
 
-   data_set.randomize_data_normal();
+      data_set.randomize_data_normal();
 
-   data_set.set_training();
+      data_set.set_training();
 
-   long_short_term_memory_layer->set(inputs_number, hidden_neurons);
-   output_perceptron_layer->set(hidden_neurons, outputs_number);
+      long_short_term_memory_layer->set(inputs_number, hidden_neurons);
+      output_perceptron_layer->set(hidden_neurons, outputs_number);
 
-   neural_network.add_layer(long_short_term_memory_layer);
-   neural_network.add_layer(output_perceptron_layer);
+      neural_network.add_layer(long_short_term_memory_layer);
+      neural_network.add_layer(output_perceptron_layer);
 
-   neural_network.randomize_parameters_normal();
+      neural_network.randomize_parameters_normal();
 
-   error_gradient = me.calculate_training_error_gradient();
+      error_gradient = me.calculate_training_error_gradient();
 
-   numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
+      numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
 
-   assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
-}
+      assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
+   }
 
    neural_network.set();
 
    // Test recurrent
-{
-   instances_number = 10;
-   inputs_number = 3;
-   outputs_number = 2;
-   hidden_neurons = 2;
+   {
+      instances_number = 10;
+      inputs_number = 3;
+      outputs_number = 2;
+      hidden_neurons = 2;
 
-   data_set.set(instances_number, inputs_number, outputs_number);
+      data_set.set(instances_number, inputs_number, outputs_number);
 
-   data_set.randomize_data_normal();
+      data_set.randomize_data_normal();
 
-   data_set.set_training();
+      data_set.set_training();
 
-   recurrent_layer->set(inputs_number, hidden_neurons);
-   output_perceptron_layer->set(hidden_neurons, outputs_number);
+      recurrent_layer->set(inputs_number, hidden_neurons);
+      output_perceptron_layer->set(hidden_neurons, outputs_number);
 
-   neural_network.add_layer(recurrent_layer);
-   neural_network.add_layer(output_perceptron_layer);
+      neural_network.add_layer(recurrent_layer);
+      neural_network.add_layer(output_perceptron_layer);
 
-   neural_network.randomize_parameters_normal();
+      neural_network.randomize_parameters_normal();
 
-   error_gradient = me.calculate_training_error_gradient();
+      error_gradient = me.calculate_training_error_gradient();
 
-   numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
+      numerical_error_gradient = me.calculate_training_error_gradient_numerical_differentiation();
 
-   assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
+      assert_true(absolute_value(error_gradient - numerical_error_gradient) < 1.0e-3, LOG);
+   }
 }
-}
 
-
-void MinkowskiErrorTest::test_to_XML()   
+void MinkowskiErrorTest::test_to_XML()
 {
-   cout << "test_to_XML\n";  
+   cout << "test_to_XML\n";
 
    MinkowskiError me;
 
-   tinyxml2::XMLDocument* document;
+   onntinyxml2::XMLDocument *document;
 
    // Test
 
@@ -270,20 +260,18 @@ void MinkowskiErrorTest::test_to_XML()
    assert_true(document != nullptr, LOG);
 
    delete document;
-
 }
-
 
 /// @todo
 
-void MinkowskiErrorTest::test_from_XML()   
+void MinkowskiErrorTest::test_from_XML()
 {
    cout << "test_from_XML\n";
-/*
+   /*
    MinkowskiError me1;
    MinkowskiError me2;
 
-  tinyxml2::XMLDocument* document;
+  onntinyxml2::XMLDocument* document;
 
   // Test
 
@@ -300,10 +288,9 @@ void MinkowskiErrorTest::test_from_XML()
 */
 }
 
-
 void MinkowskiErrorTest::run_test_case()
 {
-   cout << "Running Minkowski error test case...\n";  
+   cout << "Running Minkowski error test case...\n";
 
    // Constructor and destructor methods
 
@@ -331,7 +318,6 @@ void MinkowskiErrorTest::run_test_case()
 
    cout << "End of Minkowski error test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

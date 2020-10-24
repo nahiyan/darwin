@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   M O D E L   S E L E C T I O N   T E S T   C L A S S                   
+//   M O D E L   S E L E C T I O N   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "model_selection_test.h"
 
-
-ModelSelectionTest::ModelSelectionTest() : UnitTesting() 
+ModelSelectionTest::ModelSelectionTest() : UnitTesting()
 {
 }
 
-
-ModelSelectionTest::~ModelSelectionTest() 
+ModelSelectionTest::~ModelSelectionTest()
 {
 }
-
 
 void ModelSelectionTest::test_constructor()
 {
@@ -33,16 +30,14 @@ void ModelSelectionTest::test_constructor()
     assert_true(!ms2.has_training_strategy(), LOG);
 }
 
-
 void ModelSelectionTest::test_destructor()
 {
     cout << "test_destructor\n";
 
-    ModelSelection* ms = new ModelSelection;
+    ModelSelection *ms = new ModelSelection;
 
     delete ms;
 }
-
 
 void ModelSelectionTest::test_get_training_strategy_pointer()
 {
@@ -54,7 +49,6 @@ void ModelSelectionTest::test_get_training_strategy_pointer()
 
     assert_true(ms.get_training_strategy_pointer() != nullptr, LOG);
 }
-
 
 void ModelSelectionTest::test_set_training_strategy_pointer()
 {
@@ -72,12 +66,10 @@ void ModelSelectionTest::test_set_training_strategy_pointer()
     assert_true(ms.get_training_strategy_pointer() != nullptr, LOG);
 }
 
-
 void ModelSelectionTest::test_set_default()
 {
     cout << "test_set_default\n";
 }
-
 
 void ModelSelectionTest::test_perform_neurons_selection()
 {
@@ -85,7 +77,7 @@ void ModelSelectionTest::test_perform_neurons_selection()
 
     DataSet ds;
 
-    ds.generate_sum_data(20,2);
+    ds.generate_sum_data(20, 2);
 
     NeuralNetwork nn(NeuralNetwork::Approximation, {1, 2, 1});
 
@@ -97,7 +89,7 @@ void ModelSelectionTest::test_perform_neurons_selection()
 
     model_selection.set_display(false);
 
-    IncrementalNeurons* incremental_neurons_pointer = model_selection.get_incremental_neurons_pointer();
+    IncrementalNeurons *incremental_neurons_pointer = model_selection.get_incremental_neurons_pointer();
 
     incremental_neurons_pointer->set_maximum_selection_failures(2);
 
@@ -111,36 +103,33 @@ void ModelSelectionTest::test_perform_neurons_selection()
     assert_true(model_selection.get_neurons_selection_method() == ModelSelection::INCREMENTAL_NEURONS, LOG);
     assert_true(results.incremental_neurons_results_pointer->final_training_loss != 0.0, LOG);
     assert_true(results.incremental_neurons_results_pointer->final_selection_error != 0.0, LOG);
-    assert_true(results.incremental_neurons_results_pointer->optimal_neurons_number >= 1 , LOG);
-
+    assert_true(results.incremental_neurons_results_pointer->optimal_neurons_number >= 1, LOG);
 }
 
-
-void ModelSelectionTest::test_to_XML()   
+void ModelSelectionTest::test_to_XML()
 {
     cout << "test_to_XML\n";
 
     ModelSelection ms;
 
-    tinyxml2::XMLDocument* document = ms.to_XML();
+    onntinyxml2::XMLDocument *document = ms.to_XML();
     assert_true(document != nullptr, LOG);
 
     delete document;
 }
-
 
 /// @todo
 
 void ModelSelectionTest::test_from_XML()
 {
     cout << "test_from_XML\n";
-/*
+    /*
     ModelSelection ms1;
     ModelSelection ms2;
 
     ms1.set_neurons_selection_method(ModelSelection::INCREMENTAL_NEURONS);
 
-    tinyxml2::XMLDocument* document = ms1.to_XML();
+    onntinyxml2::XMLDocument* document = ms1.to_XML();
 
     ms2.from_XML(*document);
 
@@ -149,7 +138,6 @@ void ModelSelectionTest::test_from_XML()
     assert_true(ms2.get_neurons_selection_method() == ModelSelection::INCREMENTAL_NEURONS, LOG);
 */
 }
-
 
 void ModelSelectionTest::test_save()
 {
@@ -162,7 +150,6 @@ void ModelSelectionTest::test_save()
     ms.save(file_name);
 }
 
-
 /// @todo
 
 void ModelSelectionTest::test_load()
@@ -172,7 +159,7 @@ void ModelSelectionTest::test_load()
     string file_name = "../data/model_selection.xml";
 
     ModelSelection ms;
-/*
+    /*
     ms.set_neurons_selection_method(ModelSelection::INCREMENTAL_NEURONS);
 
     // Test
@@ -181,7 +168,6 @@ void ModelSelectionTest::test_load()
     ms.load(file_name);
 */
 }
-
 
 void ModelSelectionTest::run_test_case()
 {

@@ -1,7 +1,7 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   P E R C E P T R O N   L A Y E R   C L A S S   H E A D E R             
+//   P E R C E P T R O N   L A Y E R   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
@@ -31,183 +31,193 @@
 namespace OpenNN
 {
 
-/// This class represents a layer of perceptrons.
+   /// This class represents a layer of perceptrons.
 
-///
-/// Layers of perceptrons will be used to construct multilayer perceptrons. 
+   ///
+   /// Layers of perceptrons will be used to construct multilayer perceptrons.
 
-class PerceptronLayer : public Layer
-{
+   class PerceptronLayer : public Layer
+   {
 
-public:
+   public:
+      // Enumerations
 
-    // Enumerations
+      /// Enumeration of available activation functions for the perceptron neuron model.
 
-    /// Enumeration of available activation functions for the perceptron neuron model.
+      enum ActivationFunction
+      {
+         Threshold,
+         SymmetricThreshold,
+         Logistic,
+         HyperbolicTangent,
+         Linear,
+         RectifiedLinear,
+         ExponentialLinear,
+         ScaledExponentialLinear,
+         SoftPlus,
+         SoftSign,
+         HardSigmoid
+      };
 
-    enum ActivationFunction{Threshold, SymmetricThreshold, Logistic, HyperbolicTangent, Linear, RectifiedLinear, ExponentialLinear, ScaledExponentialLinear, SoftPlus, SoftSign, HardSigmoid};
+      // Constructors
 
-   // Constructors
+      explicit PerceptronLayer();
 
-   explicit PerceptronLayer();
+      explicit PerceptronLayer(const size_t &, const size_t &, const ActivationFunction & = PerceptronLayer::HyperbolicTangent);
 
-   explicit PerceptronLayer(const size_t&, const size_t&, const ActivationFunction& = PerceptronLayer::HyperbolicTangent);
+      PerceptronLayer(const PerceptronLayer &);
 
-   PerceptronLayer(const PerceptronLayer&);
+      // Destructor
 
-   // Destructor
-   
-   virtual ~PerceptronLayer();
+      virtual ~PerceptronLayer();
 
-   // Get methods
+      // Get methods
 
-   bool is_empty() const;
+      bool is_empty() const;
 
-   Vector<size_t> get_input_variables_dimensions() const;
+      Vector<size_t> get_input_variables_dimensions() const;
 
-   size_t get_inputs_number() const;
-   size_t get_neurons_number() const;
+      size_t get_inputs_number() const;
+      size_t get_neurons_number() const;
 
-   // Parameters
+      // Parameters
 
-   Vector<double> get_biases() const;
-   Matrix<double> get_synaptic_weights() const;
+      Vector<double> get_biases() const;
+      Matrix<double> get_synaptic_weights() const;
 
-   Vector<double> get_biases(const Vector<double>&) const;
-   Matrix<double> get_synaptic_weights(const Vector<double>&) const;
+      Vector<double> get_biases(const Vector<double> &) const;
+      Matrix<double> get_synaptic_weights(const Vector<double> &) const;
 
-   Matrix<double> get_synaptic_weights_transpose() const;
+      Matrix<double> get_synaptic_weights_transpose() const;
 
-   size_t get_parameters_number() const;
-   Vector<double> get_parameters() const;
+      size_t get_parameters_number() const;
+      Vector<double> get_parameters() const;
 
-   // Activation functions
+      // Activation functions
 
-   const PerceptronLayer::ActivationFunction& get_activation_function() const;
+      const PerceptronLayer::ActivationFunction &get_activation_function() const;
 
-   string write_activation_function() const;
+      string write_activation_function() const;
 
-   // Display messages
+      // Display messages
 
-   const bool& get_display() const;
+      const bool &get_display() const;
 
-   // Set methods
+      // Set methods
 
-   void set();
-   void set(const size_t&, const size_t&, const PerceptronLayer::ActivationFunction& = PerceptronLayer::HyperbolicTangent);
-   void set(const PerceptronLayer&);
+      void set();
+      void set(const size_t &, const size_t &, const PerceptronLayer::ActivationFunction & = PerceptronLayer::HyperbolicTangent);
+      void set(const PerceptronLayer &);
 
-   void set_default();
+      void set_default();
 
-   // Architecture
+      // Architecture
 
-   void set_inputs_number(const size_t&);
-   void set_neurons_number(const size_t&);
+      void set_inputs_number(const size_t &);
+      void set_neurons_number(const size_t &);
 
-   // Parameters
+      // Parameters
 
-   void set_biases(const Vector<double>&);
-   void set_synaptic_weights(const Matrix<double>&);
+      void set_biases(const Vector<double> &);
+      void set_synaptic_weights(const Matrix<double> &);
 
-   void set_parameters(const Vector<double>&);
+      void set_parameters(const Vector<double> &);
 
-   // Activation functions
+      // Activation functions
 
-   void set_activation_function(const ActivationFunction&);
-   void set_activation_function(const string&);
+      void set_activation_function(const ActivationFunction &);
+      void set_activation_function(const string &);
 
-   // Display messages
+      // Display messages
 
-   void set_display(const bool&);
+      void set_display(const bool &);
 
-   // Growing and pruning
+      // Growing and pruning
 
-   void grow_input();
-   void grow_perceptron();
-   void grow_perceptrons(const size_t&);
+      void grow_input();
+      void grow_perceptron();
+      void grow_perceptrons(const size_t &);
 
-   void prune_input(const size_t&);
-   void prune_neuron(const size_t&);
+      void prune_input(const size_t &);
+      void prune_neuron(const size_t &);
 
-   // Parameters initialization methods
+      // Parameters initialization methods
 
-   void initialize_biases(const double&); 
-   void initialize_synaptic_weights(const double&);
-   void initialize_synaptic_weights_glorot_uniform();
+      void initialize_biases(const double &);
+      void initialize_synaptic_weights(const double &);
+      void initialize_synaptic_weights_glorot_uniform();
 
-   void initialize_parameters(const double&);
+      void initialize_parameters(const double &);
 
-   void randomize_parameters_uniform();
-   void randomize_parameters_uniform(const double&, const double&);
+      void randomize_parameters_uniform();
+      void randomize_parameters_uniform(const double &, const double &);
 
-   void randomize_parameters_normal();
-   void randomize_parameters_normal(const double& = 0.0, const double& = 1.0);
+      void randomize_parameters_normal();
+      void randomize_parameters_normal(const double & = 0.0, const double & = 1.0);
 
-   // Parameters norm 
+      // Parameters norm
 
-   double calculate_parameters_norm() const;
+      double calculate_parameters_norm() const;
 
-   // Perceptron layer combinations
+      // Perceptron layer combinations
 
-   Tensor<double> calculate_combinations(const Tensor<double>&) const;
+      Tensor<double> calculate_combinations(const Tensor<double> &) const;
 
-   Tensor<double> calculate_combinations(const Tensor<double>&, const Vector<double>&) const;
+      Tensor<double> calculate_combinations(const Tensor<double> &, const Vector<double> &) const;
 
-   Tensor<double> calculate_combinations(const Tensor<double>&, const Vector<double>&, const Matrix<double>&) const;
+      Tensor<double> calculate_combinations(const Tensor<double> &, const Vector<double> &, const Matrix<double> &) const;
 
-   // Perceptron layer activations
+      // Perceptron layer activations
 
-   Tensor<double> calculate_activations(const Tensor<double>&) const;
-   Tensor<double> calculate_activations_derivatives(const Tensor<double>&) const;
+      Tensor<double> calculate_activations(const Tensor<double> &) const;
+      Tensor<double> calculate_activations_derivatives(const Tensor<double> &) const;
 
-   // Perceptron layer outputs
+      // Perceptron layer outputs
 
-   Tensor<double> calculate_outputs(const Tensor<double>&);
-   Tensor<double> calculate_outputs(const Tensor<double>&, const Vector<double>&);
-   Tensor<double> calculate_outputs(const Tensor<double>&, const Vector<double>&, const Matrix<double>&) const;
+      Tensor<double> calculate_outputs(const Tensor<double> &);
+      Tensor<double> calculate_outputs(const Tensor<double> &, const Vector<double> &);
+      Tensor<double> calculate_outputs(const Tensor<double> &, const Vector<double> &, const Matrix<double> &) const;
 
-   FirstOrderActivations calculate_first_order_activations(const Tensor<double>&);
+      FirstOrderActivations calculate_first_order_activations(const Tensor<double> &);
 
-   // Delta methods
+      // Delta methods
 
-   Tensor<double> calculate_output_delta(const Tensor<double>&, const Tensor<double>&) const;
-   Tensor<double> calculate_hidden_delta(Layer*, const Tensor<double>&, const Tensor<double>&, const Tensor<double>&) const;
+      Tensor<double> calculate_output_delta(const Tensor<double> &, const Tensor<double> &) const;
+      Tensor<double> calculate_hidden_delta(Layer *, const Tensor<double> &, const Tensor<double> &, const Tensor<double> &) const;
 
-   // Gradient methods
+      // Gradient methods
 
-   Vector<double> calculate_error_gradient(const Tensor<double>&, const Layer::FirstOrderActivations&, const Tensor<double>&);
+      Vector<double> calculate_error_gradient(const Tensor<double> &, const Layer::FirstOrderActivations &, const Tensor<double> &);
 
-   // Expression methods
+      // Expression methods
 
-   string write_expression(const Vector<string>&, const Vector<string>&) const;
-   string write_activation_function_expression() const;
+      string write_expression(const Vector<string> &, const Vector<string> &) const;
+      string write_activation_function_expression() const;
 
-   string object_to_string() const;
+      string object_to_string() const;
 
-   void from_XML(const tinyxml2::XMLDocument& );
-   void write_XML(tinyxml2::XMLPrinter& file_stream) const;
+      void from_XML(const onntinyxml2::XMLDocument &);
+      void write_XML(onntinyxml2::XMLPrinter &file_stream) const;
 
-protected:
+   protected:
+      // MEMBERS
 
-   // MEMBERS
+      Vector<double> biases;
 
-   Vector<double> biases;
+      Matrix<double> synaptic_weights;
 
-   Matrix<double> synaptic_weights;
+      /// Activation function variable.
 
-   /// Activation function variable.
+      ActivationFunction activation_function;
 
-   ActivationFunction activation_function;
+      /// Display messages to screen.
 
-   /// Display messages to screen. 
+      bool display;
+   };
 
-   bool display;
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.

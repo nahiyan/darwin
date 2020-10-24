@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   P R U N I N G   I N P U T S   T E S T   C L A S S   H E A D E R       
+//   P R U N I N G   I N P U T S   T E S T   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
-//   artelnics@artelnics.com                                           
+//   artelnics@artelnics.com
 
 #include "pruning_inputs_test.h"
-
 
 PruningInputsTest::PruningInputsTest() : UnitTesting()
 {
 }
 
-
 PruningInputsTest::~PruningInputsTest()
 {
 }
-
 
 void PruningInputsTest::test_constructor()
 {
@@ -35,25 +32,21 @@ void PruningInputsTest::test_constructor()
     PruningInputs pi2;
 
     assert_true(!pi2.has_training_strategy(), LOG);
-
 }
-
 
 void PruningInputsTest::test_destructor()
 {
     cout << "test_destructor\n";
 
-    PruningInputs* pi = new PruningInputs;
+    PruningInputs *pi = new PruningInputs;
 
     delete pi;
 }
-
 
 void PruningInputsTest::test_set_default()
 {
     cout << "test_set_default\n";
 }
-
 
 void PruningInputsTest::test_perform_inputs_selection()
 {
@@ -67,15 +60,15 @@ void PruningInputsTest::test_perform_inputs_selection()
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
-    PruningInputs::PruningInputsResults* pir;
+    PruningInputs::PruningInputsResults *pir;
 
     // Test
 
-    data_set.generate_inputs_selection_data(40,3);
+    data_set.generate_inputs_selection_data(40, 3);
 
     data_set.split_instances_random();
 
-    neural_network.set(NeuralNetwork::Approximation,{2,6,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 6, 1});
 
     TrainingStrategy ts(&neural_network, &data_set);
 
@@ -91,7 +84,7 @@ void PruningInputsTest::test_perform_inputs_selection()
 
     ///@todo improve test
 
-//    assert_true(pir->optimal_inputs_indices[0] == 0, LOG);
+    //    assert_true(pir->optimal_inputs_indices[0] == 0, LOG);
 
     pi.delete_selection_history();
     pi.delete_parameters_history();
@@ -99,9 +92,9 @@ void PruningInputsTest::test_perform_inputs_selection()
 
     // Test
 
-    data_set.generate_sum_data(40,3);
+    data_set.generate_sum_data(40, 3);
 
-    neural_network.set(NeuralNetwork::Approximation,{2,6,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 6, 1});
 
     ts.set_display(false);
 
@@ -111,12 +104,11 @@ void PruningInputsTest::test_perform_inputs_selection()
 
     pir = pi.perform_inputs_selection();
 
-//    assert_true(pir->optimal_inputs_indices[0] == 0, LOG);
+    //    assert_true(pir->optimal_inputs_indices[0] == 0, LOG);
 
     pi.delete_selection_history();
     pi.delete_parameters_history();
     pi.delete_loss_history();
-
 }
 
 // Serialization methods
@@ -127,7 +119,7 @@ void PruningInputsTest::test_to_XML()
 
     PruningInputs pi;
 
-    tinyxml2::XMLDocument* document = pi.to_XML();
+    onntinyxml2::XMLDocument *document = pi.to_XML();
     assert_true(document != nullptr, LOG);
 
     delete document;
@@ -139,7 +131,7 @@ void PruningInputsTest::test_from_XML()
 
     PruningInputs pi;
 
-    tinyxml2::XMLDocument* document = pi.to_XML();
+    onntinyxml2::XMLDocument *document = pi.to_XML();
     pi.from_XML(*document);
 
     delete document;

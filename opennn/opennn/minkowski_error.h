@@ -1,7 +1,7 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   M I N K O W S K I   E R R O R   C L A S S   H E A D E R               
+//   M I N K O W S K I   E R R O R   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
@@ -26,78 +26,74 @@
 namespace OpenNN
 {
 
-/// This class represents the Minkowski error term. 
+   /// This class represents the Minkowski error term.
 
-///
-/// The Minkowski error measures the difference between the outputs of a neural network and the targets in a data set. 
-/// This error term is used in data modeling problems.
-/// It can be more useful when the data set presents outliers. 
+   ///
+   /// The Minkowski error measures the difference between the outputs of a neural network and the targets in a data set.
+   /// This error term is used in data modeling problems.
+   /// It can be more useful when the data set presents outliers.
 
-class MinkowskiError : public LossIndex
-{
+   class MinkowskiError : public LossIndex
+   {
 
-public:
+   public:
+      // Constructors
 
-   // Constructors
+      explicit MinkowskiError();
 
-   explicit MinkowskiError();
+      explicit MinkowskiError(NeuralNetwork *);
 
-   explicit MinkowskiError(NeuralNetwork*);
+      explicit MinkowskiError(DataSet *);
 
-   explicit MinkowskiError(DataSet*);
+      explicit MinkowskiError(NeuralNetwork *, DataSet *);
 
-   explicit MinkowskiError(NeuralNetwork*, DataSet*);
+      explicit MinkowskiError(const onntinyxml2::XMLDocument &);
 
-   explicit MinkowskiError(const tinyxml2::XMLDocument&);
+      // Destructor
 
-   // Destructor
+      virtual ~MinkowskiError();
 
-   virtual ~MinkowskiError();
+      // Get methods
 
-   // Get methods
+      double get_Minkowski_parameter() const;
 
-   double get_Minkowski_parameter() const;
+      // Set methods
 
-   // Set methods
+      void set_default();
 
-   void set_default();
+      void set_Minkowski_parameter(const double &);
 
-   void set_Minkowski_parameter(const double&);
+      // loss methods
 
-   // loss methods
+      double calculate_training_error() const;
+      double calculate_training_error(const Vector<double> &) const;
 
-   double calculate_training_error() const;
-   double calculate_training_error(const Vector<double>&) const;
+      double calculate_selection_error() const;
 
-   double calculate_selection_error() const;
+      double calculate_batch_error(const Vector<size_t> &) const;
+      double calculate_batch_error(const Vector<size_t> &, const Vector<double> &) const;
 
-   double calculate_batch_error(const Vector<size_t>&) const;
-   double calculate_batch_error(const Vector<size_t>&, const Vector<double>&) const;
+      Tensor<double> calculate_output_gradient(const Tensor<double> &, const Tensor<double> &) const;
 
-   Tensor<double> calculate_output_gradient(const Tensor<double>&, const Tensor<double>&) const;
+      string get_error_type() const;
+      string get_error_type_text() const;
 
-   string get_error_type() const;
-   string get_error_type_text() const;
+      // Serialization methods
 
-   // Serialization methods
+      onntinyxml2::XMLDocument *to_XML() const;
+      void from_XML(const onntinyxml2::XMLDocument &);
 
-   tinyxml2::XMLDocument* to_XML() const;   
-   void from_XML(const tinyxml2::XMLDocument&);   
+      void write_XML(onntinyxml2::XMLPrinter &) const;
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
+   private:
+      /// Minkowski exponent value.
 
-private:
+      double minkowski_parameter;
+   };
 
-   /// Minkowski exponent value.
-
-   double minkowski_parameter;
-
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.

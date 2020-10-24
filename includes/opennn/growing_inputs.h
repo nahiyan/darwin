@@ -27,102 +27,97 @@
 #include "inputs_selection.h"
 #include "tinyxml2.h"
 
-
 namespace OpenNN
 {
 
-/// This concrete class represents a growing inputs algorithm for the InputsSelection as part of the ModelSelection[1] class.
+    /// This concrete class represents a growing inputs algorithm for the InputsSelection as part of the ModelSelection[1] class.
 
-/// [1] Neural Designer "Model Selection Algorithms in Predictive Analytics." \ref https://www.neuraldesigner.com/blog/model-selection
+    /// [1] Neural Designer "Model Selection Algorithms in Predictive Analytics." \ref https://www.neuraldesigner.com/blog/model-selection
 
-class GrowingInputs : public InputsSelection
-{
-
-public:
-
-    // Constructors
-
-    explicit GrowingInputs();
-
-    explicit GrowingInputs(TrainingStrategy*);
-
-    explicit GrowingInputs(const tinyxml2::XMLDocument&);
-
-    explicit GrowingInputs(const string&);
-
-    // Destructor
-
-    virtual ~GrowingInputs();
-
-    // Structures
-
-    /// This structure contains the training results for the growing inputs method.
-
-    struct GrowingInputsResults : public InputsSelection::Results
+    class GrowingInputs : public InputsSelection
     {
-        /// Default constructor.
 
-        explicit GrowingInputsResults() : InputsSelection::Results() {}
+    public:
+        // Constructors
 
-        /// Destructor.
+        explicit GrowingInputs();
 
-        virtual ~GrowingInputsResults() {}
+        explicit GrowingInputs(TrainingStrategy *);
 
+        explicit GrowingInputs(const onntinyxml2::XMLDocument &);
 
-        Vector<bool> selected_inputs;
+        explicit GrowingInputs(const string &);
+
+        // Destructor
+
+        virtual ~GrowingInputs();
+
+        // Structures
+
+        /// This structure contains the training results for the growing inputs method.
+
+        struct GrowingInputsResults : public InputsSelection::Results
+        {
+            /// Default constructor.
+
+            explicit GrowingInputsResults() : InputsSelection::Results() {}
+
+            /// Destructor.
+
+            virtual ~GrowingInputsResults() {}
+
+            Vector<bool> selected_inputs;
+        };
+
+        // Get methods
+
+        const size_t &get_maximum_inputs_number() const;
+
+        const size_t &get_minimum_inputs_number() const;
+
+        const size_t &get_maximum_selection_failures() const;
+
+        // Set methods
+
+        void set_default();
+
+        void set_maximum_inputs_number(const size_t &);
+
+        void set_minimum_inputs_number(const size_t &);
+
+        void set_maximum_selection_failures(const size_t &);
+
+        // Order selection methods
+
+        GrowingInputsResults *perform_inputs_selection();
+
+        // Serialization methods
+
+        Matrix<string> to_string_matrix() const;
+
+        onntinyxml2::XMLDocument *to_XML() const;
+        void from_XML(const onntinyxml2::XMLDocument &);
+
+        void write_XML(onntinyxml2::XMLPrinter &) const;
+
+        void save(const string &) const;
+        void load(const string &);
+
+    private:
+        /// Maximum number of inputs in the neural network.
+
+        size_t maximum_inputs_number;
+
+        /// Minimum number of inputs in the neural network.
+
+        size_t minimum_inputs_number = 1;
+
+        /// Maximum number of iterations at which the selection error increases.
+
+        size_t maximum_selection_failures = 10;
     };
 
-
-    // Get methods
-
-    const size_t& get_maximum_inputs_number() const;
-
-    const size_t& get_minimum_inputs_number() const;
-
-    const size_t& get_maximum_selection_failures() const;
-
-    // Set methods
-
-    void set_default();
-
-    void set_maximum_inputs_number(const size_t&);
-
-    void set_minimum_inputs_number(const size_t&);
-
-    void set_maximum_selection_failures(const size_t&);
-
-    // Order selection methods
-
-    GrowingInputsResults* perform_inputs_selection();
-
-    // Serialization methods
-
-    Matrix<string> to_string_matrix() const;
-
-    tinyxml2::XMLDocument* to_XML() const;
-    void from_XML(const tinyxml2::XMLDocument&);
-
-    void write_XML(tinyxml2::XMLPrinter&) const;
-    
-    void save(const string&) const;
-    void load(const string&);
-
-private:
-
-    /// Maximum number of inputs in the neural network.
-
-    size_t maximum_inputs_number;
-
-    /// Minimum number of inputs in the neural network.
-
-    size_t minimum_inputs_number = 1;
-
-    /// Maximum number of iterations at which the selection error increases.
-
-    size_t maximum_selection_failures = 10;
-};
-
-}
+} // namespace OpenNN
 
 #endif
 

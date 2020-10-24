@@ -30,89 +30,86 @@
 namespace OpenNN
 {
 
-/// This concrete class represents an incremental algorithm for the NeuronsSelection as part of the ModelSelection[1] class.
+    /// This concrete class represents an incremental algorithm for the NeuronsSelection as part of the ModelSelection[1] class.
 
-/// [1] Neural Designer "Model Selection Algorithms in Predictive Analytics." \ref https://www.neuraldesigner.com/blog/model-selection
+    /// [1] Neural Designer "Model Selection Algorithms in Predictive Analytics." \ref https://www.neuraldesigner.com/blog/model-selection
 
-class IncrementalNeurons : public NeuronsSelection
-{
-
-public:
-
-    // Constructors
-
-    explicit IncrementalNeurons();
-
-    explicit IncrementalNeurons(TrainingStrategy*);
-
-    explicit IncrementalNeurons(const tinyxml2::XMLDocument&);
-
-    explicit IncrementalNeurons(const string&);
-
-    // Destructor
-
-    virtual ~IncrementalNeurons();
-
-    /// This structure contains the training results for the incremental order method.
-
-    struct IncrementalNeuronsResults : public NeuronsSelection::Results
+    class IncrementalNeurons : public NeuronsSelection
     {
-        /// Default constructor.
 
-        explicit IncrementalNeuronsResults() : NeuronsSelection::Results()
+    public:
+        // Constructors
+
+        explicit IncrementalNeurons();
+
+        explicit IncrementalNeurons(TrainingStrategy *);
+
+        explicit IncrementalNeurons(const onntinyxml2::XMLDocument &);
+
+        explicit IncrementalNeurons(const string &);
+
+        // Destructor
+
+        virtual ~IncrementalNeurons();
+
+        /// This structure contains the training results for the incremental order method.
+
+        struct IncrementalNeuronsResults : public NeuronsSelection::Results
         {
-        }
+            /// Default constructor.
 
-        /// Destructor.
+            explicit IncrementalNeuronsResults() : NeuronsSelection::Results()
+            {
+            }
 
-        virtual ~IncrementalNeuronsResults()
-        {
-        }
+            /// Destructor.
+
+            virtual ~IncrementalNeuronsResults()
+            {
+            }
+        };
+
+        // Get methods
+
+        const size_t &get_step() const;
+
+        const size_t &get_maximum_selection_failures() const;
+
+        // Set methods
+
+        void set_default();
+
+        void set_step(const size_t &);
+
+        void set_maximum_selection_failures(const size_t &);
+
+        // Order selection methods
+
+        IncrementalNeuronsResults *perform_neurons_selection();
+
+        // Serialization methods
+
+        Matrix<string> to_string_matrix() const;
+
+        onntinyxml2::XMLDocument *to_XML() const;
+        void from_XML(const onntinyxml2::XMLDocument &);
+
+        void write_XML(onntinyxml2::XMLPrinter &) const;
+
+        void save(const string &) const;
+        void load(const string &);
+
+    private:
+        /// Number of neurons added at each iteration.
+
+        size_t step;
+
+        /// Maximum number of iterations at which the selection error increases.
+
+        size_t maximum_selection_failures;
     };
 
-    // Get methods
-
-    const size_t& get_step() const;
-
-    const size_t& get_maximum_selection_failures() const;
-
-    // Set methods
-
-    void set_default();
-
-    void set_step(const size_t&);
-
-    void set_maximum_selection_failures(const size_t&);
-
-    // Order selection methods
-
-    IncrementalNeuronsResults* perform_neurons_selection();
-
-    // Serialization methods
-
-    Matrix<string> to_string_matrix() const;
-
-    tinyxml2::XMLDocument* to_XML() const;
-    void from_XML(const tinyxml2::XMLDocument&);
-
-    void write_XML(tinyxml2::XMLPrinter&) const;    
-
-    void save(const string&) const;
-    void load(const string&);
-
-private:
-
-   /// Number of neurons added at each iteration.
-
-   size_t step;
-
-   /// Maximum number of iterations at which the selection error increases.
-
-   size_t maximum_selection_failures;
-
-};
-
-}
+} // namespace OpenNN
 
 #endif
 

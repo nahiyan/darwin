@@ -40,193 +40,185 @@ THE SOFTWARE.
 #include <thread>
 #include <condition_variable>
 
-namespace tinyxml2
+namespace cctinyxml2
 {
     class XMLElement;
 }
 
-namespace cocostudio {
+namespace cocostudio
+{
     class CocoLoader;
     struct stExpCocoNode;
-/**
+    /**
  *  @js NA
  *  @lua NA
  */
-class CC_STUDIO_DLL DataReaderHelper : cocos2d::Ref
-{
-protected:
-
-    enum ConfigType
+    class CC_STUDIO_DLL DataReaderHelper : cocos2d::Ref
     {
-        DragonBone_XML,
-        CocoStudio_JSON,
-        CocoStudio_Binary
-    };
+    protected:
+        enum ConfigType
+        {
+            DragonBone_XML,
+            CocoStudio_JSON,
+            CocoStudio_Binary
+        };
 
-    typedef struct _AsyncStruct
-    {
-        std::string    filename;
-        std::string    fileContent;
-        ConfigType     configType;
-        std::string    baseFilePath;
-        cocos2d::Ref       *target;
-        cocos2d::SEL_SCHEDULE   selector;
-        bool           autoLoadSpriteFile;
+        typedef struct _AsyncStruct
+        {
+            std::string filename;
+            std::string fileContent;
+            ConfigType configType;
+            std::string baseFilePath;
+            cocos2d::Ref *target;
+            cocos2d::SEL_SCHEDULE selector;
+            bool autoLoadSpriteFile;
 
-        std::string    imagePath;
-        std::string    plistPath;
-    } AsyncStruct;
+            std::string imagePath;
+            std::string plistPath;
+        } AsyncStruct;
 
-    typedef struct _DataInfo
-    {
-        AsyncStruct *asyncStruct;
-        std::queue<std::string>      configFileQueue;
-        float contentScale;
-        std::string    filename;
-        std::string    baseFilePath;
-        float flashToolVersion;
-        float cocoStudioVersion;
-    } DataInfo;
+        typedef struct _DataInfo
+        {
+            AsyncStruct *asyncStruct;
+            std::queue<std::string> configFileQueue;
+            float contentScale;
+            std::string filename;
+            std::string baseFilePath;
+            float flashToolVersion;
+            float cocoStudioVersion;
+        } DataInfo;
 
-public:
+    public:
+        /** @deprecated Use getInstance() instead */
+        CC_DEPRECATED_ATTRIBUTE static DataReaderHelper *sharedDataReaderHelper() { return DataReaderHelper::getInstance(); }
 
-    /** @deprecated Use getInstance() instead */
-    CC_DEPRECATED_ATTRIBUTE static DataReaderHelper *sharedDataReaderHelper() { return DataReaderHelper::getInstance(); }
+        static DataReaderHelper *getInstance();
 
-    static DataReaderHelper *getInstance();
-
-    /**
+        /**
      * Scale the position data, used for multiresolution adapter
      * It won't effect the data already read.
      */
-    static void setPositionReadScale(float scale);
-    static float getPositionReadScale();
+        static void setPositionReadScale(float scale);
+        static float getPositionReadScale();
 
-    static void purge();
-public:
-    /**
+        static void purge();
+
+    public:
+        /**
      * @js ctor
      */
-    DataReaderHelper();
-    /**
+        DataReaderHelper();
+        /**
      * @js NA
      * @lua NA
      */
-    ~DataReaderHelper();
+        ~DataReaderHelper();
 
-    void addDataFromFile(const std::string& filePath);
-    void addDataFromFileAsync(const std::string& imagePath, const std::string& plistPath, const std::string& filePath, cocos2d::Ref *target, cocos2d::SEL_SCHEDULE selector);
+        void addDataFromFile(const std::string &filePath);
+        void addDataFromFileAsync(const std::string &imagePath, const std::string &plistPath, const std::string &filePath, cocos2d::Ref *target, cocos2d::SEL_SCHEDULE selector);
 
-    void addDataAsyncCallBack(float dt);
+        void addDataAsyncCallBack(float dt);
 
-    void removeConfigFile(const std::string& configFile);
-public:
+        void removeConfigFile(const std::string &configFile);
 
-    /**
+    public:
+        /**
      * Translate XML export from Dragon Bone flash tool to datas, and save them.
      * When you add a new xml, the data already saved will be kept.
      *
      * @param xmlPath The cache of the xml
      */
-    static void addDataFromCache(const std::string& pFileContent, DataInfo *dataInfo = nullptr);
+        static void addDataFromCache(const std::string &pFileContent, DataInfo *dataInfo = nullptr);
 
-
-
-    /**
+        /**
      * Decode Armature Datas from xml export from Dragon Bone flash tool
      */
-    static ArmatureData *decodeArmature(tinyxml2::XMLElement *armatureXML, DataInfo *dataInfo);
-    static BoneData *decodeBone(tinyxml2::XMLElement *boneXML, tinyxml2::XMLElement *parentXML, DataInfo *dataInfo);
-    static DisplayData *decodeBoneDisplay(tinyxml2::XMLElement *displayXML, DataInfo *dataInfo);
+        static ArmatureData *decodeArmature(cctinyxml2::XMLElement *armatureXML, DataInfo *dataInfo);
+        static BoneData *decodeBone(cctinyxml2::XMLElement *boneXML, cctinyxml2::XMLElement *parentXML, DataInfo *dataInfo);
+        static DisplayData *decodeBoneDisplay(cctinyxml2::XMLElement *displayXML, DataInfo *dataInfo);
 
-
-    /**
+        /**
      * Decode ArmatureAnimation Datas from xml export from Dragon Bone flash tool
      */
-    static AnimationData *decodeAnimation(tinyxml2::XMLElement *animationXML, DataInfo *dataInfo);
-    static MovementData *decodeMovement(tinyxml2::XMLElement *movementXML, ArmatureData *armatureData, DataInfo *dataInfo);
-    static MovementBoneData *decodeMovementBone(tinyxml2::XMLElement *movBoneXml, tinyxml2::XMLElement *parentXml, BoneData *boneData, DataInfo *dataInfo);
-    static FrameData *decodeFrame(tinyxml2::XMLElement *frameXML, tinyxml2::XMLElement *parentFrameXml, BoneData *boneData, DataInfo *dataInfo);
+        static AnimationData *decodeAnimation(cctinyxml2::XMLElement *animationXML, DataInfo *dataInfo);
+        static MovementData *decodeMovement(cctinyxml2::XMLElement *movementXML, ArmatureData *armatureData, DataInfo *dataInfo);
+        static MovementBoneData *decodeMovementBone(cctinyxml2::XMLElement *movBoneXml, cctinyxml2::XMLElement *parentXml, BoneData *boneData, DataInfo *dataInfo);
+        static FrameData *decodeFrame(cctinyxml2::XMLElement *frameXML, cctinyxml2::XMLElement *parentFrameXml, BoneData *boneData, DataInfo *dataInfo);
 
-
-    /**
+        /**
      * Decode Texture Datas from xml export from Dragon Bone flash tool
      */
-    static TextureData *decodeTexture(tinyxml2::XMLElement *textureXML, DataInfo *dataInfo);
+        static TextureData *decodeTexture(cctinyxml2::XMLElement *textureXML, DataInfo *dataInfo);
 
-    /**
+        /**
      * Decode Contour Datas from xml export from Dragon Bone flash tool
      */
-    static ContourData *decodeContour(tinyxml2::XMLElement *contourXML, DataInfo *dataInfo);
+        static ContourData *decodeContour(cctinyxml2::XMLElement *contourXML, DataInfo *dataInfo);
 
-public:
-    static void addDataFromJsonCache(const std::string& fileContent, DataInfo *dataInfo = nullptr);
+    public:
+        static void addDataFromJsonCache(const std::string &fileContent, DataInfo *dataInfo = nullptr);
 
-    static ArmatureData *decodeArmature(const rapidjson::Value& json, DataInfo *dataInfo);
-    static BoneData *decodeBone(const rapidjson::Value& json, DataInfo *dataInfo);
-    static DisplayData *decodeBoneDisplay(const rapidjson::Value& json, DataInfo *dataInfo);
+        static ArmatureData *decodeArmature(const rapidjson::Value &json, DataInfo *dataInfo);
+        static BoneData *decodeBone(const rapidjson::Value &json, DataInfo *dataInfo);
+        static DisplayData *decodeBoneDisplay(const rapidjson::Value &json, DataInfo *dataInfo);
 
-    static AnimationData *decodeAnimation(const rapidjson::Value& json, DataInfo *dataInfo);
-    static MovementData *decodeMovement(const rapidjson::Value& json, DataInfo *dataInfo);
-    static MovementBoneData *decodeMovementBone(const rapidjson::Value& json, DataInfo *dataInfo);
-    static FrameData *decodeFrame(const rapidjson::Value& json, DataInfo *dataInfo);
+        static AnimationData *decodeAnimation(const rapidjson::Value &json, DataInfo *dataInfo);
+        static MovementData *decodeMovement(const rapidjson::Value &json, DataInfo *dataInfo);
+        static MovementBoneData *decodeMovementBone(const rapidjson::Value &json, DataInfo *dataInfo);
+        static FrameData *decodeFrame(const rapidjson::Value &json, DataInfo *dataInfo);
 
-    static TextureData *decodeTexture(const rapidjson::Value& json);
+        static TextureData *decodeTexture(const rapidjson::Value &json);
 
-    static ContourData *decodeContour(const rapidjson::Value& json);
+        static ContourData *decodeContour(const rapidjson::Value &json);
 
-    static void decodeNode(BaseData *node, const rapidjson::Value& json, DataInfo *dataInfo);
-    
-// for binary decode
-public:
-    static void addDataFromBinaryCache(const char *fileContent, DataInfo *dataInfo = nullptr);
-    static ArmatureData *decodeArmature(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    static BoneData *decodeBone(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    static DisplayData *decodeBoneDisplay(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    static AnimationData *decodeAnimation(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    static MovementData *decodeMovement(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    
-    static MovementBoneData *decodeMovementBone(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    static FrameData *decodeFrame(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    
-    static TextureData *decodeTexture(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
-    static ContourData *decodeContour(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
-    
-    static void decodeNode(BaseData *node, CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
-    
-protected:
-    void loadData();
+        static void decodeNode(BaseData *node, const rapidjson::Value &json, DataInfo *dataInfo);
 
+        // for binary decode
+    public:
+        static void addDataFromBinaryCache(const char *fileContent, DataInfo *dataInfo = nullptr);
+        static ArmatureData *decodeArmature(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
+        static BoneData *decodeBone(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
+        static DisplayData *decodeBoneDisplay(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
+        static AnimationData *decodeAnimation(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
+        static MovementData *decodeMovement(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
 
+        static MovementBoneData *decodeMovementBone(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
+        static FrameData *decodeFrame(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
 
+        static TextureData *decodeTexture(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
+        static ContourData *decodeContour(CocoLoader *cocoLoader, stExpCocoNode *pCocoNode);
 
-    std::condition_variable        _sleepCondition;
+        static void decodeNode(BaseData *node, CocoLoader *cocoLoader, stExpCocoNode *pCocoNode, DataInfo *dataInfo);
 
-    std::thread     *_loadingThread;
+    protected:
+        void loadData();
 
-    std::mutex      _sleepMutex;
+        std::condition_variable _sleepCondition;
 
-    std::mutex      _asyncStructQueueMutex;
-    std::mutex      _dataInfoMutex;
+        std::thread *_loadingThread;
 
-    std::mutex      _addDataMutex;
+        std::mutex _sleepMutex;
 
-    std::mutex      _getFileMutex;
+        std::mutex _asyncStructQueueMutex;
+        std::mutex _dataInfoMutex;
 
-      
-    unsigned long _asyncRefCount;
-    unsigned long _asyncRefTotalCount;
+        std::mutex _addDataMutex;
 
-    bool need_quit;
+        std::mutex _getFileMutex;
 
-    std::queue<AsyncStruct *> *_asyncStructQueue;
-    std::queue<DataInfo *>   *_dataQueue;
+        unsigned long _asyncRefCount;
+        unsigned long _asyncRefTotalCount;
 
-    static std::vector<std::string> _configFileList;
+        bool need_quit;
 
-    static DataReaderHelper *_dataReaderHelper;
-};
+        std::queue<AsyncStruct *> *_asyncStructQueue;
+        std::queue<DataInfo *> *_dataQueue;
 
-}
+        static std::vector<std::string> _configFileList;
+
+        static DataReaderHelper *_dataReaderHelper;
+    };
+
+} // namespace cocostudio
 
 #endif /*__CCDATAREADERHELPER_H__*/

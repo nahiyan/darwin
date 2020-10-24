@@ -20,76 +20,69 @@
 #include "loss_index.h"
 #include "data_set.h"
 
-
-
 #include "tinyxml2.h"
 
 namespace OpenNN
 {
 
-/// This class represents the cross entropy error term, used for predicting probabilities.
+   /// This class represents the cross entropy error term, used for predicting probabilities.
 
-///
-/// This functional is used in classification problems.
+   ///
+   /// This functional is used in classification problems.
 
-class CrossEntropyError : public LossIndex
-{
+   class CrossEntropyError : public LossIndex
+   {
 
-public:
+   public:
+      // DEFAULT CONSTRUCTOR
 
-   // DEFAULT CONSTRUCTOR
+      explicit CrossEntropyError();
 
-   explicit CrossEntropyError();
+      // NEURAL NETWORK CONSTRUCTOR
 
-   // NEURAL NETWORK CONSTRUCTOR
+      explicit CrossEntropyError(NeuralNetwork *);
 
-   explicit CrossEntropyError(NeuralNetwork*);
+      // DATA SET CONSTRUCTOR
 
-   // DATA SET CONSTRUCTOR
+      explicit CrossEntropyError(DataSet *);
 
-   explicit CrossEntropyError(DataSet*);
+      explicit CrossEntropyError(NeuralNetwork *, DataSet *);
 
-   
+      // XML CONSTRUCTOR
 
-   explicit CrossEntropyError(NeuralNetwork*, DataSet*);
+      explicit CrossEntropyError(const onntinyxml2::XMLDocument &);
 
-   // XML CONSTRUCTOR
+      // COPY CONSTRUCTOR
 
-   explicit CrossEntropyError(const tinyxml2::XMLDocument&);
+      CrossEntropyError(const CrossEntropyError &);
 
-   // COPY CONSTRUCTOR
+      virtual ~CrossEntropyError();
 
-   CrossEntropyError(const CrossEntropyError&);
+      // Error methods
 
-   virtual ~CrossEntropyError();
+      double calculate_batch_error(const Vector<size_t> &) const;
+      double calculate_batch_error(const Vector<size_t> &, const Vector<double> &) const;
 
-   // Error methods
+      // Gradient methods
 
-   double calculate_batch_error(const Vector<size_t>&) const;
-   double calculate_batch_error(const Vector<size_t>&, const Vector<double>&) const;
+      FirstOrderLoss calculate_batch_first_order_loss(const Vector<size_t> &) const;
 
-   // Gradient methods
+      Tensor<double> calculate_output_gradient(const Tensor<double> &, const Tensor<double> &) const;
 
-   FirstOrderLoss calculate_batch_first_order_loss(const Vector<size_t>&) const;
+      string get_error_type() const;
+      string get_error_type_text() const;
 
-   Tensor<double> calculate_output_gradient(const Tensor<double>&, const Tensor<double>&) const;
+      // Serialization methods
 
-   string get_error_type() const;
-   string get_error_type_text() const;
+      onntinyxml2::XMLDocument *to_XML() const;
+      void from_XML(const onntinyxml2::XMLDocument &);
 
-   // Serialization methods
+      void write_XML(onntinyxml2::XMLPrinter &) const;
+   };
 
-   tinyxml2::XMLDocument* to_XML() const;   
-   void from_XML(const tinyxml2::XMLDocument&);
-
-   void write_XML(tinyxml2::XMLPrinter&) const;
-
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.

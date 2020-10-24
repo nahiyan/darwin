@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   B O U N D I N G   L A Y E R   T E S T   C L A S S                     
+//   B O U N D I N G   L A Y E R   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
-//   E-mail: artelnics@artelnics.com                                       
+//   E-mail: artelnics@artelnics.com
 
 #include "bounding_layer_test.h"
-
 
 BoundingLayerTest::BoundingLayerTest() : UnitTesting()
 {
 }
 
-
 BoundingLayerTest::~BoundingLayerTest()
 {
 }
-
 
 void BoundingLayerTest::test_constructor()
 {
@@ -38,12 +35,10 @@ void BoundingLayerTest::test_constructor()
    assert_true(bounding_layer2.get_neurons_number() == 2, LOG);
 }
 
-
 void BoundingLayerTest::test_destructor()
 {
    cout << "test_destructor\n";
 }
-
 
 void BoundingLayerTest::test_assignment_operator()
 {
@@ -54,7 +49,6 @@ void BoundingLayerTest::test_assignment_operator()
 
    assert_true(bounding_layer_2.get_neurons_number() == 0, LOG);
 }
-
 
 void BoundingLayerTest::test_get_neurons_number()
 {
@@ -73,48 +67,40 @@ void BoundingLayerTest::test_get_neurons_number()
    assert_true(bounding_layer.get_neurons_number() == 1, LOG);
 }
 
-
 void BoundingLayerTest::test_set()
 {
    cout << "test_set\n";
 }
-
 
 void BoundingLayerTest::test_set_default()
 {
    cout << "test_set_default\n";
 }
 
-
 void BoundingLayerTest::test_get_lower_bounds()
 {
    cout << "test_get_lower_bounds\n";
 }
-
 
 void BoundingLayerTest::test_get_upper_bounds()
 {
    cout << "test_get_upper_bounds\n";
 }
 
-
 void BoundingLayerTest::test_get_lower_bound()
 {
    cout << "test_get_lower_bound\n";
 }
-
 
 void BoundingLayerTest::test_get_upper_bound()
 {
    cout << "test_get_upper_bound\n";
 }
 
-
 void BoundingLayerTest::test_get_bounds()
 {
    cout << "test_get_bounds\n";
 }
-
 
 void BoundingLayerTest::test_get_type()
 {
@@ -123,51 +109,42 @@ void BoundingLayerTest::test_get_type()
    BoundingLayer bounding_layer;
 
    assert_true(bounding_layer.get_type() == Layer::Bounding, LOG);
-
 }
-
 
 void BoundingLayerTest::test_get_display()
 {
    cout << "test_get_display\n";
 }
 
-
 void BoundingLayerTest::test_set_lower_bounds()
 {
    cout << "test_set_lower_bounds\n";
 }
-
 
 void BoundingLayerTest::test_set_upper_bounds()
 {
    cout << "test_set_upper_bounds\n";
 }
 
-
 void BoundingLayerTest::test_set_lower_bound()
 {
    cout << "test_set_lower_bound\n";
 }
-
 
 void BoundingLayerTest::test_set_upper_bound()
 {
    cout << "test_set_upper_bound\n";
 }
 
-
 void BoundingLayerTest::test_set_bounds()
 {
    cout << "test_set_bounds\n";
 }
 
-
 void BoundingLayerTest::test_set_display()
 {
    cout << "test_set_display\n";
 }
-
 
 void BoundingLayerTest::test_calculate_outputs()
 {
@@ -175,7 +152,7 @@ void BoundingLayerTest::test_calculate_outputs()
 
    BoundingLayer bounding_layer(1);
    bounding_layer.set_lower_bound(0, -1.0);
-   bounding_layer.set_upper_bound(0,  1.0);
+   bounding_layer.set_upper_bound(0, 1.0);
    bounding_layer.set_bounding_method("Bounding");
 
    Tensor<double> inputs(1, 1);
@@ -183,7 +160,7 @@ void BoundingLayerTest::test_calculate_outputs()
    // Test
 
    Tensor<double> outputs(1, 1);
-   inputs[0] = -2.0; 
+   inputs[0] = -2.0;
    outputs = bounding_layer.calculate_outputs(inputs);
    assert_true(outputs.get_dimensions_number() == 2, LOG);
    assert_true(outputs == -1.0, LOG);
@@ -194,9 +171,7 @@ void BoundingLayerTest::test_calculate_outputs()
    outputs = bounding_layer.calculate_outputs(inputs);
    assert_true(outputs.get_dimensions_number() == 2, LOG);
    assert_true(outputs == 1.0, LOG);
-
 }
-
 
 void BoundingLayerTest::test_to_XML()
 {
@@ -204,7 +179,7 @@ void BoundingLayerTest::test_to_XML()
 
    BoundingLayer bounding_layer;
 
-   tinyxml2::XMLDocument* document;
+   onntinyxml2::XMLDocument *document;
 
    // Test
 
@@ -213,9 +188,7 @@ void BoundingLayerTest::test_to_XML()
    assert_true(document != nullptr, LOG);
 
    delete document;
-
 }
-
 
 void BoundingLayerTest::test_from_XML()
 {
@@ -223,24 +196,19 @@ void BoundingLayerTest::test_from_XML()
 
    BoundingLayer bounding_layer;
 
-   tinyxml2::XMLDocument* blep;
+   onntinyxml2::XMLDocument *blep;
 
    // Test
 
    blep = bounding_layer.to_XML();
 
    bounding_layer.from_XML(*blep);
-
 }
-
 
 void BoundingLayerTest::test_write_expression()
 {
    cout << "test_write_expression\n";
-
-
 }
-
 
 void BoundingLayerTest::run_test_case()
 {
@@ -311,7 +279,6 @@ void BoundingLayerTest::run_test_case()
 
    cout << "End of bounding layer test case.\n";
 }
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.

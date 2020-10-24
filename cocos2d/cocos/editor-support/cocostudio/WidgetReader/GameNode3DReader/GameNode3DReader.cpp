@@ -43,46 +43,44 @@ using namespace flatbuffers;
 namespace cocostudio
 {
     IMPLEMENT_CLASS_NODE_READER_INFO(GameNode3DReader)
-    
+
     GameNode3DReader::GameNode3DReader()
     {
-        
     }
-    
+
     GameNode3DReader::~GameNode3DReader()
     {
-        
     }
-    
-    static GameNode3DReader* _instanceNode3DReader = nullptr;
-    
-    GameNode3DReader* GameNode3DReader::getInstance()
+
+    static GameNode3DReader *_instanceNode3DReader = nullptr;
+
+    GameNode3DReader *GameNode3DReader::getInstance()
     {
         if (!_instanceNode3DReader)
         {
             _instanceNode3DReader = new (std::nothrow) GameNode3DReader();
         }
-        
+
         return _instanceNode3DReader;
     }
-    static CameraBackgroundBrush* _sceneBrushInstance = nullptr;
-    CameraBackgroundBrush* GameNode3DReader::getSceneBrushInstance()
+    static CameraBackgroundBrush *_sceneBrushInstance = nullptr;
+    CameraBackgroundBrush *GameNode3DReader::getSceneBrushInstance()
     {
         return _sceneBrushInstance;
     }
-    
+
     void GameNode3DReader::purge()
     {
         CC_SAFE_DELETE(_instanceNode3DReader);
     }
-    
+
     void GameNode3DReader::destroyInstance()
     {
         CC_SAFE_DELETE(_instanceNode3DReader);
     }
-    
-    Offset<Table> GameNode3DReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
-        flatbuffers::FlatBufferBuilder *builder)
+
+    Offset<Table> GameNode3DReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                 flatbuffers::FlatBufferBuilder *builder)
     {
         std::string name = "";
         bool useDefaultLight = false;
@@ -118,7 +116,7 @@ namespace cocostudio
         std::string customProperty = "";
 
         // attributes
-        const tinyxml2::XMLAttribute* attribute = objectData->FirstAttribute();
+        const cctinyxml2::XMLAttribute *attribute = objectData->FirstAttribute();
         while (attribute)
         {
             std::string attriname = attribute->Name();
@@ -152,14 +150,14 @@ namespace cocostudio
             {
                 frameEvent = value;
             }
-            
+
             attribute = attribute->Next();
         }
 
         if (!skyBoxValid)
             skyBoxEnabled = false;
 
-        const tinyxml2::XMLElement* child = objectData->FirstChildElement();
+        const cctinyxml2::XMLElement *child = objectData->FirstChildElement();
         while (child)
         {
             std::string childName = child->Name();
@@ -191,7 +189,7 @@ namespace cocostudio
 
                 if (leftResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(leftPlistFile));
                 }
             }
@@ -222,7 +220,7 @@ namespace cocostudio
 
                 if (rightResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(rightPlistFile));
                 }
             }
@@ -253,7 +251,7 @@ namespace cocostudio
 
                 if (upResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(upPlistFile));
                 }
             }
@@ -284,7 +282,7 @@ namespace cocostudio
 
                 if (downResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(downPlistFile));
                 }
             }
@@ -315,7 +313,7 @@ namespace cocostudio
 
                 if (forwardResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(forwardPlistFile));
                 }
             }
@@ -346,7 +344,7 @@ namespace cocostudio
 
                 if (backResourceType == 1)
                 {
-                    FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+                    FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
                     fbs->_textures.push_back(builder->CreateString(backPlistFile));
                 }
             }
@@ -355,46 +353,45 @@ namespace cocostudio
         }
 
         auto options = CreateGameNode3DOption(*builder,
-            builder->CreateString(name),
-            skyBoxMask,
-            skyBoxEnabled,
-            CreateResourceData(*builder,
-                                builder->CreateString(leftPath),
-                                builder->CreateString(leftPlistFile),
-                                leftResourceType),
-            CreateResourceData(*builder,
-                                builder->CreateString(rightPath),
-                                builder->CreateString(rightPlistFile),
-                                rightResourceType),
-            CreateResourceData(*builder,
-                                builder->CreateString(upPath),
-                                builder->CreateString(upPlistFile),
-                                upResourceType),
-            CreateResourceData(*builder,
-                                builder->CreateString(downPath),
-                                builder->CreateString(downPlistFile),
-                                downResourceType),
-            CreateResourceData(*builder,
-                                builder->CreateString(forwardPath),
-                                builder->CreateString(forwardPlistFile),
-                                forwardResourceType),
-            CreateResourceData(*builder,
-                                builder->CreateString(backPath),
-                                builder->CreateString(backPlistFile),
-                                backResourceType),
-            builder->CreateString(frameEvent),
-            builder->CreateString(customProperty),
-            useDefaultLight
-            );
+                                              builder->CreateString(name),
+                                              skyBoxMask,
+                                              skyBoxEnabled,
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(leftPath),
+                                                                 builder->CreateString(leftPlistFile),
+                                                                 leftResourceType),
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(rightPath),
+                                                                 builder->CreateString(rightPlistFile),
+                                                                 rightResourceType),
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(upPath),
+                                                                 builder->CreateString(upPlistFile),
+                                                                 upResourceType),
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(downPath),
+                                                                 builder->CreateString(downPlistFile),
+                                                                 downResourceType),
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(forwardPath),
+                                                                 builder->CreateString(forwardPlistFile),
+                                                                 forwardResourceType),
+                                              CreateResourceData(*builder,
+                                                                 builder->CreateString(backPath),
+                                                                 builder->CreateString(backPlistFile),
+                                                                 backResourceType),
+                                              builder->CreateString(frameEvent),
+                                              builder->CreateString(customProperty),
+                                              useDefaultLight);
 
-        return *(Offset<Table>*)(&options);
+        return *(Offset<Table> *)(&options);
     }
-    
+
     void GameNode3DReader::setPropsWithFlatBuffers(cocos2d::Node *node,
-                                                   const flatbuffers::Table* node3DOptions)
+                                                   const flatbuffers::Table *node3DOptions)
     {
-        auto options = (GameNode3DOption*)node3DOptions;
-        
+        auto options = (GameNode3DOption *)node3DOptions;
+
         std::string name = options->name()->c_str();
         node->setName(name);
 
@@ -410,19 +407,14 @@ namespace cocostudio
             std::string backFileData = options->backFileData()->path()->c_str();
             FileUtils *fileUtils = FileUtils::getInstance();
 
-            if (fileUtils->isFileExist(leftFileData)
-                && fileUtils->isFileExist(rightFileData)
-                && fileUtils->isFileExist(upFileData)
-                && fileUtils->isFileExist(downFileData)
-                && fileUtils->isFileExist(forwardFileData)
-                && fileUtils->isFileExist(backFileData))
+            if (fileUtils->isFileExist(leftFileData) && fileUtils->isFileExist(rightFileData) && fileUtils->isFileExist(upFileData) && fileUtils->isFileExist(downFileData) && fileUtils->isFileExist(forwardFileData) && fileUtils->isFileExist(backFileData))
             {
                 _sceneBrushInstance = CameraBackgroundSkyBoxBrush::create(leftFileData, rightFileData, upFileData, downFileData, forwardFileData, backFileData);
             }
         }
 
         std::string customProperty = options->customProperty()->c_str();
-        ComExtensionData* extensionData = ComExtensionData::create();
+        ComExtensionData *extensionData = ComExtensionData::create();
         extensionData->setCustomProperty(customProperty);
         if (node->getComponent(ComExtensionData::COMPONENT_NAME))
         {
@@ -430,13 +422,13 @@ namespace cocostudio
         }
         node->addComponent(extensionData);
     }
-    
-    Node* GameNode3DReader::createNodeWithFlatBuffers(const flatbuffers::Table *node3DOptions)
+
+    Node *GameNode3DReader::createNodeWithFlatBuffers(const flatbuffers::Table *node3DOptions)
     {
-        Node* node = Node::create();
-        
-        setPropsWithFlatBuffers(node, (Table*)node3DOptions);
-        
+        Node *node = Node::create();
+
+        setPropsWithFlatBuffers(node, (Table *)node3DOptions);
+
         return node;
     }
 
@@ -444,10 +436,10 @@ namespace cocostudio
     {
         if (key == "Normal" || key == "Default")
         {
-            return     0;
+            return 0;
         }
 
-        FlatBuffersSerialize* fbs = FlatBuffersSerialize::getInstance();
+        FlatBuffersSerialize *fbs = FlatBuffersSerialize::getInstance();
         if (fbs->_isSimulator)
         {
             if (key == "MarkedSubImage")
@@ -457,4 +449,4 @@ namespace cocostudio
         }
         return 1;
     }
-}
+} // namespace cocostudio

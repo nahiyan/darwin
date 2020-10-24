@@ -29,131 +29,131 @@
 namespace OpenNN
 {
 
-/// This class represents a layer of bounding neurons. 
+   /// This class represents a layer of bounding neurons.
 
-/// A bounding layer is used to ensure that variables will never fall below or above given values. 
+   /// A bounding layer is used to ensure that variables will never fall below or above given values.
 
-class BoundingLayer : public Layer
-{
+   class BoundingLayer : public Layer
+   {
 
-public:
+   public:
+      // Constructors
 
-   // Constructors
+      explicit BoundingLayer();
 
-   explicit BoundingLayer();
+      explicit BoundingLayer(const size_t &);
 
-   explicit BoundingLayer(const size_t&);
+      explicit BoundingLayer(const onntinyxml2::XMLDocument &);
 
-   explicit BoundingLayer(const tinyxml2::XMLDocument&);
+      BoundingLayer(const BoundingLayer &);
 
-   BoundingLayer(const BoundingLayer&);
+      // Destructor
 
-   // Destructor
-   
-   virtual ~BoundingLayer();
+      virtual ~BoundingLayer();
 
-   // Enumerations
+      // Enumerations
 
-   /// Enumeration of available methods for bounding the output variables.
+      /// Enumeration of available methods for bounding the output variables.
 
-   enum BoundingMethod{NoBounding, Bounding};
+      enum BoundingMethod
+      {
+         NoBounding,
+         Bounding
+      };
 
-   // Check methods
+      // Check methods
 
-   bool is_empty() const;
+      bool is_empty() const;
 
-   // Get methods
+      // Get methods
 
-   Vector<size_t> get_input_variables_dimensions() const;
-   size_t get_inputs_number() const;
-   size_t get_neurons_number() const;
+      Vector<size_t> get_input_variables_dimensions() const;
+      size_t get_inputs_number() const;
+      size_t get_neurons_number() const;
 
-   const BoundingMethod& get_bounding_method() const;
+      const BoundingMethod &get_bounding_method() const;
 
-   string write_bounding_method() const;
+      string write_bounding_method() const;
 
-   const Vector<double>& get_lower_bounds() const;
-   double get_lower_bound(const size_t&) const;
+      const Vector<double> &get_lower_bounds() const;
+      double get_lower_bound(const size_t &) const;
 
-   const Vector<double>& get_upper_bounds() const;
-   double get_upper_bound(const size_t&) const;
+      const Vector<double> &get_upper_bounds() const;
+      double get_upper_bound(const size_t &) const;
 
-   Vector<Vector<double>> get_bounds();
+      Vector<Vector<double>> get_bounds();
 
-   // Variables bounds
+      // Variables bounds
 
-   void set();
-   void set(const size_t&);
-   void set(const tinyxml2::XMLDocument&);
-   void set(const BoundingLayer&);
+      void set();
+      void set(const size_t &);
+      void set(const onntinyxml2::XMLDocument &);
+      void set(const BoundingLayer &);
 
-   void set_inputs_number(const size_t&);
-   void set_neurons_number(const size_t&);
+      void set_inputs_number(const size_t &);
+      void set_neurons_number(const size_t &);
 
+      void set_bounding_method(const BoundingMethod &);
+      void set_bounding_method(const string &);
 
-   void set_bounding_method(const BoundingMethod&);
-   void set_bounding_method(const string&);
+      void set_lower_bounds(const Vector<double> &);
+      void set_lower_bound(const size_t &, const double &);
 
-   void set_lower_bounds(const Vector<double>&);
-   void set_lower_bound(const size_t&, const double&);
+      void set_upper_bounds(const Vector<double> &);
+      void set_upper_bound(const size_t &, const double &);
 
-   void set_upper_bounds(const Vector<double>&);
-   void set_upper_bound(const size_t&, const double&);
+      void set_bounds(const Vector<Vector<double>> &);
 
-   void set_bounds(const Vector<Vector<double>>&);
+      void set_display(const bool &);
 
-   void set_display(const bool&);
+      void set_default();
 
-   void set_default();
+      // Pruning and growing
 
-   // Pruning and growing
+      void prune_neuron(const size_t &);
 
-   void prune_neuron(const size_t&);
+      // Lower and upper bounds
 
-   // Lower and upper bounds
+      Tensor<double> calculate_outputs(const Tensor<double> &);
 
-   Tensor<double> calculate_outputs(const Tensor<double>&);
+      // Expression methods
 
-   // Expression methods
+      string write_expression(const Vector<string> &, const Vector<string> &) const;
+      string write_expression_php(const Vector<string> &, const Vector<string> &) const;
 
-   string write_expression(const Vector<string>&, const Vector<string>&) const;
-   string write_expression_php(const Vector<string>&, const Vector<string>&) const;
+      // Serialization methods
 
-   // Serialization methods
+      string object_to_string() const;
 
-   string object_to_string() const;
+      onntinyxml2::XMLDocument *to_XML() const;
+      void from_XML(const onntinyxml2::XMLDocument &);
 
-   tinyxml2::XMLDocument* to_XML() const;
-   void from_XML(const tinyxml2::XMLDocument&);
+      void write_XML(onntinyxml2::XMLPrinter &) const;
+      //void read_XML( );
 
-   void write_XML(tinyxml2::XMLPrinter&) const;
-   //void read_XML( );
+   protected:
+      // MEMBERS
 
-protected:
+      /// Method used to bound the values.
 
-   // MEMBERS
+      BoundingMethod bounding_method;
 
-   /// Method used to bound the values.
+      /// Lower bounds of output variables
 
-   BoundingMethod bounding_method;
+      Vector<double> lower_bounds;
 
-   /// Lower bounds of output variables
+      /// Upper bounds of output variables
 
-   Vector<double> lower_bounds;
+      Vector<double> upper_bounds;
 
-   /// Upper bounds of output variables
+      /// Display messages to screen.
 
-   Vector<double> upper_bounds;
+      bool display;
+   };
 
-   /// Display messages to screen. 
-
-   bool display;
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.
@@ -172,4 +172,3 @@ protected:
 // License along with this library; if not, write to the Free Software
 
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-

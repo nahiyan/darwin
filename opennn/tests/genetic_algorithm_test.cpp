@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   G E N E T I C   A L G O R I T H M   T E S T   C L A S S   H E A D E R 
+//   G E N E T I C   A L G O R I T H M   T E S T   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "genetic_algorithm_test.h"
 
-
 GeneticAlgorithmTest::GeneticAlgorithmTest() : UnitTesting()
 {
 }
 
-
 GeneticAlgorithmTest::~GeneticAlgorithmTest()
 {
 }
-
 
 void GeneticAlgorithmTest::test_constructor()
 {
@@ -37,22 +34,19 @@ void GeneticAlgorithmTest::test_constructor()
     assert_true(!ga2.has_training_strategy(), LOG);
 }
 
-
 void GeneticAlgorithmTest::test_destructor()
 {
     cout << "test_destructor\n";
 
-    GeneticAlgorithm* ga = new GeneticAlgorithm;
+    GeneticAlgorithm *ga = new GeneticAlgorithm;
 
     delete ga;
 }
-
 
 void GeneticAlgorithmTest::test_set_default()
 {
     cout << "test_set_default\n";
 }
-
 
 void GeneticAlgorithmTest::test_initialize_population()
 {
@@ -60,7 +54,7 @@ void GeneticAlgorithmTest::test_initialize_population()
 
     DataSet data_set;
 
-    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3,2,1});
+    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3, 2, 1});
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
@@ -68,7 +62,7 @@ void GeneticAlgorithmTest::test_initialize_population()
 
     GeneticAlgorithm ga(&ts);
 
-    Vector< Vector<bool> > population;
+    Vector<Vector<bool>> population;
 
     ga.set_population_size(10);
 
@@ -80,9 +74,7 @@ void GeneticAlgorithmTest::test_initialize_population()
 
     assert_true(population.size() == 10, LOG);
     assert_true(population[0].size() == 3, LOG);
-
 }
-
 
 /// @todo
 
@@ -92,7 +84,7 @@ void GeneticAlgorithmTest::test_calculate_fitness()
 
     DataSet data_set;
 
-    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3,2,1});
+    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3, 2, 1});
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
@@ -100,16 +92,16 @@ void GeneticAlgorithmTest::test_calculate_fitness()
 
     GeneticAlgorithm ga(&ts);
 
-    Matrix<double> loss(4,2);
+    Matrix<double> loss(4, 2);
 
     Vector<double> fitness;
 
     ga.set_population_size(4);
 
-    loss(0,1) = 1;
-    loss(1,1) = 2;
-    loss(2,1) = 3;
-    loss(3,1) = 4;
+    loss(0, 1) = 1;
+    loss(1, 1) = 2;
+    loss(2, 1) = 3;
+    loss(3, 1) = 4;
 
     ga.set_loss(loss);
 
@@ -130,9 +122,7 @@ void GeneticAlgorithmTest::test_calculate_fitness()
 
     assert_true(maximal_index(fitness) == 0, LOG);
     assert_true(minimal_index(fitness) == 3, LOG);
-
 }
-
 
 void GeneticAlgorithmTest::test_perform_selection()
 {
@@ -140,7 +130,7 @@ void GeneticAlgorithmTest::test_perform_selection()
 
     DataSet data_set;
 
-    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3,2,1});
+    NeuralNetwork neural_network(NeuralNetwork::Approximation, {3, 2, 1});
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
@@ -148,13 +138,13 @@ void GeneticAlgorithmTest::test_perform_selection()
 
     GeneticAlgorithm ga(&ts);
 
-    Vector< Vector<bool> > population;
+    Vector<Vector<bool>> population;
 
-    Vector< Vector<bool> > selected_population;
+    Vector<Vector<bool>> selected_population;
 
     Vector<double> fitness(4);
 
-    Matrix<double> loss(4,2);
+    Matrix<double> loss(4, 2);
 
     ga.set_population_size(4);
 
@@ -163,10 +153,14 @@ void GeneticAlgorithmTest::test_perform_selection()
     fitness[2] = 3;
     fitness[3] = 4;
 
-    loss(0,0) = 0.0; loss(0,1) = 0.4;
-    loss(1,0) = 0.0; loss(1,1) = 0.3;
-    loss(2,0) = 0.0; loss(2,1) = 0.2;
-    loss(3,0) = 0.0; loss(3,1) = 0.1;
+    loss(0, 0) = 0.0;
+    loss(0, 1) = 0.4;
+    loss(1, 0) = 0.0;
+    loss(1, 1) = 0.3;
+    loss(2, 0) = 0.0;
+    loss(2, 1) = 0.2;
+    loss(3, 0) = 0.0;
+    loss(3, 1) = 0.1;
 
     ga.set_inicialization_method(GeneticAlgorithm::Random);
 
@@ -188,14 +182,13 @@ void GeneticAlgorithmTest::test_perform_selection()
     assert_true(selected_population[1] == population[2], LOG);
 }
 
-
 void GeneticAlgorithmTest::test_perform_crossover()
 {
     cout << "test_perform_crossover\n";
 
     DataSet data_set;
 
-    NeuralNetwork neural_network(NeuralNetwork::Approximation, {2,2,1});
+    NeuralNetwork neural_network(NeuralNetwork::Approximation, {2, 2, 1});
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
@@ -203,20 +196,22 @@ void GeneticAlgorithmTest::test_perform_crossover()
 
     GeneticAlgorithm ga(&ts);
 
-    Vector< Vector<bool> > population(4);
+    Vector<Vector<bool>> population(4);
     Vector<bool> individual(2);
 
-    Vector< Vector<bool> > crossover_population;
+    Vector<Vector<bool>> crossover_population;
 
     Vector<double> fitness(4);
 
-    Matrix<double> loss(4,2);
+    Matrix<double> loss(4, 2);
 
-    individual[0] = true; individual[1] = true;
+    individual[0] = true;
+    individual[1] = true;
     population[0] = individual;
     population[1] = individual;
 
-    individual[0] = false; individual[1] = true;
+    individual[0] = false;
+    individual[1] = true;
     population[2] = individual;
     population[3] = individual;
 
@@ -225,10 +220,14 @@ void GeneticAlgorithmTest::test_perform_crossover()
     fitness[2] = 3;
     fitness[3] = 4;
 
-    loss(0,0) = 0.0; loss(0,1) = 0.4;
-    loss(1,0) = 0.0; loss(1,1) = 0.3;
-    loss(2,0) = 0.0; loss(2,1) = 0.2;
-    loss(3,0) = 0.0; loss(3,1) = 0.1;
+    loss(0, 0) = 0.0;
+    loss(0, 1) = 0.4;
+    loss(1, 0) = 0.0;
+    loss(1, 1) = 0.3;
+    loss(2, 0) = 0.0;
+    loss(2, 1) = 0.2;
+    loss(3, 0) = 0.0;
+    loss(3, 1) = 0.1;
 
     ga.set_population_size(4);
 
@@ -269,9 +268,7 @@ void GeneticAlgorithmTest::test_perform_crossover()
     crossover_population = ga.get_population();
 
     assert_true(crossover_population[2][1] == true, LOG);
-
 }
-
 
 void GeneticAlgorithmTest::test_perform_mutation()
 {
@@ -279,7 +276,7 @@ void GeneticAlgorithmTest::test_perform_mutation()
 
     DataSet data_set;
 
-    NeuralNetwork neural_network(NeuralNetwork::Approximation, {1,2,1});
+    NeuralNetwork neural_network(NeuralNetwork::Approximation, {1, 2, 1});
 
     SumSquaredError sum_squared_error(&neural_network, &data_set);
 
@@ -287,10 +284,10 @@ void GeneticAlgorithmTest::test_perform_mutation()
 
     GeneticAlgorithm ga(&ts);
 
-    Vector< Vector<bool> > population(4);
+    Vector<Vector<bool>> population(4);
     Vector<bool> individual(1);
 
-    Vector< Vector<bool> > mutated_population;
+    Vector<Vector<bool>> mutated_population;
 
     individual[0] = 1;
     population[0] = individual;
@@ -329,7 +326,6 @@ void GeneticAlgorithmTest::test_perform_mutation()
     assert_true(mutated_population[3][0] == 0, LOG);
 }
 
-
 void GeneticAlgorithmTest::test_perform_inputs_selection()
 {
     cout << "test_perform_inputs_selection\n";
@@ -340,25 +336,25 @@ void GeneticAlgorithmTest::test_perform_inputs_selection()
 
     NeuralNetwork neural_network;
 
-    SumSquaredError sum_squared_error(&neural_network,& data_set);
+    SumSquaredError sum_squared_error(&neural_network, &data_set);
 
-    GeneticAlgorithm::GeneticAlgorithmResults* ga_results;
-    GeneticAlgorithm::GeneticAlgorithmResults* ga1_results;
+    GeneticAlgorithm::GeneticAlgorithmResults *ga_results;
+    GeneticAlgorithm::GeneticAlgorithmResults *ga1_results;
 
     // Test
 
-    data.set(20,3);
+    data.set(20, 3);
 
-    for(size_t i = 0; i < 20; i++)
+    for (size_t i = 0; i < 20; i++)
     {
-        data(i,0) = static_cast<double>(i);
-        data(i,1) = 10.0;
-        data(i,2) = static_cast<double>(i);
+        data(i, 0) = static_cast<double>(i);
+        data(i, 1) = 10.0;
+        data(i, 2) = static_cast<double>(i);
     }
 
     data_set.set(data);
 
-    neural_network.set(NeuralNetwork::Approximation, {2,6,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 6, 1});
 
     TrainingStrategy ts(&neural_network, &data_set);
 
@@ -385,29 +381,29 @@ void GeneticAlgorithmTest::test_perform_inputs_selection()
 
     // Test
 
-//    size_t j = -10;
+    //    size_t j = -10;
 
-//    for(size_t i = 0; i < 10; i++)
-//    {
-//        data(i,0) = (double)j;
-//        data(i,1) = rand();
-//        data(i,2) = 1.0;
-//        j+=1;
-//    }
-//    for(size_t i = 10; i < 20; i++)
-//    {
-//        data(i,0) = (double)i;
-//        data(i,1) = rand();
-//        data(i,2) = 0.0;
-//    }
+    //    for(size_t i = 0; i < 10; i++)
+    //    {
+    //        data(i,0) = (double)j;
+    //        data(i,1) = rand();
+    //        data(i,2) = 1.0;
+    //        j+=1;
+    //    }
+    //    for(size_t i = 10; i < 20; i++)
+    //    {
+    //        data(i,0) = (double)i;
+    //        data(i,1) = rand();
+    //        data(i,2) = 0.0;
+    //    }
 
-//    data_set.set(data);
+    //    data_set.set(data);
 
-    data_set.generate_inputs_selection_data(20,3);
+    data_set.generate_inputs_selection_data(20, 3);
 
-    data_set.set_columns_uses({"Input","Input","Target"});
+    data_set.set_columns_uses({"Input", "Input", "Target"});
 
-    neural_network.set(NeuralNetwork::Approximation, {2,6,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 6, 1});
 
     TrainingStrategy ts1(&neural_network, &data_set);
 
@@ -426,16 +422,14 @@ void GeneticAlgorithmTest::test_perform_inputs_selection()
 
     ga1_results = ga1.perform_inputs_selection();
 
-//    assert_true(ga1_results->iterations_number == 1, LOG);
+    //    assert_true(ga1_results->iterations_number == 1, LOG);
     assert_true(ga1_results->final_selection_error < 1, LOG);
     assert_true(ga_results->stopping_condition == InputsSelection::SelectionErrorGoal, LOG);
 
     ga1.delete_selection_history();
     ga1.delete_parameters_history();
     ga1.delete_loss_history();
-
 }
-
 
 void GeneticAlgorithmTest::test_to_XML()
 {
@@ -443,12 +437,11 @@ void GeneticAlgorithmTest::test_to_XML()
 
     GeneticAlgorithm ga;
 
-    tinyxml2::XMLDocument* document = ga.to_XML();
+    onntinyxml2::XMLDocument *document = ga.to_XML();
     assert_true(document != nullptr, LOG);
 
     delete document;
 }
-
 
 void GeneticAlgorithmTest::test_from_XML()
 {
@@ -456,7 +449,7 @@ void GeneticAlgorithmTest::test_from_XML()
 
     GeneticAlgorithm ga;
 
-    tinyxml2::XMLDocument* document = ga.to_XML();
+    onntinyxml2::XMLDocument *document = ga.to_XML();
     ga.from_XML(*document);
 
     delete document;

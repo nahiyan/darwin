@@ -32,74 +32,70 @@
 #include "tinyxml2.h"
 #include "flatbuffers/flatbuffers.h"
 
-
-
 USING_NS_CC;
 using namespace flatbuffers;
 
 namespace cocostudio
 {
     IMPLEMENT_CLASS_NODE_READER_INFO(SingleNodeReader)
-    
+
     SingleNodeReader::SingleNodeReader()
     {
-        
     }
-    
+
     SingleNodeReader::~SingleNodeReader()
     {
-        
     }
-    
-    static SingleNodeReader* _instanceSingleNodeReader = nullptr;
-    
-    SingleNodeReader* SingleNodeReader::getInstance()
+
+    static SingleNodeReader *_instanceSingleNodeReader = nullptr;
+
+    SingleNodeReader *SingleNodeReader::getInstance()
     {
         if (!_instanceSingleNodeReader)
         {
             _instanceSingleNodeReader = new (std::nothrow) SingleNodeReader();
         }
-        
+
         return _instanceSingleNodeReader;
     }
-    
+
     void SingleNodeReader::purge()
     {
         CC_SAFE_DELETE(_instanceSingleNodeReader);
     }
-    
+
     void SingleNodeReader::destroyInstance()
     {
         CC_SAFE_DELETE(_instanceSingleNodeReader);
     }
-    
-    Offset<Table> SingleNodeReader::createOptionsWithFlatBuffers(const tinyxml2::XMLElement *objectData,
+
+    Offset<Table> SingleNodeReader::createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
                                                                  flatbuffers::FlatBufferBuilder *builder)
     {
         auto temp = NodeReader::getInstance()->createOptionsWithFlatBuffers(objectData, builder);
-        auto nodeOptions = *(Offset<WidgetOptions>*)(&temp);
-        
+        auto nodeOptions = *(Offset<WidgetOptions> *)(&temp);
+
         auto options = CreateSingleNodeOptions(*builder,
                                                nodeOptions);
-        
-        return *(Offset<Table>*)(&options);
+
+        return *(Offset<Table> *)(&options);
     }
-    
+
     void SingleNodeReader::setPropsWithFlatBuffers(cocos2d::Node *node,
-                                             const flatbuffers::Table* singleNodeOptions)
+                                                   const flatbuffers::Table *singleNodeOptions)
     {
-        auto options = (SingleNodeOptions*)(singleNodeOptions);
-        
+        auto options = (SingleNodeOptions *)(singleNodeOptions);
+
         auto nodeReader = NodeReader::getInstance();
-        nodeReader->setPropsWithFlatBuffers(node, (Table*)(options->nodeOptions()));
+        nodeReader->setPropsWithFlatBuffers(node, (Table *)(options->nodeOptions()));
     }
-    
-    Node* SingleNodeReader::createNodeWithFlatBuffers(const flatbuffers::Table *singleNodeOptions)
+
+    Node *SingleNodeReader::createNodeWithFlatBuffers(const flatbuffers::Table *singleNodeOptions)
     {
-        Node* node = Node::create();
-        
+        Node *node = Node::create();
+
         setPropsWithFlatBuffers(node, singleNodeOptions);
-        
+
         return node;
     }
-}
+} // namespace cocostudio

@@ -34,20 +34,19 @@ class BoneNodeReader : public cocos2d::Ref, public cocostudio::NodeReaderProtoco
     DECLARE_CLASS_NODE_READER_INFO
 
 public:
-
     BoneNodeReader();
     ~BoneNodeReader();
 
-    static BoneNodeReader* getInstance();
+    static BoneNodeReader *getInstance();
     /** @deprecated Use method destroyInstance() instead */
     CC_DEPRECATED_ATTRIBUTE static void purge();
     static void destroyInstance();
 
-    flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-        flatbuffers::FlatBufferBuilder* builder) override;
-    void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* boneOptions) override;
+    flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                         flatbuffers::FlatBufferBuilder *builder) override;
+    void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *boneOptions) override;
 
-    cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* boneOptions) override;
+    cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *boneOptions) override;
 };
 
 #endif /* defined(__BONENODEREADER_H_) */

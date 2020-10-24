@@ -31,7 +31,7 @@
 #include "editor-support/cocostudio/WidgetReader/NodeReaderProtocol.h"
 #include "editor-support/cocostudio/WidgetReader/NodeReaderDefine.h"
 
-namespace tinyxml2
+namespace cctinyxml2
 {
     class XMLAttribute;
 }
@@ -41,25 +41,25 @@ namespace cocostudio
     class CC_STUDIO_DLL GameNode3DReader : public cocos2d::Ref, public NodeReaderProtocol
     {
         DECLARE_CLASS_NODE_READER_INFO
-        
+
     public:
         GameNode3DReader();
         ~GameNode3DReader();
-        
-        static GameNode3DReader* getInstance();
-        static cocos2d::CameraBackgroundBrush* getSceneBrushInstance();
+
+        static GameNode3DReader *getInstance();
+        static cocos2d::CameraBackgroundBrush *getSceneBrushInstance();
         /** @deprecated Use method destroyInstance() instead */
         CC_DEPRECATED_ATTRIBUTE static void purge();
         static void destroyInstance();
-        
-        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const tinyxml2::XMLElement* objectData,
-                                                                             flatbuffers::FlatBufferBuilder* builder);
-        void setPropsWithFlatBuffers(cocos2d::Node* node, const flatbuffers::Table* node3DOptions);
-        cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* node3DOptions);
-        
+
+        flatbuffers::Offset<flatbuffers::Table> createOptionsWithFlatBuffers(const cctinyxml2::XMLElement *objectData,
+                                                                             flatbuffers::FlatBufferBuilder *builder);
+        void setPropsWithFlatBuffers(cocos2d::Node *node, const flatbuffers::Table *node3DOptions);
+        cocos2d::Node *createNodeWithFlatBuffers(const flatbuffers::Table *node3DOptions);
+
     protected:
         int getResourceType(std::string key);
     };
-}
+} // namespace cocostudio
 
 #endif /* defined(__cocos2d_libs__Node3DReader__) */

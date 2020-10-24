@@ -1,23 +1,20 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   G R O W I N G   I N P U T S   T E S T   C L A S S   H E A D E R       
+//   G R O W I N G   I N P U T S   T E S T   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
-//   artelnics@artelnics.com                                           
+//   artelnics@artelnics.com
 
 #include "growing_inputs_test.h"
-
 
 GrowingInputsTest::GrowingInputsTest() : UnitTesting()
 {
 }
 
-
 GrowingInputsTest::~GrowingInputsTest()
 {
 }
-
 
 void GrowingInputsTest::test_constructor()
 {
@@ -35,15 +32,13 @@ void GrowingInputsTest::test_constructor()
     GrowingInputs growing_inputs_2;
 
     assert_true(!growing_inputs_2.has_training_strategy(), LOG);
-
 }
-
 
 void GrowingInputsTest::test_destructor()
 {
     cout << "test_destructor\n";
 
-    GrowingInputs* gi = new GrowingInputs;
+    GrowingInputs *gi = new GrowingInputs;
 
     delete gi;
 }
@@ -55,7 +50,6 @@ void GrowingInputsTest::test_set_default()
     cout << "test_set_default\n";
 }
 
-
 void GrowingInputsTest::test_perform_inputs_selection()
 {
     cout << "test_perform_inputs_selection\n";
@@ -66,19 +60,19 @@ void GrowingInputsTest::test_perform_inputs_selection()
 
     NeuralNetwork neural_network;
 
-    SumSquaredError sum_squared_error(&neural_network ,&ds);
+    SumSquaredError sum_squared_error(&neural_network, &ds);
 
-    GrowingInputs::GrowingInputsResults* gir;
+    GrowingInputs::GrowingInputsResults *gir;
 
     // Test
 
-    ds.generate_inputs_selection_data(30,3);
+    ds.generate_inputs_selection_data(30, 3);
 
-    ds.set_columns_uses({"Input","Input","Target"});
+    ds.set_columns_uses({"Input", "Input", "Target"});
 
     ds.split_instances_random();
 
-    neural_network.set(NeuralNetwork::Approximation,{2,1,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 1, 1});
 
     TrainingStrategy ts(&neural_network, &ds);
 
@@ -94,7 +88,7 @@ void GrowingInputsTest::test_perform_inputs_selection()
 
     gir = gi.perform_inputs_selection();
 
-//    assert_true(gir->optimal_inputs_indices[0] == 0, LOG);
+    //    assert_true(gir->optimal_inputs_indices[0] == 0, LOG);
 
     gi.delete_selection_history();
     gi.delete_parameters_history();
@@ -102,11 +96,11 @@ void GrowingInputsTest::test_perform_inputs_selection()
 
     // Test
 
-    ds.generate_sum_data(20,3);
+    ds.generate_sum_data(20, 3);
 
     neural_network.set();
 
-    neural_network.set(NeuralNetwork::Approximation,{2,6,1});
+    neural_network.set(NeuralNetwork::Approximation, {2, 6, 1});
 
     TrainingStrategy ts1(&neural_network, &ds);
 
@@ -123,7 +117,7 @@ void GrowingInputsTest::test_perform_inputs_selection()
     gir = gi1.perform_inputs_selection();
 
     ///@todo improve test
-//    assert_true(gir->optimal_inputs_indices[0] == 0, LOG);
+    //    assert_true(gir->optimal_inputs_indices[0] == 0, LOG);
 
     gi1.delete_selection_history();
     gi1.delete_parameters_history();
@@ -138,7 +132,7 @@ void GrowingInputsTest::test_to_XML()
 
     GrowingInputs growing_inputs;
 
-    tinyxml2::XMLDocument* document = growing_inputs.to_XML();
+    onntinyxml2::XMLDocument *document = growing_inputs.to_XML();
     assert_true(document != nullptr, LOG);
 
     delete document;
@@ -150,12 +144,11 @@ void GrowingInputsTest::test_from_XML()
 
     GrowingInputs growing_inputs;
 
-    tinyxml2::XMLDocument* document = growing_inputs.to_XML();
+    onntinyxml2::XMLDocument *document = growing_inputs.to_XML();
     growing_inputs.from_XML(*document);
 
     delete document;
 }
-
 
 void GrowingInputsTest::run_test_case()
 {

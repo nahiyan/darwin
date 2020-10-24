@@ -1,7 +1,7 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   O P T I M I Z A T I O N   A L G O R I T H M   C L A S S   H E A D E R 
+//   O P T I M I Z A T I O N   A L G O R I T H M   C L A S S   H E A D E R
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
@@ -23,210 +23,210 @@
 
 #include "loss_index.h"
 
-
-
 #include "tinyxml2.h"
 
 namespace OpenNN
 {
 
-/// This abstract class represents the concept of optimization algorithm for a neural network in OpenNN library.
+   /// This abstract class represents the concept of optimization algorithm for a neural network in OpenNN library.
 
-///
-/// Any derived class must implement the perform_training() method.
+   ///
+   /// Any derived class must implement the perform_training() method.
 
-class OptimizationAlgorithm
-{
-
-public:
-
-   explicit OptimizationAlgorithm();
-
-   explicit OptimizationAlgorithm(LossIndex*);
-
-   explicit OptimizationAlgorithm(const tinyxml2::XMLDocument&);
-
-   virtual ~OptimizationAlgorithm();
-
-    /// Enumeration of all possibles condition of stop for the algorithms.
-
-    enum StoppingCondition{MinimumParametersIncrementNorm, MinimumLossDecrease, LossGoal, GradientNormGoal,
-                           MaximumSelectionErrorIncreases, MaximumEpochsNumber, MaximumTime};
-
-   /// This structure contains the optimization algorithm results.    
-
-   struct Results
+   class OptimizationAlgorithm
    {
-       explicit Results()
-       {
-       }
 
-       virtual ~Results()
-       {
-       }
+   public:
+      explicit OptimizationAlgorithm();
 
-       string write_stopping_condition() const;
+      explicit OptimizationAlgorithm(LossIndex *);
 
-       /// Stopping condition of the algorithm.
+      explicit OptimizationAlgorithm(const onntinyxml2::XMLDocument &);
 
-       StoppingCondition stopping_condition;
+      virtual ~OptimizationAlgorithm();
 
-       /// Returns a string representation of the results structure.
+      /// Enumeration of all possibles condition of stop for the algorithms.
 
-       string object_to_string() const;
+      enum StoppingCondition
+      {
+         MinimumParametersIncrementNorm,
+         MinimumLossDecrease,
+         LossGoal,
+         GradientNormGoal,
+         MaximumSelectionErrorIncreases,
+         MaximumEpochsNumber,
+         MaximumTime
+      };
 
-       void save(const string&) const;
+      /// This structure contains the optimization algorithm results.
 
-       /// Returns a default(empty) string matrix with the final results from training.
+      struct Results
+      {
+         explicit Results()
+         {
+         }
 
-       Matrix<string> write_final_results(const size_t&) const;
+         virtual ~Results()
+         {
+         }
 
-       /// Resizes training history variables.
+         string write_stopping_condition() const;
 
-       void resize_training_history(const size_t&);
+         /// Stopping condition of the algorithm.
 
-       /// Writes final results of the training.
+         StoppingCondition stopping_condition;
 
-       Matrix<string> write_final_results(const int& precision = 3) const;
+         /// Returns a string representation of the results structure.
 
-       // Training history
+         string object_to_string() const;
 
-       /// History of the loss function loss over the training iterations.
+         void save(const string &) const;
 
-       Vector<double> training_error_history;
+         /// Returns a default(empty) string matrix with the final results from training.
 
-       /// History of the selection error over the training iterations.
+         Matrix<string> write_final_results(const size_t &) const;
 
-       Vector<double> selection_error_history;
+         /// Resizes training history variables.
 
-       // Final values
+         void resize_training_history(const size_t &);
 
-       /// Final neural network parameters vector.
+         /// Writes final results of the training.
 
-       Vector<double> final_parameters;
+         Matrix<string> write_final_results(const int &precision = 3) const;
 
-       /// Final neural network parameters norm.
+         // Training history
 
-       double final_parameters_norm;
+         /// History of the loss function loss over the training iterations.
 
-       /// Final loss function evaluation.
+         Vector<double> training_error_history;
 
-       double final_training_error;
+         /// History of the selection error over the training iterations.
 
-       /// Final selection error.
+         Vector<double> selection_error_history;
 
-       double final_selection_error;
+         // Final values
 
-       /// Final gradient norm.
+         /// Final neural network parameters vector.
 
-       double final_gradient_norm;
+         Vector<double> final_parameters;
 
-       /// Elapsed time of the training process.
+         /// Final neural network parameters norm.
 
-       double elapsed_time;
+         double final_parameters_norm;
 
-       /// Maximum number of training iterations.
+         /// Final loss function evaluation.
 
-       size_t epochs_number;
+         double final_training_error;
 
-       /// Stopping criterion.
+         /// Final selection error.
 
-       string stopping_criterion;
+         double final_selection_error;
+
+         /// Final gradient norm.
+
+         double final_gradient_norm;
+
+         /// Elapsed time of the training process.
+
+         double elapsed_time;
+
+         /// Maximum number of training iterations.
+
+         size_t epochs_number;
+
+         /// Stopping criterion.
+
+         string stopping_criterion;
+      };
+
+      // Get methods
+
+      LossIndex *get_loss_index_pointer() const;
+
+      bool has_loss_index() const;
+
+      // Utilities
+
+      const bool &get_display() const;
+
+      const size_t &get_display_period() const;
+
+      const size_t &get_save_period() const;
+
+      const string &get_neural_network_file_name() const;
+
+      // Set methods
+
+      void set();
+      void set(LossIndex *);
+
+      virtual void set_default();
+
+      virtual void set_loss_index_pointer(LossIndex *);
+
+      virtual void set_display(const bool &);
+
+      void set_display_period(const size_t &);
+
+      void set_save_period(const size_t &);
+      void set_neural_network_file_name(const string &);
+
+      // Training methods
+
+      virtual void check() const;
+
+      /// Trains a neural network which has a loss index associated.
+
+      virtual Results perform_training() = 0;
+
+      virtual string write_optimization_algorithm_type() const { return string(); }
+
+      // Serialization methods
+
+      virtual string object_to_string() const;
+      void print() const;
+
+      virtual Matrix<string> to_string_matrix() const;
+
+      virtual onntinyxml2::XMLDocument *to_XML() const;
+      virtual void from_XML(const onntinyxml2::XMLDocument &);
+
+      virtual void write_XML(onntinyxml2::XMLPrinter &) const;
+
+      void save(const string &) const;
+      void load(const string &);
+
+   protected:
+      /// Pointer to a loss index for a neural network object.
+
+      LossIndex *loss_index_pointer = nullptr;
+
+      /// Number of training epochs in the neural network.
+
+      size_t epochs_number = 10000;
+
+      // UTILITIES
+
+      /// Number of iterations between the training showing progress.
+
+      size_t display_period;
+
+      /// Number of iterations between the training saving progress.
+
+      size_t save_period;
+
+      /// Path where the neural network is saved.
+
+      string neural_network_file_name;
+
+      /// Display messages to screen.
+
+      bool display;
    };
 
-
-
-
-   // Get methods
-
-   LossIndex* get_loss_index_pointer() const;
-
-   bool has_loss_index() const;
-
-   // Utilities
-
-   const bool& get_display() const;
-
-   const size_t& get_display_period() const;
-
-   const size_t& get_save_period() const;
-
-   const string& get_neural_network_file_name() const;
-
-   // Set methods
-
-   void set();
-   void set(LossIndex*);
-
-   virtual void set_default();
-
-   virtual void set_loss_index_pointer(LossIndex*);
-
-   virtual void set_display(const bool&);
-
-   void set_display_period(const size_t&);
-
-   void set_save_period(const size_t&);
-   void set_neural_network_file_name(const string&);
-
-   // Training methods
-
-   virtual void check() const;
-
-   /// Trains a neural network which has a loss index associated. 
-
-   virtual Results perform_training() = 0;
-
-   virtual string write_optimization_algorithm_type() const {return string();}
-
-   // Serialization methods
-
-   virtual string object_to_string() const;
-   void print() const;
-
-   virtual Matrix<string> to_string_matrix() const;
-
-   virtual tinyxml2::XMLDocument* to_XML() const;
-   virtual void from_XML(const tinyxml2::XMLDocument&);
-
-   virtual void write_XML(tinyxml2::XMLPrinter&) const;
-
-   void save(const string&) const;
-   void load(const string&);
-
-protected:
-
-   /// Pointer to a loss index for a neural network object.
-
-   LossIndex* loss_index_pointer = nullptr;
-
-   /// Number of training epochs in the neural network.
-
-   size_t epochs_number = 10000;
-
-   // UTILITIES
-
-   /// Number of iterations between the training showing progress.
-
-   size_t display_period;
-
-   /// Number of iterations between the training saving progress.
-
-   size_t save_period;
-
-   /// Path where the neural network is saved.
-
-   string neural_network_file_name;
-
-   /// Display messages to screen.
-
-   bool display;
-};
-
-}
+} // namespace OpenNN
 
 #endif
-
 
 // OpenNN: Open Neural Networks Library.
 // Copyright(C) 2005-2019 Artificial Intelligence Techniques, SL.

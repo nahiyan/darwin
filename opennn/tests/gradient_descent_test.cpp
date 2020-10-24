@@ -1,33 +1,30 @@
 //   OpenNN: Open Neural Networks Library
 //   www.opennn.net
 //
-//   G R A D I E N T   D E S C E N T   T E S T   C L A S S                 
+//   G R A D I E N T   D E S C E N T   T E S T   C L A S S
 //
 //   Artificial Intelligence Techniques SL
 //   artelnics@artelnics.com
 
 #include "gradient_descent_test.h"
 
-
 GradientDescentTest::GradientDescentTest() : UnitTesting()
 {
 }
-
 
 GradientDescentTest::~GradientDescentTest()
 {
 }
 
-
 void GradientDescentTest::test_constructor()
 {
-   cout << "test_constructor\n"; 
+   cout << "test_constructor\n";
 
    SumSquaredError sum_squared_error;
 
    // Default constructor
 
-   GradientDescent gd1; 
+   GradientDescent gd1;
    assert_true(gd1.has_loss_index() == false, LOG);
 
    // Loss index constructor
@@ -36,12 +33,10 @@ void GradientDescentTest::test_constructor()
    assert_true(gd2.has_loss_index() == true, LOG);
 }
 
-
 void GradientDescentTest::test_destructor()
 {
-   cout << "test_destructor\n"; 
+   cout << "test_destructor\n";
 }
-
 
 void GradientDescentTest::test_set_reserve_all_training_history()
 {
@@ -55,13 +50,12 @@ void GradientDescentTest::test_set_reserve_all_training_history()
    assert_true(gd.get_reserve_selection_error_history() == true, LOG);
 }
 
-
 /// @todo
 
 void GradientDescentTest::test_perform_training()
 {
    cout << "test_perform_training\n";
-/*
+   /*
    DataSet data_set(1, 1, 2);
    data_set.randomize_data_normal();
 
@@ -152,7 +146,6 @@ void GradientDescentTest::test_perform_training()
 */
 }
 
-
 void GradientDescentTest::test_resize_training_history()
 {
    cout << "test_resize_training_history\n";
@@ -161,7 +154,7 @@ void GradientDescentTest::test_resize_training_history()
 
    gd.set_reserve_all_training_history(true);
 
-   OptimizationAlgorithm::Results gdtr;//(&gd);
+   OptimizationAlgorithm::Results gdtr; //(&gd);
 
    gdtr.resize_training_history(1);
 
@@ -169,16 +162,15 @@ void GradientDescentTest::test_resize_training_history()
    assert_true(gdtr.selection_error_history.size() == 1, LOG);
 }
 
-
 /// @todo
 
 void GradientDescentTest::test_to_XML()
 {
    cout << "test_to_XML\n";
-/*
+   /*
    GradientDescent gd;
 
-   tinyxml2::XMLDocument* document;
+   onntinyxml2::XMLDocument* document;
 
    // Test
 
@@ -189,12 +181,10 @@ void GradientDescentTest::test_to_XML()
 */
 }
 
-
 void GradientDescentTest::test_from_XML()
 {
    cout << "test_from_XML\n";
 }
-
 
 void GradientDescentTest::run_test_case()
 {
@@ -225,8 +215,7 @@ void GradientDescentTest::run_test_case()
    cout << "End of gradient descent test case.\n";
 }
 
-
- // OpenNN: Open Neural Networks Library.
+// OpenNN: Open Neural Networks Library.
 // Copyright (C) 2005-2019 Artificial Intelligence Techniques, SL.
 //
 // This library is free software; you can redistribute it and/or
@@ -242,4 +231,3 @@ void GradientDescentTest::run_test_case()
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
