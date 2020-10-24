@@ -12,8 +12,8 @@
 #include <wx/event.h>
 #include <core/Database.h>
 #include <fstream>
-#include "cocos2d.h"
 #include <extensions/jumper/AppDelegate.h>
+#include <core/CoreSession.h>
 
 #define EXTENSIONS_LIST_BOX_ID 1
 #define SESSIONS_LIST_BOX_ID 2
@@ -195,8 +195,8 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     if (this->generationsListBox->GetStringSelection().ToStdString().size() != 0)
         generationId = std::stoi(this->generationsListBox->GetStringSelection().ToStdString());
 
-    cocos2d::UserDefault::getInstance()->setIntegerForKey("sessionId", sessionId);
-    cocos2d::UserDefault::getInstance()->setIntegerForKey("generationId", generationId);
+    CoreSession::sessionId = sessionId;
+    CoreSession::generationId = generationId;
 
     if (extensionName == "Jumper")
     {

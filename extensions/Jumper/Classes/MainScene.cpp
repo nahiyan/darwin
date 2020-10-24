@@ -13,6 +13,7 @@
 #include <extensions/jumper/Obstacle.h>
 #include <extensions/jumper/GenerationState_generated.h>
 #include <core/Database.h>
+#include <core/CoreSession.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 4
@@ -87,20 +88,16 @@ bool Jumper::MainScene::init()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     // Database
-    auto sessionId = UserDefault::getInstance()->getIntegerForKey("sessionId");
-    auto generationId = UserDefault::getInstance()->getIntegerForKey("generationId");
-
-    if (sessionId == 0)
+    if (CoreSession::sessionId == 0)
     {
         // Create new session
-        auto extensionId = Database::getExtensionId("Jumper");
-        UserDefault::getInstance()->setIntegerForKey("extensionId", extensionId);
-        UserDefault::getInstance()->setIntegerForKey("sessionId", Database::addSession(extensionId));
+        CoreSession::extensionId = Database::getExtensionId("Jumper");
+        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
     }
-    else if (generationId == 0)
+    else if (CoreSession::generationId == 0)
     {
         // Start the session over from scratch
-        Database::clearSession(sessionId);
+        Database::clearSession(CoreSession::sessionId);
     }
 
     return true;
@@ -248,7 +245,7 @@ void Jumper::MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(crossoverAndMutate, UserDefault::getInstance()->getIntegerForKey("sessionId"), builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Update timestamp
     this->cGInfo.startTimestamp = TimeHelper::now();

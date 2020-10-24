@@ -7,6 +7,7 @@ project(core)
 
 add_library(core STATIC
     src/Database.cpp
+    src/CoreSession.cpp
 )
 
 # Includes directory
