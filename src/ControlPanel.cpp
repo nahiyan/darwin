@@ -47,11 +47,17 @@ ControlPanelFrame::ControlPanelFrame()
     auto frameSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(frameSizer);
 
-    // First row
-    auto selectionRow = new wxPanel(this);
+    // Master panel
+    auto masterPanel = new wxPanel(this);
+    auto masterPanelSizer = new wxBoxSizer(wxVERTICAL);
+    masterPanel->SetSizer(masterPanelSizer);
+    frameSizer->Add(masterPanel);
+
+    // Selection row
+    auto selectionRow = new wxPanel(masterPanel);
     auto selectionRowSizer = new wxBoxSizer(wxHORIZONTAL);
     selectionRow->SetSizer(selectionRowSizer);
-    frameSizer->Add(selectionRow);
+    masterPanelSizer->Add(selectionRow);
 
     // Extensions
     auto extensionsPanel = new wxPanel(selectionRow);
@@ -89,8 +95,8 @@ ControlPanelFrame::ControlPanelFrame()
     generationsStaticBoxSizer->Add(this->generationsListBox, 0, wxEXPAND | wxALL, 5);
 
     // Summary row
-    auto summaryRow = new wxPanel(this);
-    frameSizer->Add(summaryRow, 0, wxEXPAND, 0);
+    auto summaryRow = new wxPanel(masterPanel);
+    masterPanelSizer->Add(summaryRow, 0, wxEXPAND | wxRIGHT, 10);
     auto summaryRowSizer = new wxBoxSizer(wxHORIZONTAL);
     summaryRow->SetSizer(summaryRowSizer);
 
@@ -98,8 +104,8 @@ ControlPanelFrame::ControlPanelFrame()
     summaryRowSizer->Add(this->summary, 0, wxLEFT, 10);
 
     // Actions row
-    auto actionsRow = new wxPanel(this);
-    frameSizer->Add(actionsRow);
+    auto actionsRow = new wxPanel(masterPanel);
+    masterPanelSizer->Add(actionsRow);
     auto actionsRowSizer = new wxBoxSizer(wxHORIZONTAL);
     actionsRow->SetSizer(actionsRowSizer);
 
