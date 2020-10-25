@@ -100,6 +100,8 @@ bool Jumper::MainScene::init()
         Database::clearSession(CoreSession::sessionId);
     }
 
+    UserDefault::getInstance()->setStringForKey("fuck", "me");
+
     return true;
 }
 
