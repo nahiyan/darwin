@@ -16,7 +16,7 @@
 #include <core/CoreSession.h>
 
 #define POPULATION_SIZE 10
-#define SPEED 4
+#define SPEED 2
 
 USING_NS_CC;
 
@@ -52,11 +52,43 @@ bool Jumper::MainScene::init()
 
     this->visibleSize = Director::getInstance()->getVisibleSize();
 
+    // Evolution session
+    this->evolutionSession = new EvolutionSession<Jumper>(this->evolutionSession->population);
+
+    // Database
+    std::vector<double> nnParameters[POPULATION_SIZE];
+
+    if (CoreSession::sessionId == 0)
+    {
+        // Create new session
+        CoreSession::extensionId = Database::getExtensionId("Jumper");
+        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
+    }
+    else if (CoreSession::generationId == 0)
+    {
+        // Start the session over from scratch
+        Database::clearSession(CoreSession::sessionId);
+    }
+    else
+    {
+        auto stateBlob = Database::getGenerationState(CoreSession::generationId);
+        auto state = GetGenerationState(stateBlob.binary);
+        delete[] stateBlob.binary;
+
+        for (int i = 0; i < state->population()->size(); i++)
+        {
+            for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)
+            {
+                nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
+            }
+        }
+    }
+
     // Jumpers
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto jumper = new Jumper(Vec2(890, 40), i);
-        this->cGInfo.population.push_back(jumper);
+        auto jumper = new Jumper(Vec2(890, 40), i, nnParameters[i]);
+        this->evolutionSession->population.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
 
@@ -79,35 +111,17 @@ bool Jumper::MainScene::init()
     }
     delete[] boundaries;
 
-    // Evolution session
-    this->evolutionSession = new EvolutionSession<Jumper>(this->cGInfo.population);
-
     // Contact listener
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(MainScene::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
-
-    // Database
-    if (CoreSession::sessionId == 0)
-    {
-        // Create new session
-        CoreSession::extensionId = Database::getExtensionId("Jumper");
-        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
-    }
-    else if (CoreSession::generationId == 0)
-    {
-        // Start the session over from scratch
-        Database::clearSession(CoreSession::sessionId);
-    }
-
-    UserDefault::getInstance()->setStringForKey("fuck", "me");
 
     return true;
 }
 
 void Jumper::MainScene::update(float delta)
 {
-    for (auto jumper : this->cGInfo.population)
+    for (auto jumper : this->evolutionSession->population)
     {
         if (!jumper->isDead)
             jumper->update(delta);
@@ -133,7 +147,7 @@ bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-                auto jumper = this->cGInfo.population[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
+                auto jumper = this->evolutionSession->population[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
                 jumper->kill();
                 this->removeChild(jumper->node);
 
@@ -193,7 +207,7 @@ void Jumper::MainScene::nextGeneration()
         if (physicsBody != nullptr && physicsBody->getCategoryBitmask() <= 2)
         {
             if (physicsBody->getCategoryBitmask() == 1)
-                this->cGInfo.population[child->getTag()]->kill();
+                this->evolutionSession->population[child->getTag()]->kill();
 
             this->removeChild(child);
         }
@@ -202,7 +216,7 @@ void Jumper::MainScene::nextGeneration()
     // Score the current population
     auto generationDuration = TimeHelper::now() - this->cGInfo.startTimestamp;
 
-    for (auto jumper : this->cGInfo.population)
+    for (auto jumper : this->evolutionSession->population)
         jumper->setScore(this->cGInfo.startTimestamp, generationDuration, this->cGInfo.obstaclesDeployed);
 
     // Crossover and mutation function
@@ -229,7 +243,7 @@ void Jumper::MainScene::nextGeneration()
 
     auto population_ = std::vector<flatbuffers::Offset<Member>>();
 
-    for (auto object : this->evolutionSession->objectList)
+    for (auto object : this->evolutionSession->population)
     {
         auto chromosomes = std::vector<double>();
         auto parameters = object->neuralNetwork->get_parameters();
@@ -253,14 +267,14 @@ void Jumper::MainScene::nextGeneration()
     this->cGInfo.startTimestamp = TimeHelper::now();
 
     // Reset jumpers
-    for (auto jumper : this->cGInfo.population)
+    for (auto jumper : this->evolutionSession->population)
         jumper->prepareForNewGeneration();
 
     // Add jumpers
-    for (int i = 0; i < this->cGInfo.population.size(); i++)
+    for (int i = 0; i < this->evolutionSession->population.size(); i++)
     {
-        this->cGInfo.population[i]->generateNode();
-        auto node = this->cGInfo.population[i]->node;
+        this->evolutionSession->population[i]->generateNode();
+        auto node = this->evolutionSession->population[i]->node;
         this->addChild(node, 2, i);
         node->setPosition(890, 40);
     }
@@ -268,13 +282,13 @@ void Jumper::MainScene::nextGeneration()
     // Reset attributes of current generation info
     this->cGInfo.obstaclesUsed = 0;
     this->cGInfo.obstaclesDeployed = 0;
-    this->cGInfo.jumpersAlive = this->cGInfo.population.size();
+    this->cGInfo.jumpersAlive = this->evolutionSession->population.size();
     this->cGInfo.totalJumps = 0;
 }
 
 Jumper::MainScene::~MainScene()
 {
-    for (auto jumper : this->cGInfo.population)
+    for (auto jumper : this->evolutionSession->population)
         delete jumper;
 
     delete this->evolutionSession;

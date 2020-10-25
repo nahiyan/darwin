@@ -10,7 +10,7 @@
 
 USING_NS_CC;
 
-Jumper::Jumper::Jumper(const Vec2 &position, int index)
+Jumper::Jumper::Jumper(const Vec2 &position, int index, std::vector<double> parameters)
 {
     this->index = index;
 
@@ -24,10 +24,17 @@ Jumper::Jumper::Jumper(const Vec2 &position, int index)
     this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 10, 1});
 
     // Randomize parameters
-    std::vector<double> parameters;
-    for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-        parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
-    this->neuralNetwork->set_parameters(parameters);
+    if (parameters.size() > 0)
+    {
+        std::vector<double> parameters;
+        for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
+            parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
+        this->neuralNetwork->set_parameters(parameters);
+    }
+    else
+    {
+        this->neuralNetwork->set_parameters(parameters);
+    }
 }
 
 void Jumper::Jumper::generateNode()

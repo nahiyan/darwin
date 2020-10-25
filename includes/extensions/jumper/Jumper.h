@@ -23,7 +23,7 @@ namespace Jumper
         long long deathTimestamp;
         std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
 
-        Jumper(const cocos2d::Vec2 &, int);
+        Jumper(const cocos2d::Vec2 &, int, std::vector<double>);
         ~Jumper();
 
         void setRayTraceFraction(float);

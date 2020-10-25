@@ -17,7 +17,6 @@ namespace Jumper
 
         struct CurrentGenerationInfo
         {
-            std::vector<Jumper *> population;
             int obstaclesUsed;
             int obstaclesDeployed;
             int jumpersAlive;

@@ -16,43 +16,50 @@ private:
     int generationIndex;
 
 public:
-    std::vector<T *> objectList;
+    std::vector<T *> population;
 
-    EvolutionSession(std::vector<T *> objectList)
+    EvolutionSession(std::vector<T *> population)
     {
-        this->objectList = objectList;
+        this->population = population;
         this->mutationRate = 0.01;
         this->populationDivision[0] = 0.05;
         this->populationDivision[1] = 0.3;
         this->generationIndex = 0;
     }
 
-    void rank()
+    inline std::vector<T *> rank()
     {
+        std::vector<T *> populationRanked;
+
+        for (auto member : this->population)
+            populationRanked.push_back(member);
+
         auto sort_ = [&](T *a, T *b) -> bool {
             return a->getScore() > b->getScore();
         };
 
-        std::sort(this->objectList.begin(), this->objectList.end(), sort_);
+        std::sort(populationRanked.begin(), populationRanked.end(), sort_);
+
+        return populationRanked;
     }
 
     void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
         // Ranking
-        this->rank();
+        auto rankedPopulation = this->rank();
 
         // Save state of tested generation
         this->saveState(sessionId, fBBufferPoint, fBBufferSize);
 
         printf("Scores: ");
-        for (auto object : this->objectList)
+        for (auto object : this->population)
         {
             printf("%f ", object->getScore());
         }
         printf("\n");
 
         // Population size
-        int populationSize = this->objectList.size();
+        int populationSize = this->population.size();
 
         // Upper class
         int upperClassCount = round(populationDivision[0] * populationSize);
@@ -67,10 +74,10 @@ public:
         {
             for (int i = middleClassRange[0]; i < populationSize; i++)
             {
-                auto parentA = this->objectList[rand() % (middleClassRange[1] + 1)];
-                auto parentB = this->objectList[rand() % (middleClassRange[1] + 1)];
+                auto parentA = rankedPopulation[rand() % (middleClassRange[1] + 1)];
+                auto parentB = rankedPopulation[rand() % (middleClassRange[1] + 1)];
 
-                (crossoverAndMutate)(parentA, parentB, this->objectList[i], this->mutationRate);
+                (crossoverAndMutate)(parentA, parentB, rankedPopulation[i], this->mutationRate);
             }
         }
 
