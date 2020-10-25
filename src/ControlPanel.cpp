@@ -4,6 +4,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
 #include <wx/listbase.h>
 #include <wx/listctrl.h>
 #include <wx/stattext.h>
@@ -36,7 +37,6 @@ bool ControlPanel::OnInit()
 ControlPanelFrame::ControlPanelFrame()
     : wxFrame(NULL, wxID_ANY, wxT("Darwin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX))
 {
-    // Database::open(cocos2d::FileUtils::getInstance()->fullPathForFilename("database.db"));
     Database::open("../../../../portal/database/database.db");
     auto extensionNames = Database::getExtensionNames();
 

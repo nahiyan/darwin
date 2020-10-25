@@ -6,6 +6,12 @@
 #include <string>
 #include <vector>
 
+struct GenerationState
+{
+    uint8_t *binary;
+    int size;
+};
+
 class Database
 {
 private:
@@ -27,6 +33,7 @@ public:
     static int addSession(int);
 
     static void addGeneration(int, uint8_t *, int);
+    static GenerationState getGenerationState(int);
 };
 
 #endif // _DATABASE_H_

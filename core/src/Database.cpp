@@ -37,6 +37,41 @@ void Database::clearSession(int sessionId)
         }
     }
 }
+
+GenerationState Database::getGenerationState(int generationId)
+{
+    std::string sql = "SELECT state, length(state) FROM generations WHERE id = ?";
+    uint8_t *blob;
+    int blobSize;
+
+    sqlite3_stmt *statement;
+    if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, nullptr) == SQLITE_OK)
+    {
+        sqlite3_bind_int(statement, 1, generationId);
+        if (sqlite3_step(statement) == SQLITE_ROW)
+        {
+            blob = (uint8_t *)sqlite3_column_blob(statement, 0);
+            blobSize = sqlite3_column_int(statement, 1);
+        }
+        else
+        {
+            printf("Failed to get generation state.\n");
+        }
+
+        sqlite3_finalize(statement);
+    }
+    else
+    {
+        printf("Failed to get generation state.\n");
+    }
+
+    auto generationState = GenerationState();
+    generationState.binary = blob;
+    generationState.size = blobSize;
+
+    return generationState;
+}
+
 int Database::getExtensionId(std::string name)
 {
     std::string sql = "SELECT id FROM extensions WHERE name = ?";
@@ -71,8 +106,7 @@ std::vector<std::string> Database::getExtensionNames()
     std::vector<std::string> names;
 
     sqlite3_stmt *statement;
-    const char *error;
-    if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, &error) == SQLITE_OK)
+    if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, nullptr) == SQLITE_OK)
     {
         while (sqlite3_step(statement) == SQLITE_ROW)
             names.push_back(std::string((const char *)sqlite3_column_text(statement, 0)));
