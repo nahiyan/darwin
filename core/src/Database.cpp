@@ -38,11 +38,9 @@ void Database::clearSession(int sessionId)
     }
 }
 
-GenerationState Database::getGenerationState(int generationId)
+uint8_t *Database::getGenerationState(int generationId)
 {
-    std::string sql = "SELECT state, length(state) FROM generations WHERE id = ?";
-    uint8_t *blob;
-    int blobSize;
+    std::string sql = "SELECT state FROM generations WHERE id = ?";
 
     sqlite3_stmt *statement;
     if (sqlite3_prepare_v2(Database::handle, sql.c_str(), -1, &statement, nullptr) == SQLITE_OK)
@@ -50,8 +48,11 @@ GenerationState Database::getGenerationState(int generationId)
         sqlite3_bind_int(statement, 1, generationId);
         if (sqlite3_step(statement) == SQLITE_ROW)
         {
-            blob = (uint8_t *)sqlite3_column_blob(statement, 0);
-            blobSize = sqlite3_column_int(statement, 1);
+            auto blobSize = sqlite3_column_bytes(statement, 0);
+            auto blob = new uint8_t[blobSize];
+            memcpy(blob, sqlite3_column_blob(statement, 0), blobSize);
+
+            return blob;
         }
         else
         {
@@ -65,11 +66,7 @@ GenerationState Database::getGenerationState(int generationId)
         printf("Failed to get generation state.\n");
     }
 
-    auto generationState = GenerationState();
-    generationState.binary = blob;
-    generationState.size = blobSize;
-
-    return generationState;
+    return nullptr;
 }
 
 int Database::getExtensionId(std::string name)

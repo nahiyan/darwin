@@ -20,6 +20,26 @@
 
 USING_NS_CC;
 
+// Crossover and mutation function
+void crossoverAndMutate(Jumper::Jumper *parentA, Jumper::Jumper *parentB, Jumper::Jumper *offspring, float mutationRate)
+{
+    auto parentAParameters = parentA->neuralNetwork->get_parameters();
+    auto parentBParameters = parentB->neuralNetwork->get_parameters();
+
+    OpenNN::Vector<double> newParameters(parentAParameters.size());
+
+    for (int i = 0; i < parentAParameters.size(); i++)
+    {
+        // Crossover
+        newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
+
+        // Mutation
+        newParameters[i] += random<double>(-1, 1) * mutationRate * newParameters[i];
+    }
+
+    offspring->neuralNetwork->set_parameters(newParameters);
+}
+
 Scene *Jumper::MainScene::createScene()
 {
     return MainScene::create();
@@ -53,7 +73,7 @@ bool Jumper::MainScene::init()
     this->visibleSize = Director::getInstance()->getVisibleSize();
 
     // Evolution session
-    this->evolutionSession = new EvolutionSession<Jumper>(this->evolutionSession->population);
+    this->evolutionSession = new EvolutionSession<Jumper>;
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -71,9 +91,10 @@ bool Jumper::MainScene::init()
     }
     else
     {
-        auto stateBlob = Database::getGenerationState(CoreSession::generationId);
-        auto state = GetGenerationState(stateBlob.binary);
-        delete[] stateBlob.binary;
+        auto stateBinary = Database::getGenerationState(CoreSession::generationId);
+
+        auto state = GetGenerationState(stateBinary);
+        delete[] stateBinary;
 
         for (int i = 0; i < state->population()->size(); i++)
         {
@@ -82,6 +103,8 @@ bool Jumper::MainScene::init()
                 nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
             }
         }
+
+        this->evolutionSession->evolve(crossoverAndMutate);
     }
 
     // Jumpers
@@ -218,25 +241,6 @@ void Jumper::MainScene::nextGeneration()
 
     for (auto jumper : this->evolutionSession->population)
         jumper->setScore(this->cGInfo.startTimestamp, generationDuration, this->cGInfo.obstaclesDeployed);
-
-    // Crossover and mutation function
-    auto crossoverAndMutate = [&](Jumper *parentA, Jumper *parentB, Jumper *offspring, float mutationRate) -> void {
-        auto parentAParameters = parentA->neuralNetwork->get_parameters();
-        auto parentBParameters = parentB->neuralNetwork->get_parameters();
-
-        OpenNN::Vector<double> newParameters(parentAParameters.size());
-
-        for (int i = 0; i < parentAParameters.size(); i++)
-        {
-            // Crossover
-            newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
-
-            // Mutation
-            newParameters[i] += random<double>(-1, 1) * mutationRate * newParameters[i];
-        }
-
-        offspring->neuralNetwork->set_parameters(newParameters);
-    };
 
     // Contructing a FlatBuffers builder
     flatbuffers::FlatBufferBuilder builder(1024);

@@ -18,16 +18,16 @@ private:
 public:
     std::vector<T *> population;
 
-    EvolutionSession(std::vector<T *> population)
+    EvolutionSession()
     {
-        this->population = population;
+        this->population = std::vector<T *>();
         this->mutationRate = 0.01;
         this->populationDivision[0] = 0.05;
         this->populationDivision[1] = 0.3;
         this->generationIndex = 0;
     }
 
-    inline std::vector<T *> rank()
+    inline std::vector<T *> getRankedPopulation()
     {
         std::vector<T *> populationRanked;
 
@@ -46,10 +46,11 @@ public:
     void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
         // Ranking
-        auto rankedPopulation = this->rank();
+        auto rankedPopulation = this->getRankedPopulation();
 
         // Save state of tested generation
-        this->saveState(sessionId, fBBufferPoint, fBBufferSize);
+        if (sessionId != 0)
+            this->saveState(sessionId, fBBufferPoint, fBBufferSize);
 
         printf("Scores: ");
         for (auto object : this->population)
@@ -82,6 +83,11 @@ public:
         }
 
         this->generationIndex++;
+    }
+
+    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate)
+    {
+        this->evolve(crossoverAndMutate, 0, nullptr, 0);
     }
 
     void saveState(int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
