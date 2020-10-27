@@ -1,6 +1,7 @@
 #include <sqlite3/sqlite3.h>
 #include <cstdio>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <core/Database.h>
 
