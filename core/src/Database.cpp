@@ -50,7 +50,7 @@ uint8_t *Database::getGenerationState(int generationId)
         {
             auto blobSize = sqlite3_column_bytes(statement, 0);
             auto blob = new uint8_t[blobSize];
-            memcpy(blob, sqlite3_column_blob(statement, 0), blobSize);
+            std::memcpy(blob, sqlite3_column_blob(statement, 0), blobSize);
 
             return blob;
         }
