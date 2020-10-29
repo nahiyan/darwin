@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Extension;
+use App\Models\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/sessions/{extensionId}', function ($extensionId) {
+    return Extension::find($extensionId)->sessions()->get();
+});
+
+Route::get('/generations/{sessionId}', function ($sessionId) {
+    return Session::find($sessionId)->generations()->select('id')->get();
+});
+
+Route::get('/extensions', function () {
+    return Extension::all();
 });

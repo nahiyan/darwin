@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Extension extends Model
 {
     use HasFactory;
+
+    public function sessions()
+    {
+        return $this->hasMany('App\Models\Session');
+    }
 }
