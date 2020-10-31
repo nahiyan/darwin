@@ -40,6 +40,7 @@ set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 # Extension paths
 set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Jumper)
+set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Predation)
 
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
@@ -73,6 +74,9 @@ list(APPEND GAME_SOURCE
      ${JUMPER_PATH}/Classes/Obstacle.cpp
      ${JUMPER_PATH}/Classes/Jumper.cpp
      ${JUMPER_PATH}/Classes/Boundary.cpp
+     ${PREDATION_PATH}/Classes/AppDelegate.cpp
+     ${PREDATION_PATH}/Classes/Boundary.cpp
+     ${PREDATION_PATH}/Classes/MainScene.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.cpp
      )
 list(APPEND GAME_HEADER

@@ -1,5 +1,5 @@
-#ifndef __Jumper_H__
-#define __Jumper_H__
+#ifndef __JUMPER_Jumper_H__
+#define __JUMPER_Jumper_H__
 
 #include "cocos2d.h"
 #include <opennn/neural_network.h>
@@ -37,4 +37,4 @@ namespace Jumper
     };
 } // namespace Jumper
 
-#endif // __Jumper_H__
+#endif // __JUMPER_Jumper_H__

@@ -1,34 +1,23 @@
-#ifndef __JUMPER_MAIN_SCENE_H__
-#define __JUMPER_MAIN_SCENE_H__
+#ifndef __PREDATION_MAIN_SCENE_H__
+#define __PREDATION_MAIN_SCENE_H__
 
 #include "cocos2d.h"
 #include <vector>
 #include <core/EvolutionSession.h>
-#include "Jumper.h"
-#include "Obstacle.h"
 
-namespace Jumper
+namespace Predation
 {
     class MainScene : public cocos2d::Scene
     {
     private:
         cocos2d::Size visibleSize;
-        EvolutionSession<Jumper> *evolutionSession;
 
         struct CurrentGenerationInfo
         {
-            int obstaclesUsed;
-            int obstaclesDeployed;
-            int jumpersAlive;
-            int totalJumpers;
-            long long startTimestamp;
-            int totalJumps;
+            // TO DO: PUT CURRENT GENERATION INFORMATION AS REQUIRED.
         } cGInfo;
 
         bool onContactBegin(cocos2d::PhysicsContact &);
-        void addObstacle();
-        void nextGeneration();
-        void onMouseMove(cocos2d::EventMouse *);
 
     public:
         static cocos2d::Scene *createScene();
@@ -36,7 +25,6 @@ namespace Jumper
 
         virtual bool init();
         virtual void update(float);
-        virtual void addObstacle(float);
 
         // a selector callback
         void menuCloseCallback(cocos2d::Ref *pSender);
@@ -44,6 +32,6 @@ namespace Jumper
         // implement the "static create()" method manually
         CREATE_FUNC(MainScene);
     };
-} // namespace Jumper
+} // namespace Predation
 
-#endif // __JUMPER_MAIN_SCENE_H__
+#endif // __PREDATION_MAIN_SCENE_H__

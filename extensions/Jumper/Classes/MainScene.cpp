@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <opennn/neural_network.h>
 #include <helpers/time.h>
-#include <fstream>
 #include <flatbuffers/flatbuffers.h>
 #include <extensions/jumper/MainScene.h>
 #include <extensions/jumper/Jumper.h>

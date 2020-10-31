@@ -1,5 +1,5 @@
-#ifndef __Obstacle_H__
-#define __Obstacle_H__
+#ifndef __JUMPER_Obstacle_H__
+#define __JUMPER_Obstacle_H__
 
 #include "cocos2d.h"
 
@@ -12,4 +12,4 @@ namespace Jumper
     };
 } // namespace Jumper
 
-#endif // __Obstacle_H__
+#endif // __JUMPER_Obstacle_H__

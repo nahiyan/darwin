@@ -14,6 +14,7 @@
 #include <core/Database.h>
 #include <fstream>
 #include <extensions/jumper/AppDelegate.h>
+#include <extensions/predation/AppDelegate.h>
 #include <core/CoreSession.h>
 
 #define EXTENSIONS_LIST_BOX_ID 1
@@ -207,6 +208,11 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     if (extensionName == "Jumper")
     {
         Jumper::AppDelegate app;
+        cocos2d::Application::getInstance()->run();
+    }
+    else if (extensionName == "Predation")
+    {
+        Predation::AppDelegate app;
         cocos2d::Application::getInstance()->run();
     }
 }

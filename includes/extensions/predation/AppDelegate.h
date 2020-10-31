@@ -1,5 +1,5 @@
-#ifndef _JUMPER_APP_DELEGATE_H_
-#define _JUMPER_APP_DELEGATE_H_
+#ifndef _PREDATION_APP_DELEGATE_H_
+#define _PREDATION_APP_DELEGATE_H_
 
 #include "cocos2d.h"
 
@@ -8,7 +8,7 @@
 
 Private inheritance here hides part of interface from Director.
 */
-namespace Jumper
+namespace Predation
 {
     class AppDelegate : private cocos2d::Application
     {
@@ -37,6 +37,6 @@ namespace Jumper
     */
         virtual void applicationWillEnterForeground();
     };
-} // namespace Jumper
+} // namespace Predation
 
-#endif // _JUMPER_APP_DELEGATE_H_
+#endif // _PREDATION_APP_DELEGATE_H_

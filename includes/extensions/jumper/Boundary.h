@@ -1,5 +1,5 @@
-#ifndef __Boundary_H__
-#define __Boundary_H__
+#ifndef __JUMPER_Boundary_H__
+#define __JUMPER_Boundary_H__
 
 #include "cocos2d.h"
 
@@ -12,4 +12,4 @@ namespace Jumper
     };
 } // namespace Jumper
 
-#endif // __Boundary_H__
+#endif // __JUMPER_Boundary_H__
