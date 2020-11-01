@@ -93,7 +93,6 @@ bool Jumper::MainScene::init()
         auto stateBinary = Database::getGenerationState(CoreSession::generationId);
 
         auto state = GetGenerationState(stateBinary);
-        delete[] stateBinary;
 
         for (int i = 0; i < state->population()->size(); i++)
         {
