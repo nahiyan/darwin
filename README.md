@@ -18,6 +18,9 @@ There are two ways to build Darwin. You can choose any one of the methods:
 - CMake
 - Cocos Console
 
+Important: Before building Darwin, make sure you run the following shell command: `python scripts/gen_db_path.py` in the root (`/`) of your project.
+
+
 ### CMake
 
 Darwin is heavily based on CMake for generating the build system and invoking the build tools. Make sure your CMake version is >= 3.6.
@@ -71,6 +74,20 @@ To build Darwin, run `cocos compile -p <platform>` inside the root directory. Re
 
 > Note: Since the CLI tool, Cocos Console, uses CMake to generate the files required for building, you can use CMake directly instead, as instructed in the other method of building Darwin. In fact, using CMake directly can give you more control over the build process.
 
+## Post-Build
+
+Run the following shell comamnds sequentially, in the `/portal` directory, before running Darwin for the first time:
+
+- `composer install` 
+- `php artisan migrate`
+- `php artisan db:seed`
+
+This will setup the database so all the extensions can be used.
+
+## Running
+
+After building and running the post-build shell commands, you should be getting an executable file named "Darwin" somewhere inside your `<build-directory>/bin` directory.
+
 # Dependencies
 
 - __wxWidgets__ for cross-platform GUI of the Control Panel.
@@ -89,3 +106,9 @@ FlatBuffers is used for storing/retrieving states of generations, along with sco
 FlatBuffers schema files are included in `/extensions/<extension_name>/flatbuffers`, where `<extension_name>` is the name of the extension. You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.
 
 > Note: FlatBuffers isn't used as a library, but as a tool which generates header files. The header files are what makes serialization/deserialization of data possible.
+
+# Web Portal
+
+Darwin includes a web portal located in `/portal` which can be used to easily manage the extensions, sessions, generations, etc right from the browser. The portal also visualizes statistical information related to the population members of each generation.
+
+You can start the portal by running `php artisan serve` and visiting the address, printed in the console, in your browser.
