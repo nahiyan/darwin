@@ -16,6 +16,7 @@
 #include <extensions/jumper/AppDelegate.h>
 #include <extensions/predation/AppDelegate.h>
 #include <core/CoreSession.h>
+#include "cocos2d.h"
 
 #define EXTENSIONS_LIST_BOX_ID 1
 #define SESSIONS_LIST_BOX_ID 2
@@ -38,7 +39,13 @@ bool ControlPanel::OnInit()
 ControlPanelFrame::ControlPanelFrame()
     : wxFrame(NULL, wxID_ANY, wxT("Darwin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX))
 {
-    Database::open("../../../../portal/database/database.db");
+    std::ifstream dbPathFile;
+    dbPathFile.open(cocos2d::FileUtils::getInstance()->fullPathForFilename("db_path.txt"));
+    std::string dbPath;
+    dbPathFile >> dbPath;
+    dbPathFile.close();
+
+    Database::open(dbPath);
     auto extensionNames = Database::getExtensionNames();
 
     auto menuBar = new wxMenuBar();
