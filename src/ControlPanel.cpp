@@ -205,6 +205,8 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     CoreSession::sessionId = sessionId;
     CoreSession::generationId = generationId;
 
+    this->Destroy();
+
     if (extensionName == "Jumper")
     {
         Jumper::AppDelegate app;
