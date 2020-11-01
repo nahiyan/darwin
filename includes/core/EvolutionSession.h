@@ -50,14 +50,16 @@ public:
 
         // Save state of tested generation
         if (sessionId != 0)
+        {
             this->saveState(sessionId, fBBufferPoint, fBBufferSize);
 
-        printf("Scores: ");
-        for (auto object : this->population)
-        {
-            printf("%f ", object->getScore());
+            printf("Scores: ");
+            for (auto object : rankedPopulation)
+            {
+                printf("%f ", object->getScore());
+            }
+            printf("\n");
         }
-        printf("\n");
 
         // Population size
         int populationSize = this->population.size();

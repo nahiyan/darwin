@@ -206,6 +206,7 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     CoreSession::generationId = generationId;
 
     this->Destroy();
+    this->Close();
 
     if (extensionName == "Jumper")
     {
