@@ -250,9 +250,7 @@ void Jumper::MainScene::nextGeneration()
         auto chromosomes = std::vector<double>();
         auto parameters = object->neuralNetwork->get_parameters();
         for (auto parameter : parameters)
-        {
             chromosomes.push_back(parameter);
-        }
         auto member = CreateMember(builder, builder.CreateVector<double>(chromosomes), object->getScore());
         population_.push_back(member);
     }

@@ -7,6 +7,7 @@
 #include <extensions/jumper/MainScene.h>
 
 #define JUMP_IMPULSE 1500 * 1000
+#define PENALTY_CONSTANT 2.0f
 
 USING_NS_CC;
 
@@ -123,7 +124,7 @@ void Jumper::Jumper::setScore(long long generationStartTimestamp, long long gene
         float survivalDuration = this->deathTimestamp - generationStartTimestamp;
         float obstaclesFaced = ((float)obstaclesDeployed) * (survivalDuration / ((float)generationDuration));
         float jumpRatio = ((float)this->jumps) / obstaclesFaced;
-        float penalty = jumpRatio * 2.0f;
+        float penalty = jumpRatio * PENALTY_CONSTANT;
         this->score = (survivalDuration / 1000.0f) - penalty;
     }
     else

@@ -3,7 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Extension;
+use App\Models\Generation;
 use App\Models\Session;
+use Jumper\GenerationState;
+use Google\FlatBuffers\ByteBuffer;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +33,24 @@ Route::get('/generations/{sessionId}', function ($sessionId) {
 
 Route::get('/extensions', function () {
     return Extension::all();
+});
+
+Route::get('/generation_scores/{generationId}', function ($generationId) {
+    $stateBinary = Generation::find($generationId)->state;
+
+    $byteBuffer = new ByteBuffer(strlen($stateBinary));
+    for ($i = 0; $i < strlen($stateBinary); $i++) {
+        $byteBuffer->put($i, $stateBinary[$i]);
+    }
+
+    $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+
+    $scores = [];
+    for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
+        $scores[] = $generationState->getPopulation($i)->getScore();
+    }
+
+    rsort($scores);
+
+    return $scores;
 });

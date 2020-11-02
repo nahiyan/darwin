@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b56bfb5d21eaae286e532c3ed2f8941",
+    "content-hash": "9bebea89b884126031f1dbcc0d2e0b08",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -548,6 +548,42 @@
                 }
             ],
             "time": "2020-09-07T11:48:52+00:00"
+        },
+        {
+            "name": "google/flatbuffers",
+            "version": "v1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/google/flatbuffers.git",
+                "reference": "6df40a2471737b27271bdd9b900ab5f3aec746c7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/flatbuffers/zipball/6df40a2471737b27271bdd9b900ab5f3aec746c7",
+                "reference": "6df40a2471737b27271bdd9b900ab5f3aec746c7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\FlatBuffers\\": "php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "FlatBuffers for PHP",
+            "homepage": "https://github.com/google/flatbuffers",
+            "keywords": [
+                "flatbuffers",
+                "google",
+                "serialization"
+            ],
+            "time": "2020-03-12T22:33:39+00:00"
         },
         {
             "name": "graham-campbell/result-type",
