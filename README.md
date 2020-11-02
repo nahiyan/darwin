@@ -2,7 +2,7 @@
 
 Darwin is an open-source, extensible, and modular evolution simulator. It's primarily designed for evolution of entities based on neural networks.
 
-#Table of Contents
+# Table of Contents
 
    * [Darwin](#darwin)
    * [Getting Started](#getting-started)
