@@ -2,6 +2,23 @@
 
 Darwin is an open-source, extensible, and modular evolution simulator. It's primarily designed for evolution of entities based on neural networks.
 
+#Table of Contents
+
+   * [Darwin](#darwin)
+   * [Getting Started](#getting-started)
+      * [Building](#building)
+         * [CMake](#cmake)
+            * [Linux](#linux)
+            * [macOS](#macos)
+            * [Windows](#windows)
+         * [Cocos Console](#cocos-console)
+      * [Post-Build](#post-build)
+      * [Running](#running)
+   * [Dependencies](#dependencies)
+      * [wxWidgets, cocos2d-x, and SQLite3](#wxwidgets-cocos2d-x-and-sqlite3)
+      * [FlatBuffers](#flatbuffers)
+   * [Web Portal](#web-portal)
+
 # Getting Started
 
 The extensions of Darwin usually relies on few basic components, which includes OpenNN (for neural networks), SQLite3 (for database), FlatBuffers (for serialization/deserialization), etc.
