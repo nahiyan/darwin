@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Extension;
+use App\Http\Controllers\AppController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,4 @@ use App\Models\Extension;
 |
  */
 
-Route::get('/', function () {
-    return view('index', ['extensions' => Extension::all()]);
-})->name('index');
+Route::get('/{any}', [AppController::class, 'index'])->where('any', '.*')->name('index');

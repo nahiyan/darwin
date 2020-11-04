@@ -24,11 +24,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/sessions/{extensionId}', function ($extensionId) {
-    return Extension::find($extensionId)->sessions()->get();
+    $extension = Extension::find($extensionId);
+    $sessions = $extension->sessions()->orderBy('id', 'desc')->get();
+    return ['sessions' => $sessions, 'extension' => $extension];
 });
 
 Route::get('/generations/{sessionId}', function ($sessionId) {
-    return Session::find($sessionId)->generations()->select('id')->get();
+    $session = Session::find($sessionId);
+    $generations = $session->generations()->select('id')->orderBy('id', 'desc')->get();
+
+    $session->extension = $session->extension;
+
+    return ['session' => $session, 'generations' => $generations];
 });
 
 Route::get('/extensions', function () {
@@ -36,21 +43,29 @@ Route::get('/extensions', function () {
 });
 
 Route::get('/generation_scores/{generationId}', function ($generationId) {
-    $stateBinary = Generation::find($generationId)->state;
-
-    $byteBuffer = new ByteBuffer(strlen($stateBinary));
-    for ($i = 0; $i < strlen($stateBinary); $i++) {
-        $byteBuffer->put($i, $stateBinary[$i]);
-    }
-
-    $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+    $generation = Generation::find($generationId);
+    $stateBinary = $generation->state;
+    $extensionName = $generation->session->extension->name;
 
     $scores = [];
-    for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
-        $scores[] = $generationState->getPopulation($i)->getScore();
+    switch ($extensionName) {
+        case "Jumper":
+            $byteBuffer = new ByteBuffer(strlen($stateBinary));
+            for ($i = 0; $i < strlen($stateBinary); $i++) {
+                $byteBuffer->put($i, $stateBinary[$i]);
+            }
+
+            $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+
+            for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
+                $scores[] = $generationState->getPopulation($i)->getScore();
+            }
+            break;
     }
 
     rsort($scores);
 
-    return $scores;
+    unset($generation->state);
+
+    return ['scores' => $scores, 'generation' => $generation];
 });

@@ -13,4 +13,9 @@ class Session extends Model
     {
         return $this->hasMany('App\Models\Generation');
     }
+
+    public function extension()
+    {
+        return $this->belongsTo('App\Models\Extension');
+    }
 }
