@@ -7,6 +7,7 @@ use App\Models\Generation;
 use App\Models\Session;
 use Jumper\GenerationState;
 use Google\FlatBuffers\ByteBuffer;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +69,39 @@ Route::get('/generation_scores/{generationId}', function ($generationId) {
     unset($generation->state);
 
     return ['scores' => $scores, 'generation' => $generation];
+});
+
+Route::get('/session_scores/{sessionId}', function ($sessionId) {
+    $session = Session::find($sessionId);
+    $generations = $session->generations()->get();
+    $session_scores = [];
+
+    for ($i = 0; $i < count($generations); $i++) {
+        $stateBinary = $generations[$i]->state;
+
+        $generation_scores_average = 0;
+        switch ($generations[$i]->session->extension->name) {
+            case "Jumper":
+                $byteBuffer = new ByteBuffer(strlen($stateBinary));
+                for ($j = 0; $j < strlen($stateBinary); $j++) {
+                    $byteBuffer->put($j, $stateBinary[$j]);
+                }
+
+                $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+
+                for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
+                    $generation_scores_average += $generationState->getPopulation($k)->getScore();
+                }
+
+                $generation_scores_average /= $generationState->getPopulationLength();
+
+                break;
+        }
+
+        $session_scores[] = $generation_scores_average;
+    }
+
+    $session->extension = $session->extension;
+
+    return ['scores' => $session_scores, 'session' => $session];
 });

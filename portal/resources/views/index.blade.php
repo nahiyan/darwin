@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', 'Index')
+@section('title', 'Darwin - Web Portal')
 @section('body')
 <div id="app">
     {{-- Loading --}}

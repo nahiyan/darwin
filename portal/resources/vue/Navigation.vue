@@ -12,6 +12,16 @@
           >Sessions of Extension <b>{{ extension.name }}</b></router-link
         >
       </li>
+      <li
+        v-if="session_scores != null"
+        class="breadcrumb-item"
+        aria-current="page"
+      >
+        <router-link
+          :to="{ name: 'session_scores', params: { id: session_scores.id } }"
+          >Scores of Session <b>{{ session_scores.id }}</b></router-link
+        >
+      </li>
       <li v-if="session != null" class="breadcrumb-item" aria-current="page">
         <router-link :to="{ name: 'generations', params: { id: session.id } }"
           >Generations of Session <b>{{ session.id }}</b></router-link
@@ -36,7 +46,7 @@ export default {
       generationActive: false,
     };
   },
-  props: ["extension", "session", "generation"],
+  props: ["extension", "session", "session_scores", "generation"],
   mounted() {
     console.log(this.extension);
     if (this.extension == undefined) this.extensionActive = true;

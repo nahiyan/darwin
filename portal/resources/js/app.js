@@ -4,6 +4,7 @@ import Home from '../vue/Home'
 import Sessions from '../vue/Sessions'
 import Generations from '../vue/Generations'
 import GenerationScores from '../vue/GenerationScores'
+import SessionScores from '../vue/SessionScores'
 
 require('./bootstrap')
 require('bootstrap')
@@ -14,6 +15,7 @@ const routes = [
   { path: '/', component: Home, name: 'home' },
   { path: '/extension/:id/sessions', component: Sessions, name: 'sessions' },
   { path: '/session/:id/generations', component: Generations, name: 'generations' },
+  { path: '/session/:id/scores', component: SessionScores, name: 'session_scores' },
   { path: '/generation/:id/scores', component: GenerationScores, name: 'generation_scores' }
 ]
 

@@ -3,7 +3,10 @@
     <Navigation :session="session" :extension="session.extension"></Navigation>
     <h1>Generations of Session {{ session.id }}</h1>
 
-    <table class="table mt-4 table-striped" v-if="generations.length > 0">
+    <table
+      class="table mt-4 table-striped"
+      v-if="generations.length > 0 && loaded"
+    >
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -27,7 +30,7 @@
         </tr>
       </tbody>
     </table>
-    <ItemNotFound v-if="generations.length == 0" />
+    <ItemNotFound v-if="generations.length == 0 && loaded" />
   </div>
 </template>
 
@@ -41,6 +44,7 @@ export default {
     return {
       session: {},
       generations: [],
+      loaded: false,
     };
   },
   mounted() {
@@ -56,6 +60,7 @@ export default {
           generation.index = ordinal(i);
           i -= 1;
         });
+        this.loaded = true;
       });
   },
   components: {

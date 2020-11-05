@@ -2,7 +2,10 @@
   <div>
     <Navigation :extension="extension"></Navigation>
     <h1>Sessions of {{ extension.name }}</h1>
-    <table class="table mt-4 table-striped" v-if="sessions.length > 0">
+    <table
+      class="table mt-4 table-striped"
+      v-if="sessions.length > 0 && loaded"
+    >
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -19,15 +22,16 @@
               :to="{ name: 'generations', params: { id: session.id } }"
               >Generations</router-link
             >
-            <!-- &nbsp; -->
-            <!-- <a v-on:click.prevent="getGenerations(session.id)" href="#"
-              >Scores</a
-            > -->
+            &nbsp;
+            <router-link
+              :to="{ name: 'session_scores', params: { id: session.id } }"
+              >Scores</router-link
+            >
           </td>
         </tr>
       </tbody>
     </table>
-    <ItemNotFound v-if="sessions.length == 0" />
+    <ItemNotFound v-if="sessions.length == 0 && loaded" />
   </div>
 </template>
 
@@ -41,6 +45,7 @@ export default {
     return {
       sessions: [],
       extension: {},
+      loaded: false,
     };
   },
   mounted() {
@@ -55,6 +60,7 @@ export default {
           session.index = ordinal(i);
           i -= 1;
         });
+        this.loaded = true;
       });
   },
   components: {
