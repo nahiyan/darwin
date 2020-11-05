@@ -92,9 +92,6 @@ void Jumper::Jumper::update(float delta)
 
     auto jumperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
 
-    // if (jumperPosition.y < 35)
-    //     this->node->setPositionY(35);
-
     if (jumperPosition.y < 0)
         log("%f ", jumperPosition.y);
 
@@ -105,7 +102,7 @@ void Jumper::Jumper::update(float delta)
     input[0] = (double)this->rayTraceFraction;
     auto shouldJump = this->neuralNetwork->calculate_outputs(input)[0] > 0.5;
 
-    if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 40)
+    if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 50)
     {
         this->node->getPhysicsBody()->applyImpulse(Vec2(0, JUMP_IMPULSE));
         this->jumps++;

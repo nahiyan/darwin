@@ -16,6 +16,7 @@
 
 #define POPULATION_SIZE 10
 #define SPEED 2
+#define JUMPER_POSITION Vec2(visibleSize.width - 134, 50)
 
 USING_NS_CC;
 
@@ -63,7 +64,7 @@ bool Jumper::MainScene::init()
     Director::getInstance()->getScheduler()->setTimeScale(SPEED);
     this->getPhysicsWorld()->setSpeed(SPEED);
 
-    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
@@ -108,7 +109,7 @@ bool Jumper::MainScene::init()
     // Jumpers
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto jumper = new Jumper(Vec2(890, 40), i, nnParameters[i]);
+        auto jumper = new Jumper(JUMPER_POSITION, i, nnParameters[i]);
         this->evolutionSession->population.push_back(jumper);
         this->addChild(jumper->node, 2, i);
     }
@@ -126,7 +127,7 @@ bool Jumper::MainScene::init()
 
     // Boundary
     auto boundaries = Boundary::create(this->visibleSize);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 2; i++)
     {
         this->addChild(boundaries[i], -9);
     }
@@ -212,7 +213,7 @@ void Jumper::MainScene::addObstacle(float delta)
 {
     if (random<int>(0, 1))
     {
-        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 30, 23));
+        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33));
         this->addChild(obstacle, 1);
         this->cGInfo.obstaclesDeployed++;
     }
@@ -276,7 +277,7 @@ void Jumper::MainScene::nextGeneration()
         this->evolutionSession->population[i]->generateNode();
         auto node = this->evolutionSession->population[i]->node;
         this->addChild(node, 2, i);
-        node->setPosition(890, 40);
+        node->setPosition(JUMPER_POSITION);
     }
 
     // Reset attributes of current generation info
