@@ -8,7 +8,13 @@ namespace Jumper
     class Obstacle
     {
     public:
-        static cocos2d::Sprite *create(const cocos2d::Vec2 &);
+        enum Speed
+        {
+            Slow,
+            Medium,
+            Fast
+        };
+        static cocos2d::Sprite *create(const cocos2d::Vec2 &, Speed);
     };
 } // namespace Jumper
 

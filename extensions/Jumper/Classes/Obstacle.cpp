@@ -1,10 +1,12 @@
 #include <extensions/jumper/Obstacle.h>
 
-#define IMPULSE -10 * 1000
+#define IMPULSE_SLOW -7 * 1000
+#define IMPULSE_MEDIUM -10 * 1000
+#define IMPULSE_FAST -13 * 1000
 
 USING_NS_CC;
 
-Sprite *Jumper::Obstacle::create(const Vec2 &position)
+Sprite *Jumper::Obstacle::create(const Vec2 &position, Speed speed)
 {
     auto node = Sprite::create("ball.png");
     node->setPosition(position);
@@ -18,8 +20,20 @@ Sprite *Jumper::Obstacle::create(const Vec2 &position)
     physicsBody->setAngularVelocity(1.8);
     node->addComponent(physicsBody);
 
-    // physicsBody->setVelocity(Vec2(-100, 0));
-    physicsBody->applyImpulse(Vec2(IMPULSE, 0));
+    int impulse;
+    switch (speed)
+    {
+    case Slow:
+        impulse = IMPULSE_SLOW;
+        break;
+    case Medium:
+        impulse = IMPULSE_MEDIUM;
+        break;
+    case Fast:
+        impulse = IMPULSE_FAST;
+        break;
+    }
+    physicsBody->applyImpulse(Vec2(impulse, 0));
 
     return node;
 }

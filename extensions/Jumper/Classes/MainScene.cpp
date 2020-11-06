@@ -127,7 +127,7 @@ bool Jumper::MainScene::init()
 
     // Boundary
     auto boundaries = Boundary::create(this->visibleSize);
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 4; i++)
     {
         this->addChild(boundaries[i], -9);
     }
@@ -211,12 +211,12 @@ void Jumper::MainScene::onMouseMove(EventMouse *e)
 
 void Jumper::MainScene::addObstacle(float delta)
 {
-    if (random<int>(0, 1))
-    {
-        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33));
-        this->addChild(obstacle, 1);
-        this->cGInfo.obstaclesDeployed++;
-    }
+    // if (random<int>(0, 1))
+    // {
+    //     auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33));
+    //     this->addChild(obstacle, 1);
+    //     this->cGInfo.obstaclesDeployed++;
+    // }
 }
 
 void Jumper::MainScene::nextGeneration()
