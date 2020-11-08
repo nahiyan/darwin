@@ -30,13 +30,13 @@ export default {
         this.session = data.session;
 
         var chart = new Chart("chart", {
-          type: "bar",
+          type: "line",
           data: {
             labels: [...Array(this.scores.length).keys()],
             datasets: [
               {
                 label: "Scores",
-                backgroundColor: "rgb(255, 99, 132)",
+                // backgroundColor: "rgb(255, 99, 132)",
                 borderColor: "rgb(255, 99, 132)",
                 data: this.scores,
               },
