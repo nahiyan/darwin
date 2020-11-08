@@ -13,32 +13,12 @@
 #include <extensions/jumper/GenerationState_generated.h>
 #include <core/Database.h>
 #include <core/CoreSession.h>
+#include <extensions/jumper/Evolution.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 2
-#define JUMPER_POSITION Vec2(visibleSize.width - 134, 50)
 
 USING_NS_CC;
-
-// Crossover and mutation function
-void crossoverAndMutate(Jumper::Jumper *parentA, Jumper::Jumper *parentB, Jumper::Jumper *offspring, float mutationRate)
-{
-    auto parentAParameters = parentA->neuralNetwork->get_parameters();
-    auto parentBParameters = parentB->neuralNetwork->get_parameters();
-
-    OpenNN::Vector<double> newParameters(parentAParameters.size());
-
-    for (int i = 0; i < parentAParameters.size(); i++)
-    {
-        // Crossover
-        newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
-
-        // Mutation
-        newParameters[i] += random<double>(-1, 1) * mutationRate * newParameters[i];
-    }
-
-    offspring->neuralNetwork->set_parameters(newParameters);
-}
 
 Scene *Jumper::MainScene::createScene()
 {
@@ -73,7 +53,7 @@ bool Jumper::MainScene::init()
     this->visibleSize = Director::getInstance()->getVisibleSize();
 
     // Evolution session
-    this->evolutionSession = new EvolutionSession<Jumper>;
+    this->evolutionSession = new EvolutionSession<JumperGroup>;
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -103,27 +83,21 @@ bool Jumper::MainScene::init()
             }
         }
 
-        this->evolutionSession->evolve(crossoverAndMutate);
+        this->evolutionSession->evolve(Evolution::crossoverAndMutate);
     }
 
     // Jumpers
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto jumper = new Jumper(JUMPER_POSITION, i, nnParameters[i]);
-        this->evolutionSession->population.push_back(jumper);
-        this->addChild(jumper->node, 2, i);
+        auto jumperGroup = new JumperGroup(nnParameters[i]);
+        this->evolutionSession->population.push_back(jumperGroup);
+
+        for (auto member : jumperGroup->members)
+            this->addChild(member->node, 2, i);
     }
 
-    // Current generation info
-    this->cGInfo.startTimestamp = TimeHelper::now();
-    this->cGInfo.obstaclesUsed = 0;
-    this->cGInfo.obstaclesDeployed = 0;
-    this->cGInfo.jumpersAlive = POPULATION_SIZE;
-    this->cGInfo.totalJumps = 0;
-
-    // Set scheduler to add obstacles
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addObstacle), 2.3, CC_REPEAT_FOREVER, 0);
-    this->addObstacle(0);
+    // Add obstacles
+    this->addObstacles();
 
     // Boundary
     auto boundaries = Boundary::create(this->visibleSize);
@@ -143,11 +117,8 @@ bool Jumper::MainScene::init()
 
 void Jumper::MainScene::update(float delta)
 {
-    for (auto jumper : this->evolutionSession->population)
-    {
-        if (!jumper->isDead)
-            jumper->update(delta);
-    }
+    for (auto jumperGroup : this->evolutionSession->population)
+        jumperGroup->update(delta);
 }
 
 void Jumper::MainScene::menuCloseCallback(Ref *pSender)
@@ -169,14 +140,10 @@ bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
         if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
         {
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-                auto jumper = this->evolutionSession->population[(categoryBitmaskA == 1 ? bodyA : bodyB)->getNode()->getTag()];
-                jumper->kill();
-                this->removeChild(jumper->node);
-
-                this->cGInfo.jumpersAlive--;
-
-                if (this->cGInfo.jumpersAlive == 0)
-                    this->nextGeneration();
+                auto node = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode();
+                auto jumperGroup = this->evolutionSession->population[node->getTag()];
+                jumperGroup->kill(node);
+                this->removeChild(node);
             });
 
             return false;
@@ -186,9 +153,9 @@ bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
             Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
                 auto obstacle = (categoryBitmaskA == 2 ? bodyA : bodyB)->getNode();
                 this->removeChild(obstacle);
-                this->cGInfo.obstaclesUsed++;
+                this->currentGenerationInfo.obstacles--;
 
-                if (this->cGInfo.obstaclesUsed == 2)
+                if (this->currentGenerationInfo.obstacles == 0)
                     this->nextGeneration();
             });
 
@@ -201,26 +168,30 @@ bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
     return false;
 }
 
-void Jumper::MainScene::onMouseMove(EventMouse *e)
+void Jumper::MainScene::addObstacles()
 {
-    // auto mousePosition = Vec2(e->getCursorX(), e->getCursorY());
-    // auto obstacleNewPosition = this->obstacle->getParent()->convertToNodeSpace(mousePosition);
+    {
+        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33), Obstacle::Slow);
+        this->addChild(obstacle, 1);
+    }
+    {
+        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 240, 33), Obstacle::Medium);
+        this->addChild(obstacle, 1);
+    }
+    {
+        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 464, 33), Obstacle::Fast);
+        this->addChild(obstacle, 1);
+    }
 
-    // this->obstacle->setPosition(obstacleNewPosition);
-}
-
-void Jumper::MainScene::addObstacle(float delta)
-{
-    // if (random<int>(0, 1))
-    // {
-    //     auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33));
-    //     this->addChild(obstacle, 1);
-    //     this->cGInfo.obstaclesDeployed++;
-    // }
+    this->currentGenerationInfo.obstacles = 3;
 }
 
 void Jumper::MainScene::nextGeneration()
 {
+    // Score the current population
+    for (auto jumperGroup : this->evolutionSession->population)
+        jumperGroup->setScore();
+
     // Remove all the obstacles and jumpers
     auto children = this->getChildren();
     for (auto child : children)
@@ -229,18 +200,13 @@ void Jumper::MainScene::nextGeneration()
         if (physicsBody != nullptr && physicsBody->getCategoryBitmask() <= 2)
         {
             if (physicsBody->getCategoryBitmask() == 1)
-                this->evolutionSession->population[child->getTag()]->kill();
+                this->evolutionSession->population[child->getTag()]->kill(child);
 
             this->removeChild(child);
         }
     }
 
-    // Score the current population
-    auto generationDuration = TimeHelper::now() - this->cGInfo.startTimestamp;
-
-    for (auto jumper : this->evolutionSession->population)
-        jumper->setScore(this->cGInfo.startTimestamp, generationDuration, this->cGInfo.obstaclesDeployed);
-
+    
     // Contructing a FlatBuffers builder
     flatbuffers::FlatBufferBuilder builder(1024);
 
@@ -262,29 +228,21 @@ void Jumper::MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(Evolution::crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
-    // Update timestamp
-    this->cGInfo.startTimestamp = TimeHelper::now();
-
-    // Reset jumpers
-    for (auto jumper : this->evolutionSession->population)
-        jumper->prepareForNewGeneration();
-
-    // Add jumpers
+    // Add jumper nodes
     for (int i = 0; i < this->evolutionSession->population.size(); i++)
     {
-        this->evolutionSession->population[i]->generateNode();
-        auto node = this->evolutionSession->population[i]->node;
-        this->addChild(node, 2, i);
-        node->setPosition(JUMPER_POSITION);
+        auto jumperGroup = this->evolutionSession->population[i];
+        jumperGroup->reset();
+        auto members = jumperGroup->members;
+        for (int j = 0; j < 3; j++)
+            this->addChild(members[j]->node, 2, i);
+        jumperGroup->positionNodes();
     }
 
-    // Reset attributes of current generation info
-    this->cGInfo.obstaclesUsed = 0;
-    this->cGInfo.obstaclesDeployed = 0;
-    this->cGInfo.jumpersAlive = this->evolutionSession->population.size();
-    this->cGInfo.totalJumps = 0;
+    // Add obstacles
+    this->addObstacles();
 }
 
 Jumper::MainScene::~MainScene()

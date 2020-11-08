@@ -73,6 +73,8 @@ list(APPEND GAME_SOURCE
      ${JUMPER_PATH}/Classes/MainScene.cpp
      ${JUMPER_PATH}/Classes/Obstacle.cpp
      ${JUMPER_PATH}/Classes/Jumper.cpp
+     ${JUMPER_PATH}/Classes/JumperGroup.cpp
+     ${JUMPER_PATH}/Classes/Evolution.cpp
      ${JUMPER_PATH}/Classes/Boundary.cpp
      ${PREDATION_PATH}/Classes/AppDelegate.cpp
      ${PREDATION_PATH}/Classes/Boundary.cpp

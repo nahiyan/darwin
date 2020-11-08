@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include <vector>
 #include <core/EvolutionSession.h>
+#include "JumperGroup.h"
 #include "Jumper.h"
 #include "Obstacle.h"
 
@@ -13,22 +14,16 @@ namespace Jumper
     {
     private:
         cocos2d::Size visibleSize;
-        EvolutionSession<Jumper> *evolutionSession;
+        EvolutionSession<JumperGroup> *evolutionSession;
 
         struct CurrentGenerationInfo
         {
-            int obstaclesUsed;
-            int obstaclesDeployed;
-            int jumpersAlive;
-            int totalJumpers;
-            long long startTimestamp;
-            int totalJumps;
-        } cGInfo;
+            int obstacles;
+        } currentGenerationInfo;
 
         bool onContactBegin(cocos2d::PhysicsContact &);
         void addObstacle();
         void nextGeneration();
-        void onMouseMove(cocos2d::EventMouse *);
 
     public:
         static cocos2d::Scene *createScene();
@@ -36,7 +31,7 @@ namespace Jumper
 
         virtual bool init();
         virtual void update(float);
-        virtual void addObstacle(float);
+        virtual void addObstacles();
 
         // a selector callback
         void menuCloseCallback(cocos2d::Ref *pSender);

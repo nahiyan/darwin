@@ -2,8 +2,6 @@
 #include <iostream>
 #include <memory>
 #include <opennn/opennn.h>
-#include <helpers/random.h>
-#include <helpers/time.h>
 #include <extensions/jumper/MainScene.h>
 
 #define JUMP_IMPULSE 1500 * 1000
@@ -11,31 +9,10 @@
 
 USING_NS_CC;
 
-Jumper::Jumper::Jumper(const Vec2 &position, int index, std::vector<double> parameters)
+Jumper::Jumper::Jumper()
 {
-    this->index = index;
 
     this->generateNode();
-    this->node->setPosition(position);
-
-    // Reset attributes
-    this->prepareForNewGeneration();
-
-    // Initialize neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{1, 10, 1});
-
-    if (parameters.size() > 0)
-    {
-        this->neuralNetwork->set_parameters(parameters);
-    }
-    else
-    {
-        // Randomize parameters
-        std::vector<double> parameters;
-        for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-            parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
-        this->neuralNetwork->set_parameters(parameters);
-    }
 }
 
 void Jumper::Jumper::generateNode()
@@ -52,15 +29,6 @@ void Jumper::Jumper::generateNode()
     physicsBody->setRotationEnable(false);
 
     this->node->addComponent(physicsBody);
-}
-
-void Jumper::Jumper::prepareForNewGeneration()
-{
-    this->isDead = false;
-    this->deathTimestamp = 0;
-    this->rayTraceFraction = 0;
-    this->score = 0;
-    this->jumps = 0;
 }
 
 Jumper::Jumper::~Jumper()
@@ -93,14 +61,14 @@ void Jumper::Jumper::update(float delta)
     auto jumperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
 
     if (jumperPosition.y < 0)
-        log("%f ", jumperPosition.y);
+        log("Unexpected: Jumper escaped border; y = %f ", jumperPosition.y);
 
     physicsWorld->rayCast(rayCastCB, jumperPosition + Vec2(32.6, -25), jumperPosition + Vec2(117.5, -25), this);
 
     // Neural network
     OpenNN::Tensor<double> input{1, 1};
     input[0] = (double)this->rayTraceFraction;
-    auto shouldJump = this->neuralNetwork->calculate_outputs(input)[0] > 0.5;
+    auto shouldJump = this->group->neuralNetwork->calculate_outputs(input)[0] > 0.5;
 
     if (shouldJump && this->node->getPhysicsBody()->getPosition().y <= 50)
     {
@@ -109,34 +77,15 @@ void Jumper::Jumper::update(float delta)
     }
 }
 
-int &Jumper::Jumper::getIndex()
+int Jumper::Jumper::getJumps()
 {
-    return this->index;
+    return this->jumps;
 }
 
-void Jumper::Jumper::setScore(long long generationStartTimestamp, long long generationDuration, int obstaclesDeployed)
+void Jumper::Jumper::reset()
 {
-    if (this->isDead)
-    {
-        float survivalDuration = this->deathTimestamp - generationStartTimestamp;
-        float obstaclesFaced = ((float)obstaclesDeployed) * (survivalDuration / ((float)generationDuration));
-        float jumpRatio = ((float)this->jumps) / obstaclesFaced;
-        float penalty = jumpRatio * PENALTY_CONSTANT;
-        this->score = (survivalDuration / 1000.0f) - penalty;
-    }
-    else
-    {
-        this->score = 0;
-    }
-}
-
-float Jumper::Jumper::getScore()
-{
-    return this->score;
-}
-
-void Jumper::Jumper::kill()
-{
-    this->deathTimestamp = TimeHelper::now();
-    this->isDead = true;
+    this->isDead = false;
+    this->setRayTraceFraction(0);
+    this->jumps = 0;
+    this->generateNode();
 }
