@@ -5,7 +5,6 @@
 #include <extensions/jumper/MainScene.h>
 
 #define JUMP_IMPULSE 1500 * 1000
-#define PENALTY_CONSTANT 2.0f
 
 USING_NS_CC;
 

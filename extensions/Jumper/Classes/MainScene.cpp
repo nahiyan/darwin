@@ -16,7 +16,7 @@
 #include <extensions/jumper/Evolution.h>
 
 #define POPULATION_SIZE 10
-#define SPEED 2
+#define SPEED 4
 
 USING_NS_CC;
 
@@ -44,7 +44,7 @@ bool Jumper::MainScene::init()
     Director::getInstance()->getScheduler()->setTimeScale(SPEED);
     this->getPhysicsWorld()->setSpeed(SPEED);
 
-    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
@@ -206,7 +206,6 @@ void Jumper::MainScene::nextGeneration()
         }
     }
 
-    
     // Contructing a FlatBuffers builder
     flatbuffers::FlatBufferBuilder builder(1024);
 

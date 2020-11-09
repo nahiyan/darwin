@@ -18,12 +18,18 @@ public:
     ControlPanelFrame();
 
 private:
+    // widgets
     wxListBox *extensionsListBox;
     wxListBox *sessionsListBox;
     wxListBox *generationsListBox;
     wxButton *startButton;
     wxButton *clearSelectionButton;
     wxStaticText *summary;
+
+    // lists
+    std::vector<wxString> extensionNames;
+    std::vector<int> sessionIds;
+    std::vector<int> generationIds;
 
     void OnExit(wxCommandEvent &event);
     void SelectExtension(wxCommandEvent &event);

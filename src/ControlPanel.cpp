@@ -27,6 +27,18 @@
 IMPLEMENT_APP_NO_MAIN(ControlPanel);
 IMPLEMENT_WX_THEME_SUPPORT;
 
+std::string ordinal(int n)
+{
+    static const char suffixes[][3] = {"th", "st", "nd", "rd"};
+    auto ord = n % 100;
+    if (ord / 10 == 1)
+        ord = 0;
+    ord = ord % 10;
+    if (ord > 3)
+        ord = 0;
+    return std::to_string(n) + suffixes[ord];
+}
+
 bool ControlPanel::OnInit()
 {
     auto frame = new ControlPanelFrame();
@@ -46,7 +58,14 @@ ControlPanelFrame::ControlPanelFrame()
     dbPathFile.close();
 
     Database::open(dbPath);
-    auto extensionNames = Database::getExtensionNames();
+
+    // Initialization
+    this->sessionIds = std::vector<int>{};
+    this->generationIds = std::vector<int>{};
+
+    // Auto-start an extension
+    // Jumper::AppDelegate app;
+    // cocos2d::Application::getInstance()->run();
 
     auto menuBar = new wxMenuBar();
     SetMenuBar(menuBar);
@@ -74,12 +93,12 @@ ControlPanelFrame::ControlPanelFrame()
     extensionsPanel->SetSizer(extensionsStaticBoxSizer);
 
     this->extensionsListBox = new wxListBox(extensionsPanel, EXTENSIONS_LIST_BOX_ID);
-    std::vector<wxString> extensions;
-    for (auto extensionName : extensionNames)
-    {
-        extensions.push_back(extensionName);
-    }
-    this->extensionsListBox->Append(extensions);
+
+    auto extensionNames_ = Database::getExtensionNames();
+    for (auto extensionName : extensionNames_)
+        this->extensionNames.push_back(extensionName);
+
+    this->extensionsListBox->Append(this->extensionNames);
     extensionsStaticBoxSizer->Add(this->extensionsListBox, 0, wxEXPAND | wxALL, 5);
 
     // Sessions
@@ -144,17 +163,17 @@ void ControlPanelFrame::OnExit(wxCommandEvent &event)
 
 void ControlPanelFrame::SelectExtension(wxCommandEvent &event)
 {
-    auto extensionName = event.GetString().ToStdString();
-    auto ids = Database::getSessionIds(extensionName);
     this->sessionsListBox->Clear();
     this->generationsListBox->Clear();
     this->generationsListBox->Enable(false);
 
+    auto extensionName = event.GetString().ToStdString();
+    auto ids = Database::getSessionIds(extensionName);
+    std::copy(ids.begin(), ids.end(), std::back_inserter(this->sessionIds));
+
     std::vector<wxString> items;
-    for (auto id : ids)
-    {
-        items.push_back(wxString(std::to_string(id)));
-    }
+    for (int i = ids.size(); i > 0; i--)
+        items.push_back(wxString(ordinal(i)));
 
     if (items.size() > 0)
         this->sessionsListBox->Enable(true);
@@ -171,17 +190,16 @@ void ControlPanelFrame::SelectExtension(wxCommandEvent &event)
 
 void ControlPanelFrame::SelectSession(wxCommandEvent &event)
 {
-    auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
-
-    auto sessionId = std::stoi(event.GetString().ToStdString());
-    auto ids = Database::getGenerationIds(sessionId);
     this->generationsListBox->Clear();
 
+    auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
+    auto sessionId = this->sessionIds[event.GetSelection()];
+    auto ids = Database::getGenerationIds(sessionId);
+    std::copy(ids.begin(), ids.end(), std::back_inserter(this->generationIds));
+
     std::vector<wxString> items;
-    for (auto id : ids)
-    {
-        items.push_back(wxString(std::to_string(id)));
-    }
+    for (int i = ids.size(); i > 0; i--)
+        items.push_back(wxString(ordinal(i)));
 
     if (items.size() > 0)
         this->generationsListBox->Enable(true);
@@ -205,9 +223,9 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     auto generationId = 0;
 
     if (this->sessionsListBox->GetStringSelection().ToStdString().size() != 0)
-        sessionId = std::stoi(this->sessionsListBox->GetStringSelection().ToStdString());
+        sessionId = this->sessionIds[this->sessionsListBox->GetSelection()];
     if (this->generationsListBox->GetStringSelection().ToStdString().size() != 0)
-        generationId = std::stoi(this->generationsListBox->GetStringSelection().ToStdString());
+        generationId = this->generationIds[this->generationsListBox->GetSelection()];
 
     CoreSession::sessionId = sessionId;
     CoreSession::generationId = generationId;
@@ -259,9 +277,9 @@ void ControlPanelFrame::updateSummary()
         if (sessionsListBox->GetSelection() == wxNOT_FOUND)
             text = "Evolution of " + extensionName + " will begin with a new session.";
         else if (generationsListBox->GetSelection() == wxNOT_FOUND)
-            text = "Evolution of " + extensionName + " will continue from session " + sessionsListBox->GetStringSelection() + ".\nWarning: This will remove all existing generations in the session.";
+            text = "Evolution of " + extensionName + " will continue from " + sessionsListBox->GetStringSelection() + " session.\nWarning: This will remove all existing generations in the session.";
         else
-            text = "Evolution of " + extensionName + " will continue from generation " + generationsListBox->GetStringSelection() + " of session " + sessionsListBox->GetStringSelection() + ".";
+            text = "Evolution of " + extensionName + " will continue from " + generationsListBox->GetStringSelection() + " generation of  " + sessionsListBox->GetStringSelection() + " session.";
     }
 
     this->summary->SetLabel(wxString(text));
