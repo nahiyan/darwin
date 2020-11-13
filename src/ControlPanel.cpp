@@ -15,6 +15,7 @@
 #include <fstream>
 #include <extensions/jumper/AppDelegate.h>
 #include <extensions/predation/AppDelegate.h>
+#include <extensions/wheels/AppDelegate.h>
 #include <core/CoreSession.h>
 #include "cocos2d.h"
 
@@ -64,8 +65,11 @@ ControlPanelFrame::ControlPanelFrame()
     this->generationIds = std::vector<int>{};
 
     // Auto-start an extension
-    // Jumper::AppDelegate app;
-    // cocos2d::Application::getInstance()->run();
+    this->Destroy();
+    this->Close(true);
+
+    Wheels::AppDelegate app;
+    cocos2d::Application::getInstance()->run();
 
     auto menuBar = new wxMenuBar();
     SetMenuBar(menuBar);
@@ -231,7 +235,7 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     CoreSession::generationId = generationId;
 
     this->Destroy();
-    this->Close();
+    this->Close(true);
 
     if (extensionName == "Jumper")
     {

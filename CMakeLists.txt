@@ -41,6 +41,7 @@ set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 # Extension paths
 set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Jumper)
 set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Predation)
+set(WHEELS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/wheels)
 
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
@@ -79,9 +80,12 @@ list(APPEND GAME_SOURCE
      ${PREDATION_PATH}/Classes/AppDelegate.cpp
      ${PREDATION_PATH}/Classes/Boundary.cpp
      ${PREDATION_PATH}/Classes/MainScene.cpp
+     ${WHEELS_PATH}/classes/MainScene.cpp
+     ${WHEELS_PATH}/classes/AppDelegate.cpp
+     ${WHEELS_PATH}/classes/Car.cpp
+     ${WHEELS_PATH}/classes/Listeners.cpp
+     ${WHEELS_PATH}/classes/Tracks.cpp
      ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.cpp
-     )
-list(APPEND GAME_HEADER
      )
 
 if(ANDROID)
