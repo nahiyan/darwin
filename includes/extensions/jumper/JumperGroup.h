@@ -1,7 +1,6 @@
 #ifndef __JUMPERGROUP_H__
 #define __JUMPERGROUP_H__
 
-#include <opennn/neural_network.h>
 #include "Jumper.h"
 #include "IGroup.h"
 #include "cocos2d.h"

@@ -46,9 +46,8 @@ Jumper::JumperGroup::~JumperGroup()
 void Jumper::JumperGroup::setScore()
 {
     for (auto &member : this->members)
-        if (!member->isDead)
-            if (member->getJumps() > 0)
-                this->score += 1.0f / (float)member->getJumps();
+        if (!member->isDead && member->getJumps() > 0)
+            this->score += 1.0f / (float)member->getJumps();
 }
 
 float Jumper::JumperGroup::getScore()

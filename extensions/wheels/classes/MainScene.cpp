@@ -13,7 +13,7 @@
 #include <core/Debug.h>
 #include <extensions/wheels/Tracks.h>
 
-#define POPULATION_SIZE 1
+#define POPULATION_SIZE 10
 #define SPEED 2
 
 USING_NS_CC;
@@ -52,7 +52,7 @@ bool Wheels::MainScene::init()
     this->evolutionSession = new EvolutionSession<Car>;
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto car = new Car;
+        auto car = new Car(std::vector<double>{});
         this->addChild(car->node);
         this->evolutionSession->population.push_back(car);
     }
@@ -77,10 +77,10 @@ bool Wheels::MainScene::init()
 
     // Keyboard listener
     {
-        auto listener = EventListenerKeyboard::create();
-        listener->onKeyPressed = std::bind(Listeners::onKeyPressed, std::placeholders::_1, std::placeholders::_2, this->evolutionSession->population[0]);
-        listener->onKeyReleased = std::bind(Listeners::onKeyReleased, std::placeholders::_1, std::placeholders::_2, this->evolutionSession->population[0]);
-        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+        // auto listener = EventListenerKeyboard::create();
+        // listener->onKeyPressed = std::bind(Listeners::onKeyPressed, std::placeholders::_1, std::placeholders::_2, this->evolutionSession->population[0]);
+        // listener->onKeyReleased = std::bind(Listeners::onKeyReleased, std::placeholders::_1, std::placeholders::_2, this->evolutionSession->population[0]);
+        // _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     }
 
     return true;
