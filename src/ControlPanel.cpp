@@ -65,11 +65,10 @@ ControlPanelFrame::ControlPanelFrame()
     this->generationIds = std::vector<int>{};
 
     // Auto-start an extension
-    this->Destroy();
-    this->Close(true);
-
-    Wheels::AppDelegate app;
-    cocos2d::Application::getInstance()->run();
+    // this->Destroy();
+    // this->Close(true);
+    // Wheels::AppDelegate app;
+    // cocos2d::Application::getInstance()->run();
 
     auto menuBar = new wxMenuBar();
     SetMenuBar(menuBar);
@@ -245,6 +244,11 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     else if (extensionName == "Predation")
     {
         Predation::AppDelegate app;
+        cocos2d::Application::getInstance()->run();
+    }
+    else if (extensionName == "Wheels")
+    {
+        Wheels::AppDelegate app;
         cocos2d::Application::getInstance()->run();
     }
 }

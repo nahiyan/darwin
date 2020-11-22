@@ -1,8 +1,8 @@
 #include <extensions/jumper/Obstacle.h>
 
-#define IMPULSE_SLOW -7 * 1000
-#define IMPULSE_MEDIUM -10 * 1000
-#define IMPULSE_FAST -13 * 1000
+#define IMPULSE_SLOW -9 * 1000
+#define IMPULSE_MEDIUM -12 * 1000
+#define IMPULSE_FAST -15 * 1000
 
 USING_NS_CC;
 

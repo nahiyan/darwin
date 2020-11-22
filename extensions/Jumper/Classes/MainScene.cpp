@@ -16,7 +16,7 @@
 #include <extensions/jumper/Evolution.h>
 
 #define POPULATION_SIZE 10
-#define SPEED 4
+#define SPEED 1
 
 USING_NS_CC;
 
