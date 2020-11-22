@@ -39,8 +39,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opennn)
 set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
 # Extension paths
-set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Jumper)
-set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/Predation)
+set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/jumper)
+set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/predation)
 set(WHEELS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/wheels)
 
 if(XCODE)
@@ -62,31 +62,19 @@ set(GAME_SOURCE)
 set(GAME_HEADER)
 
 set(GAME_RES_FOLDER
-    "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources"
     )
 if(APPLE OR WINDOWS)
-    cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
+    cocos_mark_multi_resources(common_res_files RES_TO "resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
 
-# add cross-platforms source files and header files 
-list(APPEND GAME_SOURCE
-     ${JUMPER_PATH}/Classes/AppDelegate.cpp
-     ${JUMPER_PATH}/Classes/MainScene.cpp
-     ${JUMPER_PATH}/Classes/Obstacle.cpp
-     ${JUMPER_PATH}/Classes/Jumper.cpp
-     ${JUMPER_PATH}/Classes/JumperGroup.cpp
-     ${JUMPER_PATH}/Classes/Evolution.cpp
-     ${JUMPER_PATH}/Classes/Boundary.cpp
-     ${PREDATION_PATH}/Classes/AppDelegate.cpp
-     ${PREDATION_PATH}/Classes/Boundary.cpp
-     ${PREDATION_PATH}/Classes/MainScene.cpp
-     ${WHEELS_PATH}/classes/MainScene.cpp
-     ${WHEELS_PATH}/classes/AppDelegate.cpp
-     ${WHEELS_PATH}/classes/Car.cpp
-     ${WHEELS_PATH}/classes/Listeners.cpp
-     ${WHEELS_PATH}/classes/Tracks.cpp
-     ${CMAKE_CURRENT_SOURCE_DIR}/src/ControlPanel.cpp
-     )
+# add cross-platforms source files and header files
+file(GLOB_RECURSE GAME_SOURCE
+  "${WHEELS_PATH}/classes/*.cpp"
+  "${JUMPER_PATH}/classes/*.cpp"
+  "${PREDATION_PATH}/classes/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
 
 if(ANDROID)
     # change APP_NAME to the share library name for Android, it's value depend on AndroidManifest.xml
