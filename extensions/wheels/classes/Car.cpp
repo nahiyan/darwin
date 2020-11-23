@@ -4,6 +4,8 @@
 #include <core/Debug.h>
 #include <helpers/random.h>
 #include <helpers/time.h>
+#include <extensions/wheels/MainScene.h>
+#include <extensions/wheels/Session.h>
 
 #define SIDE_SENSOR_WIDTH 130.0f
 #define SIDE_SENSOR_HEIGHT 145.0f
@@ -23,8 +25,13 @@ Car::Car(std::vector<double> parameters)
     this->sensors[0] = 0;
     this->sensors[1] = 0;
     this->sensors[2] = 0;
+    this->score = 0;
     this->sensorInfo.car = this;
     this->direction2D = {None, None};
+    this->dead = false;
+    this->idleDuration = 0;
+
+    // Sprite
     auto sprite = Sprite::create("wheels/Ambulance.png");
     sprite->setScale(SCALE);
     sprite->setPosition(Vec2(100, 50));
@@ -41,6 +48,7 @@ Car::Car(std::vector<double> parameters)
     physicsBody->setAngularDamping(0.8f);
     sprite->addComponent(physicsBody);
 
+    // Sensors
     auto sensors = DrawNode::create();
     sensors->drawLine(Vec2(51, 207), Vec2(51 + SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
     sensors->drawLine(Vec2(51, 207), Vec2(51 - SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
@@ -70,6 +78,19 @@ Car::~Car()
 
 void Car::update(float delta)
 {
+    // Maintain idle duration
+    if (this->node->getPhysicsBody()->getVelocity().length() == 0)
+        this->idleDuration += delta;
+    else
+        this->idleDuration = 0;
+
+    // Suicide if idle for long time
+    if (this->idleDuration > 1)
+    {
+        this->kill();
+        return;
+    }
+
     // Reset sensors
     this->sensors[0] = 0;
     this->sensors[1] = 0;
@@ -116,7 +137,8 @@ void Car::update(float delta)
     input[2] = (double)this->sensors[2];
 
     auto outputs = this->neuralNetwork->calculate_outputs(input);
-    this->direction2D.y = outputs[0] > 0.5 ? Forward : None;
+    // log("%f %f", outputs[0], outputs[1]);
+    this->direction2D.y = outputs[0] > 0 ? Forward : None;
     this->direction2D.x = outputs[1] > 1 ? Right : (outputs[1] < -1 ? Left : None);
 
     // Movement
@@ -135,11 +157,12 @@ void Car::update(float delta)
 
 float Car::getScore()
 {
-    return 0;
+    return this->score;
 }
 
 void Car::setScore()
 {
+    this->score = this->distance;
 }
 
 void Car::setSensor(Direction1D direction, float value)
@@ -158,4 +181,16 @@ void Car::setSensor(Direction1D direction, float value)
         break;
     }
     this->sensors[index] = value;
+}
+
+void Car::kill()
+{
+    this->dead = true;
+    MainScene::getInstance()->removeChild(this->node);
+    Session::decrementCarQuantity();
+}
+
+bool Car::isDead()
+{
+    return this->dead;
 }

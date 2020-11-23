@@ -29,6 +29,9 @@ namespace Wheels
         float distance;
         float steeringAngle;
         float sensors[3];
+        float score;
+        float idleDuration;
+        bool dead;
 
         struct SensorInfo
         {
@@ -46,6 +49,8 @@ namespace Wheels
         float getScore();
         void setScore();
         void setSensor(Direction1D, float);
+        void kill();
+        bool isDead();
     };
 } // namespace Wheels
 

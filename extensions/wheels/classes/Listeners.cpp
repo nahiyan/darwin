@@ -1,5 +1,7 @@
 #include <extensions/wheels/Listeners.h>
 #include "cocos2d.h"
+#include <extensions/wheels/MainScene.h>
+#include <extensions/wheels/Session.h>
 
 using namespace Wheels;
 
@@ -10,9 +12,29 @@ bool Listeners::onContactBegin(PhysicsContact &contact)
     auto bodyA = contact.getShapeA()->getBody();
     auto bodyB = contact.getShapeB()->getBody();
 
-    // TO DO: BUILD CONTACT LISTENER
+    auto categoryBitmaskA = bodyA->getCategoryBitmask();
+    auto categoryBitmaskB = bodyB->getCategoryBitmask();
 
-    return true;
+    if (categoryBitmaskA != categoryBitmaskB)
+    {
+        if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
+        {
+            Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+                auto node = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode();
+
+                if (node != nullptr)
+                {
+                    auto car = Session::evolutionSession->population[node->getTag()];
+                    car->kill();
+                }
+            });
+
+            return false;
+        }
+        return true;
+    }
+
+    return false;
 }
 
 void Listeners::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Car *car)
@@ -47,7 +69,7 @@ void Listeners::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event, Car 
     }
 }
 
-void Listeners::onMouseMove(Event *event, Scene *scene)
+void Listeners::onMouseMove(Event *event)
 {
     EventMouse *e = (EventMouse *)event;
     // log("Mouse: (%f, %f)", e->getCursorX(), e->getCursorY());
@@ -64,5 +86,5 @@ void Listeners::onMouseMove(Event *event, Scene *scene)
         return true;
     };
 
-    scene->getPhysicsWorld()->queryPoint(rayCastCB, Vec2(e->getCursorX(), e->getCursorY()), nullptr);
+    MainScene::getInstance()->getPhysicsWorld()->queryPoint(rayCastCB, Vec2(e->getCursorX(), e->getCursorY()), nullptr);
 }

@@ -11,21 +11,14 @@ namespace Wheels
     class MainScene : public cocos2d::Scene
     {
     private:
-        cocos2d::Size visibleSize;
-
-        struct CurrentGenerationInfo
-        {
-            // TO DO: PUT CURRENT GENERATION INFORMATION AS REQUIRED.
-        } cGInfo;
-
-        EvolutionSession<Car> *evolutionSession;
+        static MainScene *instance;
 
     public:
         static cocos2d::Scene *createScene();
         ~MainScene();
-
         virtual bool init();
         virtual void update(float);
+        static MainScene *getInstance();
 
         // a selector callback
         void menuCloseCallback(cocos2d::Ref *pSender);
