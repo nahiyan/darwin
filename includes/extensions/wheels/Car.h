@@ -39,6 +39,8 @@ namespace Wheels
             Direction1D direction;
         } sensorInfo;
 
+        void generateNode();
+
     public:
         std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
         Node *node;
@@ -51,6 +53,7 @@ namespace Wheels
         void setSensor(Direction1D, float);
         void kill();
         bool isDead();
+        void reset();
     };
 } // namespace Wheels
 

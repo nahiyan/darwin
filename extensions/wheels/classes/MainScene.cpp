@@ -13,6 +13,8 @@
 #include <core/Debug.h>
 #include <extensions/wheels/Tracks.h>
 #include <extensions/wheels/Session.h>
+#include <extensions/wheels/GenerationState_generated.h>
+#include <extensions/wheels/Evolution.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 2
@@ -57,15 +59,48 @@ bool MainScene::init()
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
 
-    // Add cars
+    // Evolution session
+    Session::setPopulationSize(POPULATION_SIZE);
     Session::evolutionSession = new EvolutionSession<Car>;
+
+    // Database
+    std::vector<double> nnParameters[POPULATION_SIZE];
+
+    if (CoreSession::sessionId == 0)
+    {
+        // Create new session
+        CoreSession::extensionId = Database::getExtensionId("Wheels");
+        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
+    }
+    else if (CoreSession::generationId == 0)
+    {
+        // Start the session over from scratch
+        Database::clearSession(CoreSession::sessionId);
+    }
+    else
+    {
+        auto stateBinary = Database::getGenerationState(CoreSession::generationId);
+
+        auto state = GetGenerationState(stateBinary);
+
+        for (int i = 0; i < state->population()->size(); i++)
+        {
+            for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)
+            {
+                nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
+            }
+        }
+
+        Session::evolutionSession->evolve(Evolution::crossoverAndMutate);
+    }
+
+    // Add cars
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
         auto car = new Car(std::vector<double>{});
         this->addChild(car->node, 0, i);
         Session::evolutionSession->population.push_back(car);
     }
-    Session::setCarQuantity(POPULATION_SIZE);
 
     // Add tracks
     auto tracks = Tracks::create();

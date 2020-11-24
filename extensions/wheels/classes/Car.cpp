@@ -20,40 +20,7 @@ USING_NS_CC;
 
 Car::Car(std::vector<double> parameters)
 {
-    this->distance = 0;
-    this->steeringAngle = 0;
-    this->sensors[0] = 0;
-    this->sensors[1] = 0;
-    this->sensors[2] = 0;
-    this->score = 0;
-    this->sensorInfo.car = this;
-    this->direction2D = {None, None};
-    this->dead = false;
-    this->idleDuration = 0;
-
-    // Sprite
-    auto sprite = Sprite::create("wheels/Ambulance.png");
-    sprite->setScale(SCALE);
-    sprite->setPosition(Vec2(100, 50));
-    this->node = sprite;
-
-    // Physics body
-    auto physicsBody = PhysicsBody::createBox(Size(102, 207), PhysicsMaterial(0.1f, 0.0f, 0.1f));
-    physicsBody->setDynamic(true);
-    physicsBody->setGravityEnable(false);
-    physicsBody->setCategoryBitmask(1);
-    physicsBody->setCollisionBitmask(2);   // Tracks
-    physicsBody->setContactTestBitmask(2); // Tracks
-    physicsBody->setLinearDamping(0.8f);
-    physicsBody->setAngularDamping(0.8f);
-    sprite->addComponent(physicsBody);
-
-    // Sensors
-    auto sensors = DrawNode::create();
-    sensors->drawLine(Vec2(51, 207), Vec2(51 + SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
-    sensors->drawLine(Vec2(51, 207), Vec2(51 - SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
-    sensors->drawLine(Vec2(51, 207), Vec2(51, 207 + CENTER_SENSOR_HEIGHT), Color4F::GREEN);
-    sprite->addChild(sensors);
+    this->reset();
 
     // Neural network
     this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{3, 10, 2});
@@ -92,9 +59,8 @@ void Car::update(float delta)
     }
 
     // Reset sensors
-    this->sensors[0] = 0;
-    this->sensors[1] = 0;
-    this->sensors[2] = 0;
+    for (int i = 0; i < 3; i++)
+        this->sensors[i] = 0;
 
     // Accumulate distance
     this->distance += this->node->getPhysicsBody()->getVelocity().length() * delta;
@@ -185,12 +151,55 @@ void Car::setSensor(Direction1D direction, float value)
 
 void Car::kill()
 {
-    this->dead = true;
-    MainScene::getInstance()->removeChild(this->node);
-    Session::decrementCarQuantity();
+    if (this->dead == false)
+    {
+        this->dead = true;
+        MainScene::getInstance()->removeChild(this->node);
+        Session::decrementCarQuantity();
+    }
 }
 
 bool Car::isDead()
 {
     return this->dead;
+}
+
+void Car::reset()
+{
+    this->distance = 0;
+    this->steeringAngle = 0;
+    for (int i = 0; i < 3; i++)
+        this->sensors[i] = 0;
+    this->score = 0;
+    this->sensorInfo.car = this;
+    this->direction2D = {None, None};
+    this->dead = false;
+    this->idleDuration = 0;
+    this->generateNode();
+}
+
+void Car::generateNode()
+{
+    // Sprite
+    this->node = Sprite::create("wheels/Ambulance.png");
+    this->node->setScale(SCALE);
+    this->node->setPosition(Vec2(100, 50));
+
+    // Physics body
+    auto physicsBody = PhysicsBody::createBox(Size(102, 207), PhysicsMaterial(0.1f, 0.0f, 0.1f));
+    physicsBody->setDynamic(true);
+    physicsBody->setGravityEnable(false);
+    physicsBody->setCategoryBitmask(1);
+    physicsBody->setCollisionBitmask(2);   // Tracks
+    physicsBody->setContactTestBitmask(2); // Tracks
+    physicsBody->setLinearDamping(0.8f);
+    physicsBody->setAngularDamping(0.8f);
+    this->node->addComponent(physicsBody);
+
+    // Sensors
+    auto sensors = DrawNode::create();
+    sensors->drawLine(Vec2(51, 207), Vec2(51 + SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
+    sensors->drawLine(Vec2(51, 207), Vec2(51 - SIDE_SENSOR_WIDTH, 207 + SIDE_SENSOR_HEIGHT), Color4F::GREEN);
+    sensors->drawLine(Vec2(51, 207), Vec2(51, 207 + CENTER_SENSOR_HEIGHT), Color4F::GREEN);
+    this->node->addChild(sensors);
 }

@@ -15,22 +15,19 @@ bool Listeners::onContactBegin(PhysicsContact &contact)
     auto categoryBitmaskA = bodyA->getCategoryBitmask();
     auto categoryBitmaskB = bodyB->getCategoryBitmask();
 
-    if (categoryBitmaskA != categoryBitmaskB)
+    // Vehicles and tracks
+    if (categoryBitmaskA + categoryBitmaskB == 3)
     {
-        if ((categoryBitmaskA == 1 && categoryBitmaskB == 2) || (categoryBitmaskA == 2 && categoryBitmaskB == 1))
-        {
-            Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
-                auto node = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode();
+        Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
+            auto node = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode();
 
-                if (node != nullptr)
-                {
-                    auto car = Session::evolutionSession->population[node->getTag()];
-                    car->kill();
-                }
-            });
+            if (node != nullptr)
+            {
+                auto car = Session::evolutionSession->population[node->getTag()];
+                car->kill();
+            }
+        });
 
-            return false;
-        }
         return true;
     }
 

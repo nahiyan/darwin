@@ -10,8 +10,7 @@ USING_NS_CC;
 
 Jumper::Jumper::Jumper()
 {
-
-    this->generateNode();
+    this->reset();
 }
 
 void Jumper::Jumper::generateNode()

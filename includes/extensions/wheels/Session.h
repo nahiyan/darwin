@@ -18,12 +18,14 @@ namespace Wheels
             int carQuantity;
         };
         static CurrentGenerationInfo currentGenerationInfo;
+        static int populationSize;
 
     public:
         static void nextGeneration();
         static EvolutionSession<Car> *evolutionSession;
         static void decrementCarQuantity();
         static void setCarQuantity(int);
+        static void setPopulationSize(int);
     };
 } // namespace Wheels
 #endif // __WHEELS_SESSION_H__
