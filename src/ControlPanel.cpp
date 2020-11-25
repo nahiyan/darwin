@@ -24,6 +24,8 @@
 #define GENERATIONS_LIST_BOX_ID 3
 #define START_BUTTON_ID 4
 #define CLEAR_SELECTION_BUTTON_ID 5
+#define LIST_BOX_MIN_WIDTH 170
+#define LIST_BOX_MIN_HEIGHT 300
 
 IMPLEMENT_APP_NO_MAIN(ControlPanel);
 IMPLEMENT_WX_THEME_SUPPORT;
@@ -102,6 +104,7 @@ ControlPanelFrame::ControlPanelFrame()
         this->extensionNames.push_back(extensionName);
 
     this->extensionsListBox->Append(this->extensionNames);
+    this->extensionsListBox->SetMinSize(wxSize(LIST_BOX_MIN_WIDTH, LIST_BOX_MIN_HEIGHT));
     extensionsStaticBoxSizer->Add(this->extensionsListBox, 0, wxEXPAND | wxALL, 5);
 
     // Sessions
@@ -111,6 +114,7 @@ ControlPanelFrame::ControlPanelFrame()
     sessionsPanel->SetSizer(sessionsStaticBoxSizer);
 
     this->sessionsListBox = new wxListBox(sessionsPanel, SESSIONS_LIST_BOX_ID);
+    this->sessionsListBox->SetMinSize(wxSize(LIST_BOX_MIN_WIDTH, LIST_BOX_MIN_HEIGHT));
     sessionsListBox->Enable(false);
     sessionsStaticBoxSizer->Add(this->sessionsListBox, 0, wxEXPAND | wxALL, 5);
 
@@ -121,6 +125,7 @@ ControlPanelFrame::ControlPanelFrame()
     generationsPanel->SetSizer(generationsStaticBoxSizer);
 
     this->generationsListBox = new wxListBox(generationsPanel, GENERATIONS_LIST_BOX_ID);
+    this->generationsListBox->SetMinSize(wxSize(LIST_BOX_MIN_WIDTH, LIST_BOX_MIN_HEIGHT));
     generationsListBox->Enable(false);
     generationsStaticBoxSizer->Add(this->generationsListBox, 0, wxEXPAND | wxALL, 5);
 
