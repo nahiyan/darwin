@@ -32,7 +32,7 @@ export default {
         var chart = new Chart("chart", {
           type: "line",
           data: {
-            labels: [...Array(this.scores.length).keys()],
+            labels: Array.from({ length: this.scores.length }, (_, i) => i + 1),
             datasets: [
               {
                 label: "Scores",

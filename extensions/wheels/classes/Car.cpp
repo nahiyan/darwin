@@ -46,7 +46,7 @@ Car::~Car()
 void Car::update(float delta)
 {
     // Maintain idle duration
-    if (this->node->getPhysicsBody()->getVelocity().length() == 0)
+    if (this->node->getPhysicsBody()->getVelocity().length() <= 1)
         this->idleDuration += delta;
     else
         this->idleDuration = 0;
