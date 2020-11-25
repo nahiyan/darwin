@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Extension;
 use App\Models\Generation;
 use App\Models\Session;
-use Jumper\GenerationState;
+use Jumper\GenerationState as JumperGenerationState;
+use Wheels\GenerationState as WheelsGenerationState;
 use Google\FlatBuffers\ByteBuffer;
 use Illuminate\Support\Facades\Log;
 
@@ -56,7 +57,19 @@ Route::get('/generation_scores/{generationId}', function ($generationId) {
                 $byteBuffer->put($i, $stateBinary[$i]);
             }
 
-            $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+            $generationState = JumperGenerationState::getRootAsGenerationState($byteBuffer);
+
+            for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
+                $scores[] = $generationState->getPopulation($i)->getScore();
+            }
+            break;
+        case "Wheels":
+            $byteBuffer = new ByteBuffer(strlen($stateBinary));
+            for ($i = 0; $i < strlen($stateBinary); $i++) {
+                $byteBuffer->put($i, $stateBinary[$i]);
+            }
+
+            $generationState = WheelsGenerationState::getRootAsGenerationState($byteBuffer);
 
             for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
                 $scores[] = $generationState->getPopulation($i)->getScore();
@@ -87,7 +100,7 @@ Route::get('/session_scores/{sessionId}', function ($sessionId) {
                     $byteBuffer->put($j, $stateBinary[$j]);
                 }
 
-                $generationState = GenerationState::getRootAsGenerationState($byteBuffer);
+                $generationState = JumperGenerationState::getRootAsGenerationState($byteBuffer);
 
                 for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
                     $generation_scores_average += $generationState->getPopulation($k)->getScore();
@@ -95,6 +108,20 @@ Route::get('/session_scores/{sessionId}', function ($sessionId) {
 
                 $generation_scores_average /= $generationState->getPopulationLength();
 
+                break;
+            case "Wheels":
+                $byteBuffer = new ByteBuffer(strlen($stateBinary));
+                for ($j = 0; $j < strlen($stateBinary); $j++) {
+                    $byteBuffer->put($j, $stateBinary[$j]);
+                }
+
+                $generationState = WheelsGenerationState::getRootAsGenerationState($byteBuffer);
+
+                for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
+                    $generation_scores_average += $generationState->getPopulation($k)->getScore();
+                }
+
+                $generation_scores_average /= $generationState->getPopulationLength();
                 break;
         }
 

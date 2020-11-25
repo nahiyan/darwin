@@ -97,7 +97,7 @@ bool MainScene::init()
     // Add cars
     for (int i = 0; i < POPULATION_SIZE; i++)
     {
-        auto car = new Car(std::vector<double>{});
+        auto car = new Car(nnParameters[i]);
         this->addChild(car->node, 0, i);
         Session::evolutionSession->population.push_back(car);
     }
