@@ -1,0 +1,12 @@
+namespace Flappers;
+
+table GenerationState {
+    population:[Member];
+}
+
+table Member {
+    chromosomes:[double];
+    score:float;
+}
+
+root_type GenerationState;

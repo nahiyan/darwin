@@ -42,6 +42,7 @@ set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/jumper)
 set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/predation)
 set(WHEELS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/wheels)
+set(FLAPPERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/flappers)
 
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
@@ -73,6 +74,7 @@ file(GLOB_RECURSE GAME_SOURCE
   "${WHEELS_PATH}/classes/*.cpp"
   "${JUMPER_PATH}/classes/*.cpp"
   "${PREDATION_PATH}/classes/*.cpp"
+  "${FLAPPERS_PATH}/classes/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
