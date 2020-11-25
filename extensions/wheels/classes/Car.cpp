@@ -7,9 +7,9 @@
 #include <extensions/wheels/MainScene.h>
 #include <extensions/wheels/Session.h>
 
-#define SIDE_SENSOR_WIDTH 130.0f
+#define SIDE_SENSOR_WIDTH 150.0f
 #define SIDE_SENSOR_HEIGHT 145.0f
-#define CENTER_SENSOR_HEIGHT 190.0f
+#define CENTER_SENSOR_HEIGHT 210.0f
 #define SCALE 0.5
 #define STEERING_POWER 0.1
 #define MAX_STEERING_ANGLE 2
