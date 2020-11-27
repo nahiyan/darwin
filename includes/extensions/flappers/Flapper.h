@@ -26,7 +26,6 @@ namespace Flappers
         void update(float);
         float getScore();
         void setScore();
-        // void setSensor(Direction1D, float);
         void kill();
         bool isDead();
         void reset();

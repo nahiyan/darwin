@@ -16,20 +16,20 @@ Flapper::Flapper(std::vector<double> parameters)
     this->reset();
 
     // Neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{3, 10, 2});
+    // this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{3, 10, 2});
 
-    if (parameters.size() > 0)
-    {
-        this->neuralNetwork->set_parameters(parameters);
-    }
-    else
-    {
-        // Randomize parameters
-        std::vector<double> parameters;
-        for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-            parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
-        this->neuralNetwork->set_parameters(parameters);
-    }
+    // if (parameters.size() > 0)
+    // {
+    //     this->neuralNetwork->set_parameters(parameters);
+    // }
+    // else
+    // {
+    //     // Randomize parameters
+    //     std::vector<double> parameters;
+    //     for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
+    //         parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
+    //     this->neuralNetwork->set_parameters(parameters);
+    // }
 }
 
 Flapper::~Flapper()
@@ -75,18 +75,24 @@ void Flapper::reset()
 void Flapper::generateNode()
 {
     // // Sprite
-    // this->node = Sprite::create("wheels/Ambulance.png");
-    // this->node->setScale(SCALE);
-    // this->node->setPosition(Vec2(100, 50));
+    this->node = Sprite::createWithSpriteFrameName("redbird-midflap.png");
+    this->node->setPosition(Vec2(100, 50));
 
-    // // Physics body
-    // auto physicsBody = PhysicsBody::createBox(Size(102, 207), PhysicsMaterial(0.1f, 0.0f, 0.1f));
-    // physicsBody->setDynamic(true);
-    // physicsBody->setGravityEnable(false);
-    // physicsBody->setCategoryBitmask(1);
-    // physicsBody->setCollisionBitmask(2);   // Tracks
-    // physicsBody->setContactTestBitmask(2); // Tracks
-    // physicsBody->setLinearDamping(0.8f);
-    // physicsBody->setAngularDamping(0.8f);
-    // this->node->addComponent(physicsBody);
+    // Physics body
+    auto physicsBody = PhysicsBody::createBox(Size(34, 24), PhysicsMaterial(0.1f, 0.0f, 0.1f));
+    physicsBody->setDynamic(true);
+    physicsBody->setGravityEnable(false);
+    physicsBody->setCategoryBitmask(1);
+    physicsBody->setCollisionBitmask(2);   // Pipes
+    physicsBody->setContactTestBitmask(2); // Pipes
+    this->node->addComponent(physicsBody);
+
+    Vector<SpriteFrame *> frames;
+    auto spriteFrameCache = SpriteFrameCache::getInstance();
+    frames.pushBack(spriteFrameCache->getSpriteFrameByName("redbird-midflap.png"));
+    frames.pushBack(spriteFrameCache->getSpriteFrameByName("redbird-downflap.png"));
+    frames.pushBack(spriteFrameCache->getSpriteFrameByName("redbird-upflap.png"));
+
+    auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 3);
+    this->node->runAction(RepeatForever::create(Animate::create(animation)));
 }

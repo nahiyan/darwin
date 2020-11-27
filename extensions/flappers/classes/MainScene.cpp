@@ -13,6 +13,8 @@
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
 #include <extensions/flappers/Evolution.h>
+#include <extensions/flappers/Pipe.h>
+#include <extensions/flappers/Base.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 1
@@ -56,6 +58,13 @@ bool MainScene::init()
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
+
+    // Load sprite sheet
+
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("flappers/sprite-sheet.plist");
+
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addPipe), 2.5, CC_REPEAT_FOREVER, 0);
+    this->addPipe(0);
 
     // Evolution session
     Session::setPopulationSize(POPULATION_SIZE);
@@ -121,6 +130,16 @@ bool MainScene::init()
     //     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     // }
 
+    // Flapper flapper(std::vector<double>{});
+    // this->addChild(flapper.node);
+
+    auto pipe = Pipe::create(.35);
+    this->addChild(pipe);
+
+    // Base
+    auto base = Base::create();
+    this->addChild(base, -1);
+
     return true;
 }
 
@@ -138,5 +157,9 @@ void MainScene::menuCloseCallback(Ref *pSender)
 }
 
 MainScene::~MainScene()
+{
+}
+
+void MainScene::addPipe(float delta)
 {
 }

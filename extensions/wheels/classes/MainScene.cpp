@@ -16,7 +16,7 @@
 #include <extensions/wheels/GenerationState_generated.h>
 #include <extensions/wheels/Evolution.h>
 
-#define POPULATION_SIZE 50
+#define POPULATION_SIZE 100
 #define SPEED 2
 
 USING_NS_CC;

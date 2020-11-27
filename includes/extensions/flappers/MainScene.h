@@ -18,6 +18,7 @@ namespace Flappers
         virtual bool init();
         virtual void update(float);
         static MainScene *getInstance();
+        void addPipe(float);
 
         // a selector callback
         void menuCloseCallback(cocos2d::Ref *pSender);

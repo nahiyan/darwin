@@ -16,6 +16,7 @@
 #include <extensions/jumper/AppDelegate.h>
 #include <extensions/predation/AppDelegate.h>
 #include <extensions/wheels/AppDelegate.h>
+#include <extensions/flappers/AppDelegate.h>
 #include <core/CoreSession.h>
 #include "cocos2d.h"
 
