@@ -1,0 +1,25 @@
+#include <extensions/jumper/Evolution.h>
+#include <extensions/jumper/JumperGroup.h>
+#include "cocos2d.h"
+
+USING_NS_CC;
+
+// Crossover and mutation function
+void Jumper::Evolution::crossoverAndMutate(JumperGroup *parentA, JumperGroup *parentB, JumperGroup *offspring, float mutationRate)
+{
+    auto parentAParameters = parentA->neuralNetwork->get_parameters();
+    auto parentBParameters = parentB->neuralNetwork->get_parameters();
+
+    OpenNN::Vector<double> newParameters(parentAParameters.size());
+
+    for (int i = 0; i < parentAParameters.size(); i++)
+    {
+        // Crossover
+        newParameters[i] = random<int>(0, 1) == 0 ? parentAParameters[i] : parentBParameters[i];
+
+        // Mutation
+        newParameters[i] += random<double>(-1, 1) * mutationRate * newParameters[i];
+    }
+
+    offspring->neuralNetwork->set_parameters(newParameters);
+}

@@ -133,7 +133,7 @@ bool MainScene::init()
     // Flapper flapper(std::vector<double>{});
     // this->addChild(flapper.node);
 
-    auto pipe = Pipe::create(.35);
+    auto pipe = Pipe::create(.90);
     this->addChild(pipe);
 
     // Base
