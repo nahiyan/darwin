@@ -257,6 +257,11 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
         Wheels::AppDelegate app;
         cocos2d::Application::getInstance()->run();
     }
+    else if (extensionName == "Flappers")
+    {
+        Flappers::AppDelegate app;
+        cocos2d::Application::getInstance()->run();
+    }
 }
 
 void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
