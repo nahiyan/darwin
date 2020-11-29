@@ -52,7 +52,7 @@ bool MainScene::init()
     this->addChild(_bgColor, -10);
 
     // Load sprite sheet
-    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("wheels/sprite-sheet.plist");
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("jumpers/sprite-sheet.plist");
 
     // Evolution session
     this->evolutionSession = new EvolutionSession<JumperGroup>;
