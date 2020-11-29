@@ -181,7 +181,7 @@ void Car::reset()
 void Car::generateNode()
 {
     // Sprite
-    this->node = Sprite::create("wheels/Ambulance.png");
+    this->node = Sprite::createWithSpriteFrameName("Ambulance.png");
     this->node->setScale(SCALE);
     this->node->setPosition(Vec2(100, 50));
 

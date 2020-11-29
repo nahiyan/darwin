@@ -66,22 +66,9 @@ USING_NS_CC;
 //     }
 // }
 
-// void Listeners::onMouseMove(Event *event)
-// {
-//     EventMouse *e = (EventMouse *)event;
-//     // log("Mouse: (%f, %f)", e->getCursorX(), e->getCursorY());
-//     auto rayCastCB = [&](PhysicsWorld &world, const PhysicsShape &shape, void *organism) -> bool {
-//         // log("%f", 1 - info.fraction);
-//         if (shape.getBody()->getCategoryBitmask() == 2)
-//         {
-//             log("Track %f %f", e->getCursorX(), e->getCursorY());
-//             // ((Organism *)organism)->setFoodIntersection();
+void Listeners::onMouseMove(Event *event)
+{
+    EventMouse *e = (EventMouse *)event;
 
-//             return false;
-//         }
-
-//         return true;
-//     };
-
-//     MainScene::getInstance()->getPhysicsWorld()->queryPoint(rayCastCB, Vec2(e->getCursorX(), e->getCursorY()), nullptr);
-// }
+    log("x: %f, y: %f", e->getCursorX(), e->getCursorY());
+}

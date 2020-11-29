@@ -59,6 +59,9 @@ bool MainScene::init()
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
 
+    // Load sprite sheet
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("wheels/sprite-sheet.plist");
+
     // Evolution session
     Session::setPopulationSize(POPULATION_SIZE);
     Session::evolutionSession = new EvolutionSession<Car>;

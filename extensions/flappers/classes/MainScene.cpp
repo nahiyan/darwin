@@ -53,14 +53,13 @@ bool MainScene::init()
     Director::getInstance()->getScheduler()->setTimeScale(SPEED);
     this->getPhysicsWorld()->setSpeed(SPEED);
 
-    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
 
     // Load sprite sheet
-
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("flappers/sprite-sheet.plist");
 
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addPipe), 2.5, CC_REPEAT_FOREVER, 0);
@@ -130,10 +129,17 @@ bool MainScene::init()
     //     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     // }
 
+    // Mouse listener
+    // {
+    //     auto listener = EventListenerMouse::create();
+    //     listener->onMouseMove = Listeners::onMouseMove;
+    //     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    // }
+
     // Flapper flapper(std::vector<double>{});
     // this->addChild(flapper.node);
 
-    auto pipe = Pipe::create(.90);
+    auto pipe = Pipe::create(.30);
     this->addChild(pipe);
 
     // Base

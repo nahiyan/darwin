@@ -14,7 +14,7 @@ namespace Flappers
         // static bool onContactBegin(PhysicsContact &);
         // static void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Car *);
         // static void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event, Car *);
-        // static void onMouseMove(Event *event);
+        static void onMouseMove(Event *event);
     };
 } // namespace Flappers
 #endif // __FLAPPERS_LISTENERS_H__
