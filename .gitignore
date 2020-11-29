@@ -1,6 +1,5 @@
 *.sh
 *.code-workspace
 *.vscode
-/test
 /*-build
-/Resources/db_path.txt
+/resources/db_path.txt
