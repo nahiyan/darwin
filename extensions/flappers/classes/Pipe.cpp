@@ -14,7 +14,7 @@ Node *Pipe::create(float topFraction)
     auto bottomPipeHeight = verticalSpace - topPipeHeight;
 
     auto pipe = Node::create();
-    pipe->setPosition(500, 0);
+    pipe->setPosition(Director::getInstance()->getVisibleSize().width, 0);
 
     auto topPipeBody = Sprite::createWithSpriteFrameName("pipe-green-body.png");
     topPipeBody->setPosition(0, screenHeight - (topPipeHeight / 2));
@@ -37,22 +37,27 @@ Node *Pipe::create(float topFraction)
 
     // Physics body
     auto physicsBody = PhysicsBody::create();
-    physicsBody->setDynamic(false);
+    physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(false);
-    physicsBody->setCategoryBitmask(2);
-    physicsBody->setCollisionBitmask(1);   // Flappers
-    physicsBody->setContactTestBitmask(1); // Flappers
     pipe->addComponent(physicsBody);
 
     // Physics shapes
     {
         auto shape = PhysicsShapeBox::create(Size(52, bottomPipeHeight + 24), PHYSICSSHAPE_MATERIAL_DEFAULT, Vec2(0, BASE_HEIGHT + ((bottomPipeHeight + 24) / 2)));
+        shape->setCategoryBitmask(2);
+        shape->setCollisionBitmask(1);   // Flappers
+        shape->setContactTestBitmask(1); // Flappers
         physicsBody->addShape(shape);
     }
     {
         auto shape = PhysicsShapeBox::create(Size(52, topPipeHeight + 24), PHYSICSSHAPE_MATERIAL_DEFAULT, Vec2(0, MIDDLE_SPACE + BASE_HEIGHT + bottomPipeHeight + 36 + topPipeHeight / 2));
+        shape->setCategoryBitmask(2);
+        shape->setCollisionBitmask(1);   // Flappers
+        shape->setContactTestBitmask(1); // Flappers
         physicsBody->addShape(shape);
     }
+
+    pipe->getPhysicsBody()->setVelocity(Vec2(-100, 0));
 
     return pipe;
 }

@@ -139,9 +139,6 @@ bool MainScene::init()
     // Flapper flapper(std::vector<double>{});
     // this->addChild(flapper.node);
 
-    auto pipe = Pipe::create(.30);
-    this->addChild(pipe);
-
     // Base
     auto base = Base::create();
     this->addChild(base, -1);
@@ -168,4 +165,6 @@ MainScene::~MainScene()
 
 void MainScene::addPipe(float delta)
 {
+    auto pipe = Pipe::create(random<float>(0.1, 0.9));
+    this->addChild(pipe);
 }
