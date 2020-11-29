@@ -8,7 +8,7 @@ USING_NS_CC;
 
 Sprite *Jumper::Obstacle::create(const Vec2 &position, Speed speed)
 {
-    auto node = Sprite::create("ball.png");
+    auto node = Sprite::createWithSpriteFrameName("ball.png");
     node->setPosition(position);
 
     auto physicsBody = PhysicsBody::createCircle(16, PhysicsMaterial(0.1f, 0.0f, 0.0f));

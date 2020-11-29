@@ -8,7 +8,7 @@ namespace Jumper
     class Boundary
     {
     public:
-        static cocos2d::DrawNode **create(cocos2d::Size &);
+        static cocos2d::DrawNode **create();
     };
 } // namespace Jumper
 

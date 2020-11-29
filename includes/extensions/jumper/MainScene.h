@@ -13,7 +13,6 @@ namespace Jumper
     class MainScene : public cocos2d::Scene
     {
     private:
-        cocos2d::Size visibleSize;
         EvolutionSession<JumperGroup> *evolutionSession;
 
         struct CurrentGenerationInfo

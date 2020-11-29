@@ -18,9 +18,10 @@
 #define POPULATION_SIZE 10
 #define SPEED 1
 
+using namespace Jumper;
 USING_NS_CC;
 
-Scene *Jumper::MainScene::createScene()
+Scene *MainScene::createScene()
 {
     return MainScene::create();
 }
@@ -33,7 +34,7 @@ static void problemLoading(const char *filename)
 }
 
 // on "init" you need to initialize your instance
-bool Jumper::MainScene::init()
+bool MainScene::init()
 {
     if (!Scene::initWithPhysics())
         return false;
@@ -50,7 +51,8 @@ bool Jumper::MainScene::init()
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
     this->addChild(_bgColor, -10);
 
-    this->visibleSize = Director::getInstance()->getVisibleSize();
+    // Load sprite sheet
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("wheels/sprite-sheet.plist");
 
     // Evolution session
     this->evolutionSession = new EvolutionSession<JumperGroup>;
@@ -100,7 +102,7 @@ bool Jumper::MainScene::init()
     this->addObstacles();
 
     // Boundary
-    auto boundaries = Boundary::create(this->visibleSize);
+    auto boundaries = Boundary::create();
     for (int i = 0; i < 4; i++)
     {
         this->addChild(boundaries[i], -9);
@@ -115,19 +117,19 @@ bool Jumper::MainScene::init()
     return true;
 }
 
-void Jumper::MainScene::update(float delta)
+void MainScene::update(float delta)
 {
     for (auto jumperGroup : this->evolutionSession->population)
         jumperGroup->update(delta);
 }
 
-void Jumper::MainScene::menuCloseCallback(Ref *pSender)
+void MainScene::menuCloseCallback(Ref *pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
 }
 
-bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
+bool MainScene::onContactBegin(PhysicsContact &contact)
 {
     auto bodyA = contact.getShapeA()->getBody();
     auto bodyB = contact.getShapeB()->getBody();
@@ -168,25 +170,26 @@ bool Jumper::MainScene::onContactBegin(PhysicsContact &contact)
     return false;
 }
 
-void Jumper::MainScene::addObstacles()
+void MainScene::addObstacles()
 {
+    auto visibleWidth = Director::getInstance()->getVisibleSize().width;
     {
-        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 0, 33), Obstacle::Slow);
+        auto obstacle = Obstacle::create(Vec2(visibleWidth - 0, 33), Obstacle::Slow);
         this->addChild(obstacle, 1);
     }
     {
-        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 240, 33), Obstacle::Medium);
+        auto obstacle = Obstacle::create(Vec2(visibleWidth - 240, 33), Obstacle::Medium);
         this->addChild(obstacle, 1);
     }
     {
-        auto obstacle = Obstacle::create(Vec2(visibleSize.width - 464, 33), Obstacle::Fast);
+        auto obstacle = Obstacle::create(Vec2(visibleWidth - 464, 33), Obstacle::Fast);
         this->addChild(obstacle, 1);
     }
 
     this->currentGenerationInfo.obstacles = 3;
 }
 
-void Jumper::MainScene::nextGeneration()
+void MainScene::nextGeneration()
 {
     // Score the current population
     for (auto jumperGroup : this->evolutionSession->population)
@@ -244,7 +247,7 @@ void Jumper::MainScene::nextGeneration()
     this->addObstacles();
 }
 
-Jumper::MainScene::~MainScene()
+MainScene::~MainScene()
 {
     for (auto jumper : this->evolutionSession->population)
         delete jumper;

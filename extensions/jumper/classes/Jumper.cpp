@@ -16,7 +16,7 @@ Jumper::Jumper::Jumper()
 void Jumper::Jumper::generateNode()
 {
     // Create node
-    this->node = Sprite::create("jumper1.png");
+    this->node = Sprite::createWithSpriteFrameName("jumper1.png");
 
     auto physicsBody = PhysicsBody::createBox(Size(65, 70), PhysicsMaterial(1.0f, 0.0f, 1.0f));
     physicsBody->setDynamic(true);

@@ -7,8 +7,9 @@
 
 USING_NS_CC;
 
-DrawNode **Jumper::Boundary::create(Size &visibleSize)
+DrawNode **Jumper::Boundary::create()
 {
+    auto visibleWidth = Director::getInstance()->getVisibleSize().width;
     auto boundaries = new DrawNode *[BOUNDARY_COUNT];
 
     for (int i = 0; i < BOUNDARY_COUNT; i++)
@@ -19,7 +20,7 @@ DrawNode **Jumper::Boundary::create(Size &visibleSize)
     // Left
     {
         boundaries[0]->drawSolidRect(Vec2(0, 0), Vec2(15, 100), Color4F::GRAY);
-        boundaries[0]->setPosition(Vec2(visibleSize.width - 672, 15));
+        boundaries[0]->setPosition(Vec2(visibleWidth - 672, 15));
 
         auto physicsBody = PhysicsBody::createBox(Size(15, 100), material, Vec2(7.5, 50));
         boundaries[0]->addComponent(physicsBody);
@@ -27,7 +28,7 @@ DrawNode **Jumper::Boundary::create(Size &visibleSize)
     // Middle
     {
         boundaries[1]->drawSolidRect(Vec2(0, 0), Vec2(15, 100), Color4F::GRAY);
-        boundaries[1]->setPosition(Vec2(visibleSize.width - 448, 15));
+        boundaries[1]->setPosition(Vec2(visibleWidth - 448, 15));
 
         auto physicsBody = PhysicsBody::createBox(Size(15, 100), material, Vec2(7.5, 50));
         boundaries[1]->addComponent(physicsBody);
@@ -35,16 +36,16 @@ DrawNode **Jumper::Boundary::create(Size &visibleSize)
     // Right
     {
         boundaries[2]->drawSolidRect(Vec2(0, 0), Vec2(15, 100), Color4F::GRAY);
-        boundaries[2]->setPosition(Vec2(visibleSize.width - 224, 15));
+        boundaries[2]->setPosition(Vec2(visibleWidth - 224, 15));
 
         auto physicsBody = PhysicsBody::createBox(Size(15, 100), material, Vec2(7.5, 50));
         boundaries[2]->addComponent(physicsBody);
     }
     // Bottom
     {
-        boundaries[3]->drawSolidRect(Vec2(0, 0), Vec2(visibleSize.width, 15), Color4F::GRAY);
+        boundaries[3]->drawSolidRect(Vec2(0, 0), Vec2(visibleWidth, 15), Color4F::GRAY);
 
-        auto physicsBody = PhysicsBody::createBox(Size(visibleSize.width, 15), material, Vec2(visibleSize.width / 2, 7.5));
+        auto physicsBody = PhysicsBody::createBox(Size(visibleWidth, 15), material, Vec2(visibleWidth / 2, 7.5));
         boundaries[3]->addComponent(physicsBody);
     }
 
