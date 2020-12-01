@@ -56,7 +56,7 @@ bool MainScene::init()
     //    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // Control gravity
-    this->getPhysicsWorld()->setGravity(Vec2(0, -750));
+    this->getPhysicsWorld()->setGravity(Vec2(0, -500));
 
     // White background
     LayerColor *_bgColor = LayerColor::create(Color4B(255, 255, 255, 255));
@@ -163,6 +163,16 @@ void MainScene::update(float delta)
     // for (auto car : Session::evolutionSession->population)
     //     if (!car->isDead())
     //         car->update(delta);
+
+    for (auto object : this->getChildren())
+    {
+        if (object->getPhysicsBody() != nullptr)
+        {
+            auto physicsBody = object->getPhysicsBody();
+            printf("%d ", physicsBody->getCategoryBitmask());
+        }
+    }
+    printf("\n");
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)

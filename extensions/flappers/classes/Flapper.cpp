@@ -83,8 +83,8 @@ void Flapper::generateNode()
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
-    physicsBody->setCollisionBitmask(2);   // Pipes
-    physicsBody->setContactTestBitmask(2); // Pipes
+    physicsBody->setCollisionBitmask(6);   // Pipes + Base
+    physicsBody->setContactTestBitmask(6); // Pipes + Base
     this->node->addComponent(physicsBody);
 
     Vector<SpriteFrame *> frames;

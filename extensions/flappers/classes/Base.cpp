@@ -34,7 +34,7 @@ Node *Base::create()
     auto physicsBody = PhysicsBody::createBox(Size(screenWidth, 112), PhysicsMaterial(0.1f, 0.0f, 0.1f));
     physicsBody->setDynamic(false);
     physicsBody->setGravityEnable(false);
-    physicsBody->setCategoryBitmask(2);
+    physicsBody->setCategoryBitmask(4);
     physicsBody->setCollisionBitmask(1);   // Flappers
     physicsBody->setContactTestBitmask(1); // Flappers
     base->addComponent(physicsBody);

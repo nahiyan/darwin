@@ -15,8 +15,10 @@ bool Listeners::onContactBegin(PhysicsContact &contact)
     auto categoryBitmaskA = bodyA->getCategoryBitmask();
     auto categoryBitmaskB = bodyB->getCategoryBitmask();
 
+    auto categorySum = categoryBitmaskA + categoryBitmaskB;
+
     // Bird and obstacle
-    if (categoryBitmaskA + categoryBitmaskB == 3)
+    if (categorySum == 3 || categorySum == 5)
     {
         Director::getInstance()->getScheduler()->performFunctionInCocosThread([=]() {
             auto node = (categoryBitmaskA == 1 ? bodyA : bodyB)->getNode();
