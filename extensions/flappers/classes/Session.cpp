@@ -1,6 +1,7 @@
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
 #include <extensions/flappers/Evolution.h>
+#include <extensions/flappers/Pipe.h>
 #include <core/CoreSession.h>
 
 using namespace Flappers;
@@ -8,6 +9,7 @@ using namespace Flappers;
 EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 Session::CurrentGenerationInfo Session::currentGenerationInfo = Session::CurrentGenerationInfo{0};
 int Session::populationSize = 0;
+std::vector<Node *> Session::pipes = std::vector<Node *>{};
 
 void Session::setPopulationSize(int size)
 {

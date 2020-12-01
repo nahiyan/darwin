@@ -76,12 +76,12 @@ void Flapper::generateNode()
 {
     // // Sprite
     this->node = Sprite::createWithSpriteFrameName("redbird-midflap.png");
-    this->node->setPosition(Vec2(100, 50));
+    this->node->setPosition(Vec2(100, 500));
 
     // Physics body
     auto physicsBody = PhysicsBody::createBox(Size(34, 24), PhysicsMaterial(0.1f, 0.0f, 0.1f));
     physicsBody->setDynamic(true);
-    physicsBody->setGravityEnable(false);
+    physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
     physicsBody->setCollisionBitmask(2);   // Pipes
     physicsBody->setContactTestBitmask(2); // Pipes
@@ -95,4 +95,9 @@ void Flapper::generateNode()
 
     auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 3);
     this->node->runAction(RepeatForever::create(Animate::create(animation)));
+}
+
+void Flapper::flap()
+{
+    this->node->getPhysicsBody()->applyImpulse(Vec2(0, 30 * 1000));
 }

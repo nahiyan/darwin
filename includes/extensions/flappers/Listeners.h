@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "MainScene.h"
+#include "Flapper.h"
 
 using namespace cocos2d;
 
@@ -11,9 +12,9 @@ namespace Flappers
     class Listeners
     {
     public:
-        // static bool onContactBegin(PhysicsContact &);
-        // static void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Car *);
-        // static void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event, Car *);
+        static bool onContactBegin(PhysicsContact &);
+        static void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Flapper *);
+        // static void onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event, Flapper *);
         static void onMouseMove(Event *event);
     };
 } // namespace Flappers

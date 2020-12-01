@@ -1,4 +1,5 @@
 #include <extensions/flappers/Pipe.h>
+#include <extensions/flappers/Session.h>
 
 #define BASE_HEIGHT 112
 #define MIDDLE_SPACE 150.0f
@@ -37,7 +38,7 @@ Node *Pipe::create(float topFraction)
 
     // Physics body
     auto physicsBody = PhysicsBody::create();
-    physicsBody->setDynamic(true);
+    physicsBody->setDynamic(false);
     physicsBody->setGravityEnable(false);
     pipe->addComponent(physicsBody);
 
@@ -58,6 +59,8 @@ Node *Pipe::create(float topFraction)
     }
 
     pipe->getPhysicsBody()->setVelocity(Vec2(-100, 0));
+
+    Session::pipes.push_back(pipe);
 
     return pipe;
 }

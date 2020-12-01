@@ -29,6 +29,7 @@ namespace Flappers
         void kill();
         bool isDead();
         void reset();
+        void flap();
     };
 } // namespace Flappers
 

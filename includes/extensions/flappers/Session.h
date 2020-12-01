@@ -21,6 +21,8 @@ namespace Flappers
         static int populationSize;
 
     public:
+        static std::vector<Node *> pipes;
+
         static void nextGeneration();
         static EvolutionSession<Flapper> *evolutionSession;
         static void decrementFlapperQuantity();
