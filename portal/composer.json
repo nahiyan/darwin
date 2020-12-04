@@ -38,6 +38,7 @@
             "App\\": "app/",
             "Jumper\\": "Jumper/",
             "Wheels\\": "Wheels/",
+            "Flappers\\": "Flappers/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

@@ -7,54 +7,21 @@
 using namespace Flappers;
 
 EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
-int Session::flapperQuantity = 0;
-int Session::populationSize = 0;
 std::vector<Node *> Session::pipes = std::vector<Node *>{};
-
-void Session::setPopulationSize(int size)
-{
-    Session::populationSize = size;
-    Session::flapperQuantity = size;
-}
-
-void Session::decrementFlapperQuantity()
-{
-    Session::flapperQuantity--;
-
-    // log("%d", Session::flapperQuantity);
-
-    if (Session::flapperQuantity == 0)
-        Session::nextGeneration();
-}
-
-void Session::setFlapperQuantity(int quantity)
-{
-    Session::flapperQuantity = quantity;
-}
+int Session::pipeCounter = 0;
 
 void Session::nextGeneration()
 {
-    Session::flapperQuantity = Session::populationSize;
-    const auto mainScene = MainScene::getInstance();
+    Session::pipeCounter = 0;
+    const auto &mainScene = MainScene::getInstance();
 
-    // Score the current population
-    for (auto object : Session::evolutionSession->population)
+    // Score the current population, killing any surviving member
+    for (auto &member : Session::evolutionSession->population)
+        member->setScore();
+
+    for (auto &pipe : Session::pipes)
     {
-        object->setScore();
-        object->kill();
-    }
-
-    // Remove all the objects
-    for (auto &child : mainScene->getChildren())
-    {
-        auto physicsBody = child->getPhysicsBody();
-        if (physicsBody != nullptr && (physicsBody->getCategoryBitmask() == 1 || physicsBody->getCategoryBitmask() == 2))
-        {
-            if (physicsBody->getCategoryBitmask() == 1)
-                Session::evolutionSession->population[child->getTag()]->kill();
-
-            mainScene->removeChild(child);
-        }
+        mainScene->removeChild(pipe);
     }
     Session::pipes.clear();
 
@@ -84,8 +51,8 @@ void Session::nextGeneration()
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)
     {
-        auto object = Session::evolutionSession->population[i];
+        auto &object = Session::evolutionSession->population[i];
         object->reset();
-        mainScene->addChild(object->node, 2, i);
+        mainScene->addChild(object->node, 0, i);
     }
 }

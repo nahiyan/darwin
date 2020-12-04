@@ -17,7 +17,7 @@
 #include <extensions/flappers/Base.h>
 #include <extensions/flappers/Roof.h>
 
-#define POPULATION_SIZE 10
+#define POPULATION_SIZE 200
 #define SPEED 1
 
 USING_NS_CC;
@@ -70,8 +70,7 @@ bool MainScene::init()
     this->addPipe(0);
 
     // Evolution session
-    Session::setPopulationSize(POPULATION_SIZE);
-    Session::evolutionSession = new EvolutionSession<Flapper>;
+    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.5, .4);
 
     // // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -162,9 +161,16 @@ void MainScene::update(float delta)
         }
     }
 
+    int flapperCount = 0;
     for (auto &flapper : Session::evolutionSession->population)
         if (!flapper->isDead())
+        {
             flapper->update(delta);
+            flapperCount++;
+        }
+
+    if (flapperCount == 0)
+        Session::nextGeneration();
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)
@@ -179,6 +185,12 @@ MainScene::~MainScene()
 
 void MainScene::addPipe(float delta)
 {
-    auto pipe = Pipe::create(random<float>(0.1, 0.9));
+    float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.1};
+
+    auto pipe = Pipe::create(values[Session::pipeCounter]);
     this->addChild(pipe);
+    if (Session::pipeCounter == 10)
+        Session::pipeCounter = 0;
+    else
+        Session::pipeCounter++;
 }

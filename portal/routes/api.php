@@ -7,6 +7,7 @@ use App\Models\Generation;
 use App\Models\Session;
 use Jumper\GenerationState as JumperGenerationState;
 use Wheels\GenerationState as WheelsGenerationState;
+use Flappers\GenerationState as FlappersGenerationState;
 use Google\FlatBuffers\ByteBuffer;
 use Illuminate\Support\Facades\Log;
 
@@ -75,6 +76,18 @@ Route::get('/generation_scores/{generationId}', function ($generationId) {
                 $scores[] = $generationState->getPopulation($i)->getScore();
             }
             break;
+        case "Flappers":
+            $byteBuffer = new ByteBuffer(strlen($stateBinary));
+            for ($i = 0; $i < strlen($stateBinary); $i++) {
+                $byteBuffer->put($i, $stateBinary[$i]);
+            }
+
+            $generationState = FlappersGenerationState::getRootAsGenerationState($byteBuffer);
+
+            for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
+                $scores[] = $generationState->getPopulation($i)->getScore();
+            }
+            break;
     }
 
     rsort($scores);
@@ -116,6 +129,20 @@ Route::get('/session_scores/{sessionId}', function ($sessionId) {
                 }
 
                 $generationState = WheelsGenerationState::getRootAsGenerationState($byteBuffer);
+
+                for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
+                    $generation_scores_average += $generationState->getPopulation($k)->getScore();
+                }
+
+                $generation_scores_average /= $generationState->getPopulationLength();
+                break;
+            case "Flappers":
+                $byteBuffer = new ByteBuffer(strlen($stateBinary));
+                for ($j = 0; $j < strlen($stateBinary); $j++) {
+                    $byteBuffer->put($j, $stateBinary[$j]);
+                }
+
+                $generationState = FlappersGenerationState::getRootAsGenerationState($byteBuffer);
 
                 for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
                     $generation_scores_average += $generationState->getPopulation($k)->getScore();

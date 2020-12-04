@@ -30,7 +30,7 @@ bool Listeners::onContactBegin(PhysicsContact &contact)
             }
         });
 
-        return true;
+        return false;
     }
 
     return false;

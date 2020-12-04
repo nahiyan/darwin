@@ -16,7 +16,7 @@ Flapper::Flapper(std::vector<double> parameters)
     this->reset();
 
     // Neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{4, 10, 1});
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{4, 20, 1});
 
     if (parameters.size() > 0)
     {
@@ -54,25 +54,18 @@ void Flapper::update(float delta)
         auto frontPipeChildren = frontPipe->getChildren();
         topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - 24 - flapperPosition.y;
         bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + 24;
-
-        // log("%f %f %f", topPipeVerticalDistance, bottomPipeVerticalDistance, this->node->getPhysicsBody()->getVelocity().y);
-        // for (auto child : frontPipe->getChildren())
-        // {
-        //     printf("%f, %f; ", child->getBoundingBox().size.width, child->getBoundingBox().size.height);
-        // }
-        // printf("\n");
-
-        // Neural network
-        OpenNN::Tensor<double> input{1, 4};
-        input[0] = horizontalDistanceToPipe;
-        input[1] = topPipeVerticalDistance;
-        input[2] = bottomPipeVerticalDistance;
-        input[3] = (double)this->node->getPhysicsBody()->getVelocity().y;
-
-        auto outputs = this->neuralNetwork->calculate_outputs(input);
-        if (outputs[0] >= .5)
-            this->flap();
     }
+
+    // Neural network
+    OpenNN::Tensor<double> input{1, 4};
+    input[0] = horizontalDistanceToPipe;
+    input[1] = topPipeVerticalDistance;
+    input[2] = bottomPipeVerticalDistance;
+    input[3] = (double)this->node->getPhysicsBody()->getVelocity().y;
+
+    auto outputs = this->neuralNetwork->calculate_outputs(input);
+    if (outputs[0] >= .5)
+        this->flap();
 }
 
 float Flapper::getScore()
@@ -91,7 +84,6 @@ void Flapper::kill()
     {
         this->dead = true;
         MainScene::getInstance()->removeChild(this->node);
-        Session::decrementFlapperQuantity();
     }
 }
 
@@ -102,24 +94,24 @@ bool Flapper::isDead()
 
 void Flapper::reset()
 {
+    this->generateNode();
     this->score = 0;
     this->dead = false;
-    this->generateNode();
 }
 
 void Flapper::generateNode()
 {
     // Sprite
     this->node = Sprite::createWithSpriteFrameName("redbird-midflap.png");
-    this->node->setPosition(Vec2(100, 500));
+    this->node->setPosition(Vec2(Director::getInstance()->getVisibleSize().width - 400, 500));
 
     // Physics body
     auto physicsBody = PhysicsBody::createBox(Size(34, 24), PhysicsMaterial(0.1f, 0.0f, 0.1f));
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
-    physicsBody->setCollisionBitmask(6);   // Pipes + Base
-    physicsBody->setContactTestBitmask(6); // Pipes + Base
+    physicsBody->setCollisionBitmask(6);   // Pipes + Base/Roof
+    physicsBody->setContactTestBitmask(6); // Pipes + Base/Roof
     physicsBody->setVelocityLimit(300);
     this->node->addComponent(physicsBody);
 

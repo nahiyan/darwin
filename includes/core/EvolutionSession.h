@@ -27,6 +27,14 @@ public:
         this->generationIndex = 0;
     }
 
+    EvolutionSession(float mutationRate, float populationDivision1, float populationDivision2) {
+        this->population = std::vector<T *>();
+        this->mutationRate = mutationRate;
+        this->populationDivision[0] = populationDivision1;
+        this->populationDivision[1] = populationDivision2;
+        this->generationIndex = 0;
+    }
+
     inline std::vector<T *> getRankedPopulation()
     {
         std::vector<T *> populationRanked;
