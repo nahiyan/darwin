@@ -40,6 +40,9 @@ Node *Pipe::create(float topFraction)
     auto physicsBody = PhysicsBody::create();
     physicsBody->setDynamic(false);
     physicsBody->setGravityEnable(false);
+    physicsBody->setCategoryBitmask(2);
+    physicsBody->setCollisionBitmask(1);   // Flappers
+    physicsBody->setContactTestBitmask(1); // Flappers
     pipe->addComponent(physicsBody);
 
     // Physics shapes

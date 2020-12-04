@@ -15,8 +15,9 @@
 #include <extensions/flappers/Evolution.h>
 #include <extensions/flappers/Pipe.h>
 #include <extensions/flappers/Base.h>
+#include <extensions/flappers/Roof.h>
 
-#define POPULATION_SIZE 1
+#define POPULATION_SIZE 10
 #define SPEED 1
 
 USING_NS_CC;
@@ -53,7 +54,7 @@ bool MainScene::init()
     Director::getInstance()->getScheduler()->setTimeScale(SPEED);
     this->getPhysicsWorld()->setSpeed(SPEED);
 
-    //    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // Control gravity
     this->getPhysicsWorld()->setGravity(Vec2(0, -500));
@@ -141,38 +142,29 @@ bool MainScene::init()
     // }
 
     // Base
-    auto base = Base::create();
-    this->addChild(base, -1);
+    this->addChild(Base::create(), -1);
+
+    // Roof
+    this->addChild(Roof::create(), -1);
 
     return true;
 }
 
 void MainScene::update(float delta)
 {
-    int i = 0;
     for (auto &pipe : Session::pipes)
     {
         auto position = pipe->getParent()->convertToWorldSpace(pipe->getPosition());
-        if (position.x <= 0)
+        if (position.x < -26)
         {
             this->removeChild(pipe);
-            Session::pipes.erase(Session::pipes.begin() + i);
+            Session::pipes.erase(Session::pipes.begin());
         }
-        i++;
     }
-    // for (auto car : Session::evolutionSession->population)
-    //     if (!car->isDead())
-    //         car->update(delta);
 
-    for (auto object : this->getChildren())
-    {
-        if (object->getPhysicsBody() != nullptr)
-        {
-            auto physicsBody = object->getPhysicsBody();
-            printf("%d ", physicsBody->getCategoryBitmask());
-        }
-    }
-    printf("\n");
+    for (auto &flapper : Session::evolutionSession->population)
+        if (!flapper->isDead())
+            flapper->update(delta);
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)

@@ -16,20 +16,20 @@ Flapper::Flapper(std::vector<double> parameters)
     this->reset();
 
     // Neural network
-    // this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{3, 10, 2});
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{4, 10, 1});
 
-    // if (parameters.size() > 0)
-    // {
-    //     this->neuralNetwork->set_parameters(parameters);
-    // }
-    // else
-    // {
-    //     // Randomize parameters
-    //     std::vector<double> parameters;
-    //     for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-    //         parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
-    //     this->neuralNetwork->set_parameters(parameters);
-    // }
+    if (parameters.size() > 0)
+    {
+        this->neuralNetwork->set_parameters(parameters);
+    }
+    else
+    {
+        // Randomize parameters
+        std::vector<double> parameters;
+        for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
+            parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
+        this->neuralNetwork->set_parameters(parameters);
+    }
 }
 
 Flapper::~Flapper()
@@ -38,6 +38,41 @@ Flapper::~Flapper()
 
 void Flapper::update(float delta)
 {
+    // Record distance travelled and recharge
+    this->score += delta;
+
+    // Neural network inputs
+    double horizontalDistanceToPipe = 0, topPipeVerticalDistance = 0, bottomPipeVerticalDistance = 0;
+    if (Session::pipes.size() > 0)
+    {
+        auto frontPipe = Session::pipes[0];
+        auto frontPipePosition = frontPipe->getParent()->convertToWorldSpace(frontPipe->getPosition());
+        auto flapperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
+
+        horizontalDistanceToPipe = frontPipePosition.x - flapperPosition.x;
+
+        auto frontPipeChildren = frontPipe->getChildren();
+        topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - 24 - flapperPosition.y;
+        bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + 24;
+
+        // log("%f %f %f", topPipeVerticalDistance, bottomPipeVerticalDistance, this->node->getPhysicsBody()->getVelocity().y);
+        // for (auto child : frontPipe->getChildren())
+        // {
+        //     printf("%f, %f; ", child->getBoundingBox().size.width, child->getBoundingBox().size.height);
+        // }
+        // printf("\n");
+
+        // Neural network
+        OpenNN::Tensor<double> input{1, 4};
+        input[0] = horizontalDistanceToPipe;
+        input[1] = topPipeVerticalDistance;
+        input[2] = bottomPipeVerticalDistance;
+        input[3] = (double)this->node->getPhysicsBody()->getVelocity().y;
+
+        auto outputs = this->neuralNetwork->calculate_outputs(input);
+        if (outputs[0] >= .5)
+            this->flap();
+    }
 }
 
 float Flapper::getScore()
@@ -47,6 +82,7 @@ float Flapper::getScore()
 
 void Flapper::setScore()
 {
+    // Nothing will happen
 }
 
 void Flapper::kill()
@@ -66,7 +102,6 @@ bool Flapper::isDead()
 
 void Flapper::reset()
 {
-    this->distance = 0;
     this->score = 0;
     this->dead = false;
     this->generateNode();
@@ -74,7 +109,7 @@ void Flapper::reset()
 
 void Flapper::generateNode()
 {
-    // // Sprite
+    // Sprite
     this->node = Sprite::createWithSpriteFrameName("redbird-midflap.png");
     this->node->setPosition(Vec2(100, 500));
 
@@ -85,6 +120,7 @@ void Flapper::generateNode()
     physicsBody->setCategoryBitmask(1);
     physicsBody->setCollisionBitmask(6);   // Pipes + Base
     physicsBody->setContactTestBitmask(6); // Pipes + Base
+    physicsBody->setVelocityLimit(300);
     this->node->addComponent(physicsBody);
 
     Vector<SpriteFrame *> frames;

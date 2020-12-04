@@ -11,7 +11,6 @@ namespace Flappers
     class Flapper
     {
     private:
-        float distance;
         float score;
         bool dead;
 

@@ -13,11 +13,7 @@ namespace Flappers
     class Session
     {
     private:
-        struct CurrentGenerationInfo
-        {
-            int flapperQuantity;
-        };
-        static CurrentGenerationInfo currentGenerationInfo;
+        static int flapperQuantity;
         static int populationSize;
 
     public:
