@@ -6,6 +6,7 @@
 #include <helpers/time.h>
 #include <extensions/flappers/MainScene.h>
 #include <extensions/flappers/Session.h>
+#include <extensions/flappers/Constants.h>
 
 using namespace Flappers;
 
@@ -48,14 +49,14 @@ void Flapper::update(float delta)
         auto pipePosition = pipe->getParent()->convertToWorldSpace(pipe->getPosition());
         auto flapperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
 
-        if (pipePosition.x > flapperPosition.x)
+        if (flapperPosition.x - pipePosition.x <= (FLAPPER_WIDTH / 2 + PIPE_BODY_WIDTH / 2))
         {
             horizontalDistanceToPipe = pipePosition.x - flapperPosition.x;
 
             auto frontPipeChildren = pipe->getChildren();
 
-            topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - 24 - flapperPosition.y;
-            bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + 24;
+            topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - PIPE_HEAD_HEIGHT - flapperPosition.y;
+            bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + PIPE_HEAD_HEIGHT;
             break;
         }
     }
@@ -110,7 +111,7 @@ void Flapper::generateNode()
     this->node->setPosition(Vec2(Director::getInstance()->getVisibleSize().width - 400, 500));
 
     // Physics body
-    auto physicsBody = PhysicsBody::createBox(Size(34, 24), PhysicsMaterial(0.1f, 0.0f, 0.1f));
+    auto physicsBody = PhysicsBody::createBox(Size(FLAPPER_WIDTH, FLAPPER_HEIGHT), PhysicsMaterial(0.1f, 0.0f, 0.1f));
     physicsBody->setDynamic(true);
     physicsBody->setGravityEnable(true);
     physicsBody->setCategoryBitmask(1);
