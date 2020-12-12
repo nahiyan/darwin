@@ -12,7 +12,7 @@
 #include <core/Debug.h>
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
-#include <extensions/flappers/Evolution.h>
+#include <core/EvolutionCommon.h>
 #include <extensions/flappers/Pipe.h>
 #include <extensions/flappers/Base.h>
 #include <extensions/flappers/Roof.h>
@@ -70,7 +70,7 @@ bool MainScene::init()
     this->addPipe(0);
 
     // Evolution session
-    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.5, .4);
+    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.05, .3, .2);
 
     // // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -100,7 +100,7 @@ bool MainScene::init()
             }
         }
 
-        Session::evolutionSession->evolve(Evolution::crossoverAndMutate);
+        Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize);
     }
 
     // Add flappers
@@ -185,12 +185,13 @@ MainScene::~MainScene()
 
 void MainScene::addPipe(float delta)
 {
-    float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.1};
+    // float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.1};
 
-    auto pipe = Pipe::create(values[Session::pipeCounter]);
+    // auto pipe = Pipe::create(values[Session::pipeCounter]);
+    auto pipe = Pipe::create(random<float>(0.1, 0.9));
     this->addChild(pipe);
-    if (Session::pipeCounter == 10)
-        Session::pipeCounter = 0;
-    else
-        Session::pipeCounter++;
+    // if (Session::pipeCounter == 10)
+    //     Session::pipeCounter = 0;
+    // else
+    //     Session::pipeCounter++;
 }

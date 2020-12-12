@@ -13,7 +13,7 @@
 #include <extensions/jumper/GenerationState_generated.h>
 #include <core/Database.h>
 #include <core/CoreSession.h>
-#include <extensions/jumper/Evolution.h>
+#include <core/EvolutionCommon.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 1
@@ -85,7 +85,7 @@ bool MainScene::init()
             }
         }
 
-        this->evolutionSession->evolve(Evolution::crossoverAndMutate);
+        this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize);
     }
 
     // Jumpers
@@ -230,7 +230,7 @@ void MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(Evolution::crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add jumper nodes
     for (int i = 0; i < this->evolutionSession->population.size(); i++)

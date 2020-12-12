@@ -1,6 +1,6 @@
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
-#include <extensions/flappers/Evolution.h>
+#include <core/EvolutionCommon.h>
 #include <extensions/flappers/Pipe.h>
 #include <core/CoreSession.h>
 
@@ -20,9 +20,8 @@ void Session::nextGeneration()
         member->setScore();
 
     for (auto &pipe : Session::pipes)
-    {
         mainScene->removeChild(pipe);
-    }
+
     Session::pipes.clear();
 
     // Contructing a FlatBuffers builder
@@ -46,7 +45,7 @@ void Session::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    Session::evolutionSession->evolve(Evolution::crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

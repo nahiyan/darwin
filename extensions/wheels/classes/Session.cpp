@@ -1,6 +1,6 @@
 #include <extensions/wheels/Session.h>
 #include <extensions/wheels/GenerationState_generated.h>
-#include <extensions/wheels/Evolution.h>
+#include <core/EvolutionCommon.h>
 #include <core/CoreSession.h>
 
 using namespace Wheels;
@@ -75,7 +75,7 @@ void Session::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    Session::evolutionSession->evolve(Evolution::crossoverAndMutate, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(EvolutionCommon<Car>::crossoverAndMutate, EvolutionCommon<Car>::randomize, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

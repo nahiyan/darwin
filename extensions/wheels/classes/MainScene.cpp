@@ -14,7 +14,7 @@
 #include <extensions/wheels/Tracks.h>
 #include <extensions/wheels/Session.h>
 #include <extensions/wheels/GenerationState_generated.h>
-#include <extensions/wheels/Evolution.h>
+#include <core/EvolutionCommon.h>
 
 #define POPULATION_SIZE 100
 #define SPEED 2
@@ -94,7 +94,7 @@ bool MainScene::init()
             }
         }
 
-        Session::evolutionSession->evolve(Evolution::crossoverAndMutate);
+        Session::evolutionSession->evolve(EvolutionCommon<Car>::crossoverAndMutate, EvolutionCommon<Car>::randomize);
     }
 
     // Add cars

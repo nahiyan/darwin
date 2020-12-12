@@ -11,7 +11,9 @@ template <class T>
 class EvolutionSession
 {
 private:
-    float populationDivision[2];
+    float upperFraction;  // Elite/Unchaged
+    float middleFraction; // Reproduced from best fit
+    float randomFraction; // Totally randomly generated
     float mutationRate;
     int generationIndex;
 
@@ -22,16 +24,19 @@ public:
     {
         this->population = std::vector<T *>();
         this->mutationRate = 0.01;
-        this->populationDivision[0] = 0.05;
-        this->populationDivision[1] = 0.3;
+        this->upperFraction = 0.05;
+        this->middleFraction = 0.3;
+        this->randomFraction = 0.2;
         this->generationIndex = 0;
     }
 
-    EvolutionSession(float mutationRate, float populationDivision1, float populationDivision2) {
+    EvolutionSession(float mutationRate, float upperFraction, float middleFraction, float randomFraction)
+    {
         this->population = std::vector<T *>();
         this->mutationRate = mutationRate;
-        this->populationDivision[0] = populationDivision1;
-        this->populationDivision[1] = populationDivision2;
+        this->upperFraction = upperFraction;
+        this->middleFraction = middleFraction;
+        this->randomFraction = randomFraction;
         this->generationIndex = 0;
     }
 
@@ -51,7 +56,7 @@ public:
         return populationRanked;
     }
 
-    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
+    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, std::function<void(T *)> randomize, int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
         // Ranking
         auto rankedPopulation = this->getRankedPopulation();
@@ -73,17 +78,21 @@ public:
         int populationSize = this->population.size();
 
         // Upper class
-        int upperClassCount = round(populationDivision[0] * populationSize);
+        int upperClassCount = round(upperFraction * populationSize);
         int upperClassRange[2] = {0, upperClassCount - 1};
 
         // Middle class
-        int middleClassCount = round(populationDivision[1] * populationSize);
+        int middleClassCount = round(middleFraction * populationSize);
         int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
+
+        // Random class
+        int randomClassCount = round(middleFraction * populationSize);
+        int randomClassRange[2] = {middleClassCount > 0 ? middleClassRange[1] + 1 : 0, populationSize - 1};
 
         // Reproduction
         if ((middleClassCount + upperClassCount) > 0)
         {
-            for (int i = middleClassRange[0]; i < populationSize; i++)
+            for (int i = middleClassRange[0]; i <= middleClassRange[1]; i++)
             {
                 auto parentA = rankedPopulation[rand() % (middleClassRange[1] + 1)];
                 auto parentB = rankedPopulation[rand() % (middleClassRange[1] + 1)];
@@ -92,12 +101,21 @@ public:
             }
         }
 
+        // Randomization
+        if (randomClassCount > 0)
+        {
+            for (int i = randomClassRange[0]; i <= randomClassRange[1]; i++)
+            {
+                (randomize)(rankedPopulation[i]);
+            }
+        }
+
         this->generationIndex++;
     }
 
-    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate)
+    void evolve(std::function<void(T *, T *, T *, float)> crossoverAndMutate, std::function<void(T *)> randomize)
     {
-        this->evolve(crossoverAndMutate, 0, nullptr, 0);
+        this->evolve(crossoverAndMutate, randomize, 0, nullptr, 0);
     }
 
     void saveState(int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
