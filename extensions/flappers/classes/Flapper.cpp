@@ -43,17 +43,21 @@ void Flapper::update(float delta)
 
     // Neural network inputs
     double horizontalDistanceToPipe = 0, topPipeVerticalDistance = 0, bottomPipeVerticalDistance = 0;
-    if (Session::pipes.size() > 0)
+    for (auto &pipe : Session::pipes)
     {
-        auto frontPipe = Session::pipes[0];
-        auto frontPipePosition = frontPipe->getParent()->convertToWorldSpace(frontPipe->getPosition());
+        auto pipePosition = pipe->getParent()->convertToWorldSpace(pipe->getPosition());
         auto flapperPosition = this->node->getParent()->convertToWorldSpace(this->node->getPosition());
 
-        horizontalDistanceToPipe = frontPipePosition.x - flapperPosition.x;
+        if (pipePosition.x > flapperPosition.x)
+        {
+            horizontalDistanceToPipe = pipePosition.x - flapperPosition.x;
 
-        auto frontPipeChildren = frontPipe->getChildren();
-        topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - 24 - flapperPosition.y;
-        bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + 24;
+            auto frontPipeChildren = pipe->getChildren();
+
+            topPipeVerticalDistance = frontPipeChildren.at(0)->getBoundingBox().getMinY() - 24 - flapperPosition.y;
+            bottomPipeVerticalDistance = flapperPosition.y - frontPipeChildren.at(2)->getBoundingBox().getMaxY() + 24;
+            break;
+        }
     }
 
     // Neural network
