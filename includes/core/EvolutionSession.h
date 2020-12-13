@@ -84,7 +84,7 @@ public:
         int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
 
         // Random class
-        int randomMembersCount = round(middleFraction * populationSize);
+        int randomMembersCount = round(randomFraction * populationSize);
         int randomMembersRange[2] = {randomMembersCount > 0 ? populationSize - randomMembersCount : 0, populationSize - 1};
 
         // Reproduction
