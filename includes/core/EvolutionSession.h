@@ -68,9 +68,7 @@ public:
 
             printf("Scores: ");
             for (auto object : rankedPopulation)
-            {
                 printf("%f ", object->getScore());
-            }
             printf("\n");
         }
 
@@ -86,13 +84,13 @@ public:
         int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
 
         // Random class
-        int randomClassCount = round(middleFraction * populationSize);
-        int randomClassRange[2] = {middleClassCount > 0 ? middleClassRange[1] + 1 : 0, populationSize - 1};
+        int randomMembersCount = round(middleFraction * populationSize);
+        int randomMembersRange[2] = {randomMembersCount > 0 ? populationSize - randomMembersCount : 0, populationSize - 1};
 
         // Reproduction
         if ((middleClassCount + upperClassCount) > 0)
         {
-            for (int i = middleClassRange[0]; i <= middleClassRange[1]; i++)
+            for (int i = middleClassRange[0]; i < populationSize - randomMembersCount; i++)
             {
                 auto parentA = rankedPopulation[rand() % (middleClassRange[1] + 1)];
                 auto parentB = rankedPopulation[rand() % (middleClassRange[1] + 1)];
@@ -102,13 +100,9 @@ public:
         }
 
         // Randomization
-        if (randomClassCount > 0)
-        {
-            for (int i = randomClassRange[0]; i <= randomClassRange[1]; i++)
-            {
+        if (randomMembersCount > 0)
+            for (int i = randomMembersRange[0]; i < populationSize; i++)
                 (randomize)(rankedPopulation[i]);
-            }
-        }
 
         this->generationIndex++;
     }
