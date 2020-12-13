@@ -43,6 +43,9 @@ void Listeners::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Flapp
     case 59:
         flapper->flap();
         break;
+    case 147:
+        Session::nextGeneration();
+        break;
     }
 }
 
