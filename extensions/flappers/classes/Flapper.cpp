@@ -7,6 +7,7 @@
 #include <extensions/flappers/MainScene.h>
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/Constants.h>
+#include <core/EvolutionCommon.h>
 
 using namespace Flappers;
 
@@ -20,17 +21,10 @@ Flapper::Flapper(std::vector<double> parameters)
     this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{4, 20, 1});
 
     if (parameters.size() > 0)
-    {
         this->neuralNetwork->set_parameters(parameters);
-    }
     else
-    {
         // Randomize parameters
-        std::vector<double> parameters;
-        for (int i = 0; i < this->neuralNetwork->get_parameters_number(); i++)
-            parameters.push_back(Darwin::RandomHelper::nnParameter(TimeHelper::now() * i));
-        this->neuralNetwork->set_parameters(parameters);
-    }
+        EvolutionCommon<Flapper>::randomize(this);
 }
 
 Flapper::~Flapper()
