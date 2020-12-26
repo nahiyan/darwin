@@ -17,7 +17,7 @@
 #include <extensions/flappers/Base.h>
 #include <extensions/flappers/Roof.h>
 
-#define POPULATION_SIZE 200
+#define POPULATION_SIZE 50
 #define SPEED 1
 
 USING_NS_CC;
@@ -66,11 +66,12 @@ bool MainScene::init()
     // Load sprite sheet
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("flappers/sprite-sheet.plist");
 
-    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addPipe), 2.5, CC_REPEAT_FOREVER, 0);
-    this->addPipe(0);
+    // Add initial pipe
+    // this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addPipe), 2.5, CC_REPEAT_FOREVER, 0);
+    this->addPipe();
 
     // Evolution session
-    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.05, .3, .2);
+    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.05, .3, .05);
 
     // // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -171,6 +172,13 @@ void MainScene::update(float delta)
 
     if (flapperCount == 0)
         Session::nextGeneration();
+
+    Session::timeSinceLastPipe += delta;
+    if (Session::timeSinceLastPipe >= 2.5)
+    {
+        this->addPipe();
+        Session::timeSinceLastPipe = 0;
+    }
 }
 
 void MainScene::menuCloseCallback(Ref *pSender)
@@ -183,15 +191,17 @@ MainScene::~MainScene()
 {
 }
 
-void MainScene::addPipe(float delta)
+void MainScene::addPipe()
 {
-    float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.1};
+    float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.6};
 
     auto pipe = Pipe::create(values[Session::pipeCounter]);
     // auto pipe = Pipe::create(random<float>(0.1, 0.9));
     this->addChild(pipe);
-    if (Session::pipeCounter == 10)
-        Session::pipeCounter = 0;
+    if (Session::pipeCounter == 9)
+        Session::nextGeneration();
     else
         Session::pipeCounter++;
+
+    Session::timeSinceLastPipe = 0;
 }

@@ -15,6 +15,7 @@ namespace Flappers
     public:
         static std::vector<Node *> pipes;
         static int pipeCounter;
+        static float timeSinceLastPipe;
 
         static void nextGeneration();
         static EvolutionSession<Flapper> *evolutionSession;

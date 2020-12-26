@@ -9,6 +9,7 @@ using namespace Flappers;
 EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 std::vector<Node *> Session::pipes = std::vector<Node *>{};
 int Session::pipeCounter = 0;
+float Session::timeSinceLastPipe = 0;
 
 void Session::nextGeneration()
 {
@@ -54,4 +55,6 @@ void Session::nextGeneration()
         object->reset();
         mainScene->addChild(object->node, 0, i);
     }
+
+    mainScene->addPipe();
 }
