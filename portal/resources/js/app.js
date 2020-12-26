@@ -5,9 +5,7 @@ import Sessions from '../vue/Sessions'
 import Generations from '../vue/Generations'
 import GenerationScores from '../vue/GenerationScores'
 import SessionScores from '../vue/SessionScores'
-
-require('./bootstrap')
-require('bootstrap')
+import './bootstrap'
 
 Vue.use(VueRouter)
 

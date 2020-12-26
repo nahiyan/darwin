@@ -1,3 +1,3 @@
 <template>
-  <canvas id="chart"></canvas>
+  <div id="chart"></div>
 </template>

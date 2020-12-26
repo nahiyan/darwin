@@ -11,7 +11,7 @@
 
 <script>
 import ChartComponent from "./Chart";
-import Chart from "chart.js";
+import ApexCharts from "apexcharts";
 import Navigation from "../vue/Navigation";
 
 export default {
@@ -29,21 +29,47 @@ export default {
         this.scores = data.scores;
         this.session = data.session;
 
-        var chart = new Chart("chart", {
-          type: "line",
-          data: {
-            labels: Array.from({ length: this.scores.length }, (_, i) => i + 1),
-            datasets: [
-              {
-                label: "Scores",
-                // backgroundColor: "rgb(255, 99, 132)",
-                borderColor: "rgb(255, 99, 132)",
-                data: this.scores,
-              },
-            ],
+        var options = {
+          chart: {
+            type: "area",
+            zoom: {
+              type: "x",
+              enabled: true,
+              autoScaleYaxis: true,
+            },
+            toolbar: {
+              autoSelected: "zoom",
+            },
           },
-          options: { animation: { duration: 0 } },
-        });
+          stroke: {
+            width: 7,
+            curve: "smooth",
+          },
+          series: [
+            {
+              name: "Score",
+              data: Array.from(this.scores, (number, _) => number.toFixed(2)),
+            },
+          ],
+          xaxis: {
+            categories: Array.from(
+              { length: this.scores.length },
+              (_, i) => i + 1
+            ),
+            title: {
+              text: "Sessions",
+            },
+          },
+          yaxis: {
+            title: {
+              text: "Scores",
+            },
+          },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();
       });
   },
   components: {
