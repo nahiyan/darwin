@@ -10,6 +10,7 @@
 #include <core/Database.h>
 #include <core/CoreSession.h>
 #include <core/Debug.h>
+#include <core/HUD.h>
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
 #include <core/EvolutionCommon.h>
@@ -146,6 +147,9 @@ bool MainScene::init()
 
     // Roof
     this->addChild(Roof::create(), -1);
+
+    // HUD
+    this->addChild(HUD::create(1), 10);
 
     return true;
 }
