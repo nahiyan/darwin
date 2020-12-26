@@ -12,7 +12,7 @@
 
 <script>
 import ChartComponent from "./Chart";
-import Chart from "chart.js";
+import ApexCharts from "apexcharts";
 import Navigation from "../vue/Navigation";
 
 export default {
@@ -30,21 +30,109 @@ export default {
         this.scores = data.scores;
         this.generation = data.generation;
 
-        var chart = new Chart("chart", {
-          type: "bar",
-          data: {
-            labels: Array.from({ length: this.scores.length }, (_, i) => i + 1),
-            datasets: [
-              {
-                label: "Scores",
-                backgroundColor: "rgb(255, 99, 132)",
-                borderColor: "rgb(255, 99, 132)",
-                data: this.scores,
-              },
-            ],
+        // var chart = new Chart("chart", {
+        //   type: "bar",
+        //   data: {
+        //     labels: Array.from({ length: this.scores.length }, (_, i) => i + 1),
+        //     datasets: [
+        //       {
+        //         label: "Scores",
+        //         backgroundColor: "rgb(255, 99, 132)",
+        //         borderColor: "rgb(255, 99, 132)",
+        //         data: this.scores,
+        //       },
+        //     ],
+        //   },
+        //   options: { animation: { duration: 0 } },
+        // });
+
+        var options = {
+          series: [
+            {
+              name: "Score",
+              data: Array.from(this.scores, (number, _) => number.toFixed(2)),
+            },
+          ],
+          chart: {
+            type: "bar",
           },
-          options: { animation: { duration: 0 } },
-        });
+          plotOptions: {
+            bar: {
+              horizontal: true,
+              dataLabels: {
+                position: "top", // top, center, bottom
+              },
+            },
+          },
+          dataLabels: {
+            enabled: false,
+            formatter: function (val) {
+              return val;
+            },
+            offsetY: -20,
+            style: {
+              fontSize: "12px",
+              colors: ["#304758"],
+            },
+          },
+
+          xaxis: {
+            title: {
+              text: "Scores",
+            },
+            categories: Array.from({ length: this.scores.length }, (_, i) =>
+              (i + 1).toString()
+            ),
+            position: "bottom",
+            axisBorder: {
+              show: false,
+            },
+            axisTicks: {
+              show: false,
+            },
+            crosshairs: {
+              fill: {
+                type: "gradient",
+                gradient: {
+                  colorFrom: "#D8E3F0",
+                  colorTo: "#BED1E6",
+                  stops: [0, 100],
+                  opacityFrom: 0.4,
+                  opacityTo: 0.5,
+                },
+              },
+            },
+            tooltip: {
+              enabled: true,
+            },
+          },
+          yaxis: {
+            axisBorder: {
+              show: false,
+            },
+            axisTicks: {
+              show: false,
+            },
+            labels: {
+              show: true,
+            },
+            title: {
+              text: "Members' Ranks",
+            },
+          },
+          title: {
+            floating: true,
+            offsetY: 330,
+            align: "center",
+            style: {
+              color: "#444",
+            },
+          },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();
       });
   },
   components: {
