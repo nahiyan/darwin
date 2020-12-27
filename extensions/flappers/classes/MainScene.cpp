@@ -19,7 +19,6 @@
 #include <extensions/flappers/Roof.h>
 
 #define POPULATION_SIZE 50
-#define SPEED 1
 
 USING_NS_CC;
 using namespace Flappers;
@@ -52,8 +51,8 @@ bool MainScene::init()
         return false;
 
     // Set the speed of the simulation
-    Director::getInstance()->getScheduler()->setTimeScale(SPEED);
-    this->getPhysicsWorld()->setSpeed(SPEED);
+    Director::getInstance()->getScheduler()->setTimeScale(CoreSession::speed);
+    this->getPhysicsWorld()->setSpeed(CoreSession::speed);
 
     // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
@@ -145,7 +144,7 @@ bool MainScene::init()
     this->addChild(Roof::create(), -1);
 
     // HUD
-    Session::hud = HUD::create();
+    Session::hud = HUD::create(Session::evolutionSession->getMutationRate());
     this->addChild(Session::hud, 10);
 
     return true;

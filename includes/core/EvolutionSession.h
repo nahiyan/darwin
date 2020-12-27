@@ -40,6 +40,16 @@ public:
         this->generationIndex = 0;
     }
 
+    float getMutationRate()
+    {
+        return this->mutationRate;
+    }
+
+    float setMutationRate(float mutationRate)
+    {
+        this->mutationRate = mutationRate;
+    }
+
     inline std::vector<T *> getRankedPopulation()
     {
         std::vector<T *> populationRanked;

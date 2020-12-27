@@ -6,22 +6,37 @@
 using namespace cocos2d;
 using namespace std;
 
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out.precision(n);
+    out << std::fixed << a_value;
+    return out.str();
+}
+
 class HUD
 {
-public:
-    static Label *create()
+private:
+    static std::string hudString(float &mutationRate)
     {
-        auto generationIndexLabel = Label::createWithTTF("Generation: " + to_string(CoreSession::generationIndex), "fonts/arial.ttf", 16);
-        generationIndexLabel->setTextColor(Color4B::BLACK);
-        generationIndexLabel->enableOutline(Color4B::WHITE, 1);
-        generationIndexLabel->setPosition(generationIndexLabel->getContentSize().width / 2 + 10, Director::getInstance()->getVisibleSize().height - generationIndexLabel->getContentSize().height);
-
-        return generationIndexLabel;
+        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate: " + to_string_with_precision(mutationRate * 100, 2) + "%";
     }
 
-    static void update(Label *node)
+public:
+    static Label *create(float mutationRate)
     {
-        node->setString("Generation: " + to_string(CoreSession::generationIndex));
+        auto hud = Label::createWithTTF(hudString(mutationRate), "fonts/arial.ttf", 16);
+        hud->setTextColor(Color4B::BLACK);
+        hud->enableOutline(Color4B::WHITE, 1);
+        hud->setPosition(hud->getContentSize().width / 2 + 5, Director::getInstance()->getVisibleSize().height - hud->getContentSize().height / 2);
+
+        return hud;
+    }
+
+    static void update(Label *node, float mutationRate)
+    {
+        node->setString(hudString(mutationRate));
     }
 };
 

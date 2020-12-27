@@ -17,7 +17,7 @@ void Session::nextGeneration()
 {
     // Increment the generation index
     CoreSession::generationIndex++;
-    HUD::update(Session::hud);
+    HUD::update(Session::hud, Session::evolutionSession->getMutationRate());
 
     Session::pipeCounter = 0;
     const auto &mainScene = MainScene::getInstance();

@@ -9,6 +9,7 @@ public:
     static int sessionId;
     static int generationId;
     static int generationIndex;
+    static float speed;
 };
 
 #endif // _DARWIN_SESSION_H_
