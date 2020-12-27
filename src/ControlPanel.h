@@ -18,12 +18,15 @@ public:
     ControlPanelFrame();
 
 private:
+    std::string dbPath;
+
     // widgets
     wxListBox *extensionsListBox;
     wxListBox *sessionsListBox;
     wxListBox *generationsListBox;
     wxButton *startButton;
     wxButton *clearSelectionButton;
+    wxButton *openPortal;
     wxStaticText *summary;
 
     // lists
@@ -37,6 +40,7 @@ private:
     void SelectGeneration(wxCommandEvent &event);
     void StartEvolution(wxCommandEvent &event);
     void ClearSelection(wxCommandEvent &event);
+    void OpenPortal(wxCommandEvent &event);
     void updateSummary();
 };
 

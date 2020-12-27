@@ -25,6 +25,7 @@
 #define GENERATIONS_LIST_BOX_ID 3
 #define START_BUTTON_ID 4
 #define CLEAR_SELECTION_BUTTON_ID 5
+#define OPEN_PORTAL_BUTTON_ID 6
 #define LIST_BOX_MIN_WIDTH 170
 #define LIST_BOX_MIN_HEIGHT 300
 
@@ -57,11 +58,10 @@ ControlPanelFrame::ControlPanelFrame()
 {
     std::ifstream dbPathFile;
     dbPathFile.open(cocos2d::FileUtils::getInstance()->fullPathForFilename("db_path.txt"));
-    std::string dbPath;
-    dbPathFile >> dbPath;
+    dbPathFile >> this->dbPath;
     dbPathFile.close();
 
-    Database::open(dbPath);
+    Database::open(this->dbPath);
 
     // Initialization
     this->sessionIds = std::vector<int>{};
@@ -155,6 +155,10 @@ ControlPanelFrame::ControlPanelFrame()
     this->clearSelectionButton->Enable(false);
     actionsRowSizer->Add(this->clearSelectionButton, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
+    // Open Portal
+    this->openPortal = new wxButton(actionsRow, OPEN_PORTAL_BUTTON_ID, wxT("Open Portal"));
+    actionsRowSizer->Add(this->openPortal, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
+
     frameSizer->Fit(this);
 
     // Events
@@ -163,6 +167,7 @@ ControlPanelFrame::ControlPanelFrame()
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectGeneration, this, GENERATIONS_LIST_BOX_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::StartEvolution, this, START_BUTTON_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::ClearSelection, this, CLEAR_SELECTION_BUTTON_ID);
+    Bind(wxEVT_BUTTON, &ControlPanelFrame::OpenPortal, this, OPEN_PORTAL_BUTTON_ID);
 }
 
 void ControlPanelFrame::OnExit(wxCommandEvent &event)
@@ -288,6 +293,12 @@ void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
     this->startButton->Enable(false);
 
     this->updateSummary();
+}
+
+void ControlPanelFrame::OpenPortal(wxCommandEvent &event)
+{
+    system(("cd " + dbPath.substr(0, dbPath.find("portal") + 6) + "; php artisan serve &").c_str());
+    wxLaunchDefaultBrowser("http://127.0.0.1:8000");
 }
 
 void ControlPanelFrame::updateSummary()
