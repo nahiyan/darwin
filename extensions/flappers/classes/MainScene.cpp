@@ -217,4 +217,5 @@ void MainScene::setSpeed(int speed)
 {
     Director::getInstance()->getScheduler()->setTimeScale(CoreSession::speed);
     this->getPhysicsWorld()->setSpeed(CoreSession::speed);
+    this->getPhysicsWorld()->setSubsteps(CoreSession::speed);
 }
