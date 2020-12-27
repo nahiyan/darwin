@@ -3,6 +3,7 @@
 #include <core/EvolutionCommon.h>
 #include <extensions/flappers/Pipe.h>
 #include <core/CoreSession.h>
+#include <core/HUD.h>
 
 using namespace Flappers;
 
@@ -10,9 +11,14 @@ EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 std::vector<Node *> Session::pipes = std::vector<Node *>{};
 int Session::pipeCounter = 0;
 float Session::timeSinceLastPipe = 0;
+Label* Session::hud = nullptr;
 
 void Session::nextGeneration()
 {
+    // Increment the generation index
+    CoreSession::generationIndex++;
+    HUD::update(Session::hud);
+
     Session::pipeCounter = 0;
     const auto &mainScene = MainScene::getInstance();
 

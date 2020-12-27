@@ -70,7 +70,7 @@ ControlPanelFrame::ControlPanelFrame()
     // Auto-start an extension
     // this->Destroy();
     // this->Close(true);
-    // Wheels::AppDelegate app;
+    // Flappers::AppDelegate app;
     // cocos2d::Application::getInstance()->run();
 
     auto menuBar = new wxMenuBar();
@@ -238,6 +238,15 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
 
     CoreSession::sessionId = sessionId;
     CoreSession::generationId = generationId;
+
+    try
+    {
+        CoreSession::generationIndex = std::stoi(this->generationsListBox->GetStringSelection().ToStdString()) + 1;
+    }
+    catch (...)
+    {
+        CoreSession::generationIndex = 1;
+    }
 
     this->Destroy();
     this->Close(true);

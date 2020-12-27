@@ -16,9 +16,10 @@ namespace Flappers
         static std::vector<Node *> pipes;
         static int pipeCounter;
         static float timeSinceLastPipe;
+        static Label* hud;
+        static EvolutionSession<Flapper> *evolutionSession;
 
         static void nextGeneration();
-        static EvolutionSession<Flapper> *evolutionSession;
     };
 } // namespace Flappers
 #endif // __FLAPPERS_SESSION_H__

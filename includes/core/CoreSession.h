@@ -3,10 +3,12 @@
 
 class CoreSession
 {
+private:
 public:
     static int extensionId;
     static int sessionId;
     static int generationId;
+    static int generationIndex;
 };
 
 #endif // _DARWIN_SESSION_H_

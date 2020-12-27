@@ -95,12 +95,8 @@ bool MainScene::init()
         auto state = GetGenerationState(stateBinary);
 
         for (int i = 0; i < state->population()->size(); i++)
-        {
             for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)
-            {
                 nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
-            }
-        }
 
         Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize);
     }
@@ -149,7 +145,8 @@ bool MainScene::init()
     this->addChild(Roof::create(), -1);
 
     // HUD
-    this->addChild(HUD::create(1), 10);
+    Session::hud = HUD::create();
+    this->addChild(Session::hud, 10);
 
     return true;
 }
