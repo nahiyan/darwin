@@ -14,6 +14,7 @@
 #include <extensions/flappers/Session.h>
 #include <extensions/flappers/GenerationState_generated.h>
 #include <core/EvolutionCommon.h>
+#include <core/Listeners.h>
 #include <extensions/flappers/Pipe.h>
 #include <extensions/flappers/Base.h>
 #include <extensions/flappers/Roof.h>
@@ -146,6 +147,13 @@ bool MainScene::init()
     // HUD
     Session::hud = HUD::create(Session::evolutionSession->getMutationRate());
     this->addChild(Session::hud, 10);
+
+    // Core listeners
+    {
+        auto listener = EventListenerKeyboard::create();
+        listener->onKeyPressed = std::bind(Core::Listeners<Flapper>::onKeyPressed, std::placeholders::_1, std::placeholders::_2, Session::hud, Session::evolutionSession);
+        _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+    }
 
     return true;
 }

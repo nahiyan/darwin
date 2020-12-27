@@ -20,7 +20,7 @@ class HUD
 private:
     static std::string hudString(float &mutationRate)
     {
-        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate: " + to_string_with_precision(mutationRate * 100, 2) + "%\nSpeed: " + to_string_with_precision(CoreSession::speed, 2);
+        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate" + (CoreSession::hudSelection == CoreSession::MutationRate ? " (+/-)" : "") + ": " + to_string_with_precision(mutationRate * 100, 2) + "%\nSpeed " + (CoreSession::hudSelection == CoreSession::Speed ? " (+/-)" : "") + ": " + to_string_with_precision(CoreSession::speed, 2);
     }
 
 public:
@@ -37,6 +37,7 @@ public:
     static void update(Label *node, float mutationRate)
     {
         node->setString(hudString(mutationRate));
+        node->setPosition(node->getContentSize().width / 2 + 5, Director::getInstance()->getVisibleSize().height - node->getContentSize().height / 2);
     }
 };
 
