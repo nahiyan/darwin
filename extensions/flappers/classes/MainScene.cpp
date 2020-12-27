@@ -52,8 +52,7 @@ bool MainScene::init()
         return false;
 
     // Set the speed of the simulation
-    Director::getInstance()->getScheduler()->setTimeScale(CoreSession::speed);
-    this->getPhysicsWorld()->setSpeed(CoreSession::speed);
+    this->setSpeed(CoreSession::speed);
 
     // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
@@ -68,7 +67,6 @@ bool MainScene::init()
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("flappers/sprite-sheet.plist");
 
     // Add initial pipe
-    // this->schedule(CC_SCHEDULE_SELECTOR(MainScene::addPipe), 2.5, CC_REPEAT_FOREVER, 0);
     this->addPipe();
 
     // Evolution session
@@ -151,7 +149,7 @@ bool MainScene::init()
     // Core listeners
     {
         auto listener = EventListenerKeyboard::create();
-        listener->onKeyPressed = std::bind(Core::Listeners<Flapper>::onKeyPressed, std::placeholders::_1, std::placeholders::_2, Session::hud, Session::evolutionSession);
+        listener->onKeyPressed = std::bind(Core::Listeners<Flapper, MainScene>::onKeyPressed, std::placeholders::_1, std::placeholders::_2, Session::hud, Session::evolutionSession, this);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     }
 
@@ -181,6 +179,7 @@ void MainScene::update(float delta)
     if (flapperCount == 0)
         Session::nextGeneration();
 
+    // Add pipe at constant interval
     Session::timeSinceLastPipe += delta;
     if (Session::timeSinceLastPipe >= 2.5)
     {
@@ -212,4 +211,10 @@ void MainScene::addPipe()
         Session::pipeCounter++;
 
     Session::timeSinceLastPipe = 0;
+}
+
+void MainScene::setSpeed(int speed)
+{
+    Director::getInstance()->getScheduler()->setTimeScale(CoreSession::speed);
+    this->getPhysicsWorld()->setSpeed(CoreSession::speed);
 }

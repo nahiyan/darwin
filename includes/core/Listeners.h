@@ -9,11 +9,11 @@ using namespace cocos2d;
 
 namespace Core
 {
-    template <class T>
+    template <class T1, class T2>
     class Listeners
     {
     public:
-        static void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Label *hudNode, EvolutionSession<T> *eSession)
+        static void onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event, Label *hudNode, EvolutionSession<T1> *eSession, T2 *scene)
         {
             switch ((int)keyCode)
             {
@@ -40,6 +40,7 @@ namespace Core
                 break;
             }
 
+            scene->setSpeed(CoreSession::speed);
             HUD::update(hudNode, eSession->getMutationRate());
         }
 
