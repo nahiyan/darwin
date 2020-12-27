@@ -5,10 +5,9 @@ set (ROOT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 project(core)
 
-add_library(core STATIC
-    src/Database.cpp
-    src/CoreSession.cpp
-)
+file(GLOB_RECURSE SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+
+add_library(core STATIC ${SOURCE})
 
 # Includes directory
 target_include_directories(core PRIVATE ${ROOT_DIRECTORY}/includes)
