@@ -20,7 +20,7 @@ class HUD
 private:
     static std::string hudString(float &mutationRate)
     {
-        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate: " + to_string_with_precision(mutationRate * 100, 2) + "%";
+        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate: " + to_string_with_precision(mutationRate * 100, 2) + "%\nSpeed: " + to_string_with_precision(CoreSession::speed, 2);
     }
 
 public:
