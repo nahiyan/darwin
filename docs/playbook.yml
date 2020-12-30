@@ -1,0 +1,12 @@
+site:
+  title: Darwin Docs
+  start_page: Darwin::index.adoc
+content:
+  sources:
+    - url: ./src/docs
+ui:
+  bundle:
+    url: ./ui/build/ui-bundle.zip
+  supplemental_files: ./supplemental_ui
+output:
+  dir: ../

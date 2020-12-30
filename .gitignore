@@ -1,5 +1,4 @@
 *.sh
 *.code-workspace
 *.vscode
-/*-build
-/resources/db_path.txt
+/node_modules

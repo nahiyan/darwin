@@ -1,0 +1,13 @@
+= Pause/Resume a Torrent
+
+You can pause or resume the data transfer of a torrent in one of three ways:
+
+* Main menu
+** Select torrent in the torrents table
+** Edit > Pause/Resume
+* Window header
+** Select torrent in the torrents table
+** Click pause/resume button
+* Torrents table context menu
+** Right click on the torrent in the torrents table
+** Click Pause/Resume in the context menu
