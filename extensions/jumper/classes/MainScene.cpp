@@ -10,7 +10,7 @@
 #include <extensions/jumper/Jumper.h>
 #include <extensions/jumper/Boundary.h>
 #include <extensions/jumper/Obstacle.h>
-#include <extensions/jumper/GenerationState_generated.h>
+#include <core/GenerationState_generated.h>
 #include <core/Database.h>
 #include <core/CoreSession.h>
 #include <core/EvolutionCommon.h>
@@ -75,7 +75,7 @@ bool MainScene::init()
     {
         auto stateBinary = Database::getGenerationState(CoreSession::generationId);
 
-        auto state = GetGenerationState(stateBinary);
+        auto state = Core::GetGenerationState(stateBinary);
 
         for (int i = 0; i < state->population()->size(); i++)
         {
@@ -212,7 +212,7 @@ void MainScene::nextGeneration()
     // Contructing a FlatBuffers builder
     flatbuffers::FlatBufferBuilder builder(1024);
 
-    auto population_ = std::vector<flatbuffers::Offset<Member>>();
+    auto population_ = std::vector<flatbuffers::Offset<Core::Member>>();
 
     for (auto object : this->evolutionSession->population)
     {
@@ -220,7 +220,7 @@ void MainScene::nextGeneration()
         auto parameters = object->neuralNetwork->get_parameters();
         for (auto parameter : parameters)
             chromosomes.push_back(parameter);
-        auto member = CreateMember(builder, builder.CreateVector<double>(chromosomes), object->getScore());
+        auto member = Core::CreateMember(builder, builder.CreateVector<double>(chromosomes), object->getScore());
         population_.push_back(member);
     }
 

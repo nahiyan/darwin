@@ -12,7 +12,7 @@
 #include <core/Debug.h>
 #include <core/HUD.h>
 #include <extensions/flappers/Session.h>
-#include <extensions/flappers/GenerationState_generated.h>
+#include <core/GenerationState_generated.h>
 #include <core/EvolutionCommon.h>
 #include <core/Listeners.h>
 #include <extensions/flappers/Pipe.h>
@@ -90,7 +90,7 @@ bool MainScene::init()
     {
         auto stateBinary = Database::getGenerationState(CoreSession::generationId);
 
-        auto state = GetGenerationState(stateBinary);
+        auto state = Core::GetGenerationState(stateBinary);
 
         for (int i = 0; i < state->population()->size(); i++)
             for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)

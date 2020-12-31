@@ -13,7 +13,7 @@
 #include <core/Debug.h>
 #include <extensions/wheels/Tracks.h>
 #include <extensions/wheels/Session.h>
-#include <extensions/wheels/GenerationState_generated.h>
+#include <core/GenerationState_generated.h>
 #include <core/EvolutionCommon.h>
 
 #define POPULATION_SIZE 100
@@ -84,7 +84,7 @@ bool MainScene::init()
     {
         auto stateBinary = Database::getGenerationState(CoreSession::generationId);
 
-        auto state = GetGenerationState(stateBinary);
+        auto state = Core::GetGenerationState(stateBinary);
 
         for (int i = 0; i < state->population()->size(); i++)
         {
