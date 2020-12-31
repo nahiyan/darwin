@@ -1,4 +1,4 @@
-namespace Wheels;
+namespace Core;
 
 table GenerationState {
     population:[Member];
