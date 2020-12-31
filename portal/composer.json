@@ -36,9 +36,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Jumper\\": "Jumper/",
-            "Wheels\\": "Wheels/",
-            "Flappers\\": "Flappers/",
+            "Core\\": "Core/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
