@@ -2,7 +2,7 @@
 #define __CORE_LISTENERS_H__
 
 #include "cocos2d.h"
-#include "CoreSession.h"
+#include "Session.h"
 #include "HUD.h"
 
 using namespace cocos2d;
@@ -18,29 +18,29 @@ namespace Core
             switch ((int)keyCode)
             {
             case 146: // W
-                if (CoreSession::hudSelection == CoreSession::Speed)
-                    CoreSession::hudSelection = CoreSession::MutationRate;
+                if (Core::Session::hudSelection == Core::Session::Speed)
+                    Core::Session::hudSelection = Core::Session::MutationRate;
                 break;
             case 142: // S
-                if (CoreSession::hudSelection == CoreSession::MutationRate)
-                    CoreSession::hudSelection = CoreSession::Speed;
+                if (Core::Session::hudSelection == Core::Session::MutationRate)
+                    Core::Session::hudSelection = Core::Session::Speed;
                 break;
             case 124: // A
-                if (CoreSession::hudSelection == CoreSession::Speed)
-                    CoreSession::speed = CoreSession::speed <= 0.1 ? 0 : CoreSession::speed - 0.1;
+                if (Core::Session::hudSelection == Core::Session::Speed)
+                    Core::Session::speed = Core::Session::speed <= 0.1 ? 0 : Core::Session::speed - 0.1;
                 else
                     eSession->setMutationRate(eSession->getMutationRate() <= 0.01 ? 0 : eSession->getMutationRate() - 0.01);
                 break;
 
             case 127: // D
-                if (CoreSession::hudSelection == CoreSession::Speed)
-                    CoreSession::speed += 0.1;
+                if (Core::Session::hudSelection == Core::Session::Speed)
+                    Core::Session::speed += 0.1;
                 else
                     eSession->setMutationRate(eSession->getMutationRate() >= 1 ? 1 : eSession->getMutationRate() + 0.01);
                 break;
             }
 
-            scene->setSpeed(CoreSession::speed);
+            scene->setSpeed(Core::Session::speed);
             HUD::update(hudNode, eSession->getMutationRate());
         }
 

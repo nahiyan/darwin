@@ -1,7 +1,7 @@
 #ifndef __CORE_HUD_H__
 #define __CORE_HUD_H__
 
-#include "CoreSession.h"
+#include "Session.h"
 #include "cocos2d.h"
 using namespace cocos2d;
 using namespace std;
@@ -20,7 +20,7 @@ class HUD
 private:
     static std::string hudString(float &mutationRate)
     {
-        return "Generation: " + to_string(CoreSession::generationIndex) + "\nMutation Rate" + (CoreSession::hudSelection == CoreSession::MutationRate ? " (+/-)" : "") + ": " + to_string_with_precision(mutationRate * 100, 2) + "%\nSpeed " + (CoreSession::hudSelection == CoreSession::Speed ? " (+/-)" : "") + ": " + to_string_with_precision(CoreSession::speed, 2);
+        return "Generation: " + to_string(Core::Session::generationIndex) + "\nMutation Rate" + (Core::Session::hudSelection == Core::Session::MutationRate ? " (+/-)" : "") + ": " + to_string_with_precision(mutationRate * 100, 2) + "%\nSpeed " + (Core::Session::hudSelection == Core::Session::Speed ? " (+/-)" : "") + ": " + to_string_with_precision(Core::Session::speed, 2);
     }
 
 public:

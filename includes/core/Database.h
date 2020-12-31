@@ -1,11 +1,12 @@
-#ifndef _DATABASE_H_
-#define _DATABASE_H_
+#ifndef _CORE_DATABASE_H_
+#define _CORE_DATABASE_H_
 
 #include <sqlite3/sqlite3.h>
 #include <cstdio>
 #include <string>
 #include <vector>
 
+namespace Core {
 class Database
 {
 private:
@@ -28,6 +29,6 @@ public:
 
     static void addGeneration(int, uint8_t *, int);
     static uint8_t *getGenerationState(int);
-};
+};}
 
-#endif // _DATABASE_H_
+#endif // _CORE_DATABASE_H_

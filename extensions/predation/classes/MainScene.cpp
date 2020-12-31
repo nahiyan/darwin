@@ -8,7 +8,7 @@
 #include <extensions/predation/MainScene.h>
 #include <extensions/predation/Boundary.h>
 #include <core/Database.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 
 #define POPULATION_SIZE 10
 #define SPEED 2

@@ -124,7 +124,7 @@ public:
 
     void saveState(int sessionId, uint8_t *fBBufferPoint, flatbuffers::uoffset_t fBBufferSize)
     {
-        Database::addGeneration(sessionId, fBBufferPoint, (int)fBBufferSize);
+        Core::Database::addGeneration(sessionId, fBBufferPoint, (int)fBBufferSize);
     }
 };
 

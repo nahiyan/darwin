@@ -8,7 +8,7 @@
 #include <extensions/flappers/MainScene.h>
 #include <extensions/flappers/Listeners.h>
 #include <core/Database.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 #include <core/Debug.h>
 #include <core/HUD.h>
 #include <extensions/flappers/Session.h>
@@ -52,7 +52,7 @@ bool MainScene::init()
         return false;
 
     // Set the speed of the simulation
-    this->setSpeed(CoreSession::speed);
+    this->setSpeed(Core::Session::speed);
 
     // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
@@ -75,20 +75,20 @@ bool MainScene::init()
     // // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
 
-    if (CoreSession::sessionId == 0)
+    if (Core::Session::sessionId == 0)
     {
         // Create new session
-        CoreSession::extensionId = Database::getExtensionId("Flappers");
-        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
+        Core::Session::extensionId = Core::Database::getExtensionId("Flappers");
+        Core::Session::sessionId = Core::Database::addSession(Core::Session::extensionId);
     }
-    else if (CoreSession::generationId == 0)
+    else if (Core::Session::generationId == 0)
     {
         // Start the session over from scratch
-        Database::clearSession(CoreSession::sessionId);
+        Core::Database::clearSession(Core::Session::sessionId);
     }
     else
     {
-        auto stateBinary = Database::getGenerationState(CoreSession::generationId);
+        auto stateBinary = Core::Database::getGenerationState(Core::Session::generationId);
 
         auto state = Core::GetGenerationState(stateBinary);
 
@@ -215,7 +215,7 @@ void MainScene::addPipe()
 
 void MainScene::setSpeed(int speed)
 {
-    Director::getInstance()->getScheduler()->setTimeScale(CoreSession::speed);
-    this->getPhysicsWorld()->setSpeed(CoreSession::speed);
-    this->getPhysicsWorld()->setSubsteps(CoreSession::speed);
+    Director::getInstance()->getScheduler()->setTimeScale(Core::Session::speed);
+    this->getPhysicsWorld()->setSpeed(Core::Session::speed);
+    this->getPhysicsWorld()->setSubsteps(Core::Session::speed);
 }

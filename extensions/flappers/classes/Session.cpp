@@ -2,7 +2,7 @@
 #include <core/GenerationState_generated.h>
 #include <core/EvolutionCommon.h>
 #include <extensions/flappers/Pipe.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 #include <core/HUD.h>
 
 using namespace Flappers;
@@ -16,7 +16,7 @@ Label *Session::hud = nullptr;
 void Session::nextGeneration()
 {
     // Increment the generation index
-    CoreSession::generationIndex++;
+    Core::Session::generationIndex++;
     HUD::update(Session::hud, Session::evolutionSession->getMutationRate());
 
     Session::pipeCounter = 0;
@@ -52,7 +52,7 @@ void Session::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

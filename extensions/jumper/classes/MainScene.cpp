@@ -12,7 +12,7 @@
 #include <extensions/jumper/Obstacle.h>
 #include <core/GenerationState_generated.h>
 #include <core/Database.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 #include <core/EvolutionCommon.h>
 
 #define POPULATION_SIZE 10
@@ -60,20 +60,20 @@ bool MainScene::init()
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
 
-    if (CoreSession::sessionId == 0)
+    if (Core::Session::sessionId == 0)
     {
         // Create new session
-        CoreSession::extensionId = Database::getExtensionId("Jumper");
-        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
+        Core::Session::extensionId = Core::Database::getExtensionId("Jumper");
+        Core::Session::sessionId = Core::Database::addSession(Core::Session::extensionId);
     }
-    else if (CoreSession::generationId == 0)
+    else if (Core::Session::generationId == 0)
     {
         // Start the session over from scratch
-        Database::clearSession(CoreSession::sessionId);
+        Core::Database::clearSession(Core::Session::sessionId);
     }
     else
     {
-        auto stateBinary = Database::getGenerationState(CoreSession::generationId);
+        auto stateBinary = Core::Database::getGenerationState(Core::Session::generationId);
 
         auto state = Core::GetGenerationState(stateBinary);
 
@@ -230,7 +230,7 @@ void MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize, CoreSession::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add jumper nodes
     for (int i = 0; i < this->evolutionSession->population.size(); i++)

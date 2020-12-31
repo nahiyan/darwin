@@ -5,6 +5,8 @@
 #include <vector>
 #include <core/Database.h>
 
+using namespace Core;
+
 sqlite3 *Database::handle = nullptr;
 
 void Database::open(std::string path)

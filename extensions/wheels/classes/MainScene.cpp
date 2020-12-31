@@ -9,7 +9,7 @@
 #include <extensions/wheels/Car.h>
 #include <extensions/wheels/Listeners.h>
 #include <core/Database.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 #include <core/Debug.h>
 #include <extensions/wheels/Tracks.h>
 #include <extensions/wheels/Session.h>
@@ -69,20 +69,20 @@ bool MainScene::init()
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
 
-    if (CoreSession::sessionId == 0)
+    if (Core::Session::sessionId == 0)
     {
         // Create new session
-        CoreSession::extensionId = Database::getExtensionId("Wheels");
-        CoreSession::sessionId = Database::addSession(CoreSession::extensionId);
+        Core::Session::extensionId = Core::Database::getExtensionId("Wheels");
+        Core::Session::sessionId = Core::Database::addSession(Core::Session::extensionId);
     }
-    else if (CoreSession::generationId == 0)
+    else if (Core::Session::generationId == 0)
     {
         // Start the session over from scratch
-        Database::clearSession(CoreSession::sessionId);
+        Core::Database::clearSession(Core::Session::sessionId);
     }
     else
     {
-        auto stateBinary = Database::getGenerationState(CoreSession::generationId);
+        auto stateBinary = Core::Database::getGenerationState(Core::Session::generationId);
 
         auto state = Core::GetGenerationState(stateBinary);
 
