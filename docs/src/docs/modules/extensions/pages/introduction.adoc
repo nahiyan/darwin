@@ -1,0 +1,9 @@
+= Introduction
+
+Everytime you want Darwin to simulate evolution of a custom entity in a custom environment with your own scoring and reproduction system, you need to create an extension.
+
+Here are some of the built-in extensions of Darwin:
+
+* Flappers
+* Wheels
+* Jumpers

@@ -1,7 +1,85 @@
 = Getting Started
 
-To get started with using Torrenter, simply download it from GitHub. Here's the https://github.com/nahiyan/torrenter/releases/download/v0.1.0/Torrenter.dmg[download link] to the latest version (v0.1.0).
+The extensions of Darwin usually relies on few basic components, which includes OpenNN (for neural networks), SQLite3 (for database), FlatBuffers (for serialization/deserialization), etc.
 
-You can view all releases https://github.com/nahiyan/torrenter/releases[here]. Since Torrenter is open-source, you can download the source files of Torrenter and make your own build, or just download the compiled & packaged version.
+Please note:
 
-Probably the quickest way to see Torrenter in action is to add a torrent. Here's https://releases.ubuntu.com/20.04/ubuntu-20.04-desktop-amd64.iso.torrent[Ubuntu 20.04 Desktop's torrent] for a quick test. You can see how to add a torrent xref:torrent:add.adoc[here].
+- The include files for all components are located in the `/includes` directory.
+- Extensions are placed in the `/extensions` directory.
+
+== Building
+
+There are two ways to build Darwin. You can choose any one of the methods:
+
+- xref:CMake[CMake]
+- xref:Cocos Console[Cocos Console]
+
+Important: Before building Darwin, make sure you run the following shell command: `python scripts/gen_db_path.py` in the root (`/`) of your project.
+
+
+=== CMake
+
+Darwin is heavily based on CMake for generating the build system and invoking the build tools. Make sure your CMake version is >= 3.6.
+
+Here are the details for the placeholders used in the commands of each of the methods below:
+
+- `<generator>` Build-system generator.
+- `<build-directory>` Directory where the build-system files, along with the compiled files of the project, are going to be stored.
+
+> Note: You can check for the default generator, along with all other available generators using the command: `cmake --help`.
+
+==== Linux
+
+You can use CMake to generate build system files for Ninja, or Unix Make, or any other tool:
+
+`cmake . -G <generator> -B <build-directory>`
+
+Next, build the project with the respective build tool yourself, or letting CMake do it for you:
+
+`cmake --build <build-directory>`
+
+==== macOS
+
+You can use CMake to generate files for Xcode (recommended) or any other tool:
+
+`cmake . -G <generator> -B <build-directory>`
+
+Next, build the project with the respective build tool yourself, or letting CMake do it for you:
+
+`cmake --build <build-directory>`
+
+==== Windows
+
+It's recommended to build a 32-bit version of Darwin on Windows, since that's what cocos2d-x is designed for. To generate the build system with CMake, run in the root of the project:
+
+`cmake . -G <generator> -A Win32 -B <build-directory>`
+
+This will generate the build system, based on 32-bit architecture, in a directory called `<build-directory>`.
+
+It's recommended to use a generator for __Visual Studio__ in CMake. You can omit `-G <generator>` from the command above if the default generator is what you want to use.
+
+Next, you can build the project with the respective build tool, or run to let CMake handle it for you:
+
+`cmake --build <build-directory>`
+
+=== Cocos Console
+
+Darwin is technically a cocos2d-x project, so visit the website of https://www.cocos.com[Cocos Project] to download Cocos Console, which makes it easy to build Darwin, or any other cocos2d-x project, with just one command.
+
+To build Darwin, run `cocos compile -p <platform>` inside the root directory. Replace `<platform>` with the platform of your choice; run `cocos compile --help` for list of available platforms.
+
+> Note: Since the CLI tool, Cocos Console, uses CMake to generate the files required for building, you can use CMake directly instead, as instructed in the other method of building Darwin. In fact, using CMake directly can give you more control over the build process.
+
+== Post-Build
+
+Run the following shell comamnds sequentially, in the `/portal` directory, before running Darwin for the first time:
+
+- `composer install` 
+- `php artisan migrate`
+- `php artisan db:seed`
+
+This will setup the database so all the extensions can be used.
+
+== Running
+
+After building and running the post-build shell commands, you should be getting an executable file named "Darwin" somewhere inside your `<build-directory>/bin` directory.

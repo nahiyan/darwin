@@ -1,5 +1,0 @@
-* Torrents
-** xref:add.adoc[Add]
-** xref:pause_resume.adoc[Pause/Resume]
-** xref:remove.adoc[Remove]
-** xref:force_recheck.adoc[Force Recheck]

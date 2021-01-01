@@ -1,0 +1,5 @@
+= Web Portal
+
+Darwin includes a web portal located in `/portal` that can be used to easily manage the extensions, sessions, generations, etc right from the browser. The portal also visualizes statistical information related to the population members of each generation.
+
+You can start the portal by running `php artisan serve` and visiting the address, printed as output in the console, in your browser.

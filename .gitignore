@@ -1,4 +1,4 @@
 *.sh
 *.code-workspace
 *.vscode
-/node_modules
+/docs/node_modules

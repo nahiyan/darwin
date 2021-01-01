@@ -1,0 +1,20 @@
+= Dependencies
+
+- __wxWidgets__ for cross-platform GUI of the Control Panel.
+- __cocos2d-x__ for visual simulation of evolution.
+- __SQLite3__ for relational data storage.
+- __FlatBuffers__ for binary data serialization/deserialization.
+
+== wxWidgets, cocos2d-x, and SQLite3
+
+wxWidgets, cocos2d-x, SQLite3 are stored in `/wxwidgets`, `/cocos2d`, and `/core/sqlite3` respectively, as https://cmake.org/cmake/help/latest/command/add_subdirectory.html[sub-directories].
+
+== FlatBuffers
+
+FlatBuffers is used for storing/retrieving states of generations, along with scores of population members, to/from the database in form of binary. 
+
+If an extension defines its own FlatBuffers schemas, the files are included in `/extensions/<extension_name>/flatbuffers`, where `<extension_name>` is the name of the extension. However, most extensions rely on common FlatBuffers schemas, which are part of the core of Darwin.
+
+You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.
+
+> FlatBuffers isn't used as a library but as a tool that generates header files. The header files are what makes serialization/deserialization of data possible.

@@ -1,2 +1,4 @@
 * xref:index.adoc[Introduction]
 * xref:getting_started.adoc[Getting Started]
+* xref:dependencies.adoc[Dependencies]
+* xref:web_portal.adoc[Web Portal]
