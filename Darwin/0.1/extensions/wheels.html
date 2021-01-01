@@ -4,7 +4,7 @@
   <head>
         <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Introduction :: Darwin Docs</title>
+    <title>Wheels :: Darwin Docs</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/search.css">
@@ -93,7 +93,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Extensions</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="introduction.html">Introduction</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -102,7 +102,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jumpers.html">Jumpers</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="wheels.html">Wheels</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -142,32 +142,55 @@
   <ul>
     <li><a href="../index.html">Darwin</a></li>
     <li>Extensions</li>
-    <li><a href="introduction.html">Introduction</a></li>
+    <li><a href="wheels.html">Wheels</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/extensions/pages/introduction.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/extensions/pages/wheels.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Introduction</h1>
+<h1 class="page">Wheels</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Everytime you want Darwin to simulate evolution of a custom entity in a custom environment with your own scoring and reproduction system, you need to create an extension.</p>
+<p><strong>Wheels</strong> is an extension of Darwin that enables it to run self-driving car simulations. Its aim is to produce  cars that successfully navigate around a curved race track without hitting any of the boundary walls on the side of the road.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cars"><a class="anchor" href="#_cars"></a>Cars</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The cars in this extension are depicted by sprites that can control its movement by making changes to two of its classes - acceleration and steering. In other words, a car can at any moment choose to accelerate/decelerate/remain at same speed, or turn left/right/take no turns at all. Each car has three proximity sensors attached to the head, which are used to detect if there is an obstacle ahead.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tracks"><a class="anchor" href="#_tracks"></a>Tracks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The cars spawned in the Wheels training sessions move through a curved race track. A car that hits the boundaries of any part of the road is considered to be a failure. Successful cars can move past the various curves in the track without hitting the boundaries. The same track has been used for all training sessions to ensure comparable scores across generations and sessions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_neural_networks"><a class="anchor" href="#_neural_networks"></a>Neural Networks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Input</strong>: Each sensor provides a number between 0 and 1, based on the value of the ray tracing operation. The closer the value is to 1, the closer the boundary is. A value of zero indicates that the linear space covered in the ray tracing operation detected no obstacle.</p>
 </div>
 <div class="paragraph">
-<p>Here are some of the built-in extensions of Darwin:</p>
+<p><strong>Output</strong>: Two output values are produced - one for acceleration and the other for steering. For the quantity corresponding to acceleration, a number greater than 0 causes the car to accelerate whereas a value less than or equal to 0 causes no acceleration (it only experiences deceleration due to friction). For the quantity corresponding to turning, a value greater than 0 causes the car to turn right, a value smaller than -1 causes it to turn left while all other values in between cause its movement direction to remain unchanged.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="jumpers.html">Jumpers</a></p>
-</li>
-<li>
-<p><a href="wheels.html">Wheels</a></p>
-</li>
-<li>
-<p><a href="flappers.html">Flappers</a></p>
-</li>
-</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scoring_system"><a class="anchor" href="#_scoring_system"></a>Scoring System</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The cars inside Wheels are scored based on the distance they have covered inside the track without colliding with the boundary walls. Units that cover higher distances have higher ranking. After a certain number of training sessions, most units of a generation should be able to successfully traverse the entire distance of the track.</p>
+</div>
+</div>
 </div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -179,7 +202,7 @@
     <script>
   window.antora = window.antora || {}
   window.antora.basePath = '../../..'
-  window.antora.pagePath = '/Darwin/0.1/extensions/introduction.html'
+  window.antora.pagePath = '/Darwin/0.1/extensions/wheels.html'
 </script>
 <script src="../../../_/js/site.js"></script>
 <script src="../../../_/js/vendor/lunr.js"></script>

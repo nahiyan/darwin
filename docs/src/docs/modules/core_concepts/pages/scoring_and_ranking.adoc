@@ -1,0 +1,11 @@
+= Scoring and Ranking
+
+In every generation, objects are tested to have their scores determined, which in turn is based on their performance relative to the expectation.
+
+In a generation, after the objects are scored, they are ranked in descending order based on their scores. Afterwards, classification happens based on the settings of the evolution, which includes the fraction of each class. For example, in the diagram below depicts a classification into 3 classes - upper, middle, and lower, respectively:
+
+image:scoring_and_ranking.png[]
+
+The fraction of each class is expected to be defined at the beginning of the evolution session.
+
+Additionally, if desired, a fraction of the new generation can be randomized to reduce chances of reaching a plateau.

@@ -4,6 +4,6 @@ Everytime you want Darwin to simulate evolution of a custom entity in a custom e
 
 Here are some of the built-in extensions of Darwin:
 
-* Flappers
-* Wheels
-* Jumpers
+* link:jumpers.html[Jumpers]
+* link:wheels.html[Wheels]
+* link:flappers.html[Flappers]

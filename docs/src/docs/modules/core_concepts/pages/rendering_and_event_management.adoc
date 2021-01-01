@@ -1,0 +1,3 @@
+= Rendering and Event Management
+
+OpenGL is used by cocos2d-x for rendering graphics on the screen. Event management such as time intervals, mouse events, keyboard events, game steps, etc are handled by cocos2d-x. This also includes events triggered by the physics engine, Chipmunk - such as the beginning of a collision, pre-collision, post-collision, etc.

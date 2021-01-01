@@ -4,7 +4,7 @@
   <head>
         <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Introduction :: Darwin Docs</title>
+    <title>Flappers :: Darwin Docs</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/search.css">
@@ -93,7 +93,7 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Extensions</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="introduction.html">Introduction</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -105,7 +105,7 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="wheels.html">Wheels</a>
   </li>
-  <li class="nav-item" data-depth="2">
+  <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="flappers.html">Flappers</a>
   </li>
 </ul>
@@ -142,32 +142,71 @@
   <ul>
     <li><a href="../index.html">Darwin</a></li>
     <li>Extensions</li>
-    <li><a href="introduction.html">Introduction</a></li>
+    <li><a href="flappers.html">Flappers</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/extensions/pages/introduction.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/extensions/pages/flappers.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Introduction</h1>
+<h1 class="page">Flappers</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>Everytime you want Darwin to simulate evolution of a custom entity in a custom environment with your own scoring and reproduction system, you need to create an extension.</p>
+<p>Flappers are sprites that are spawned mid-air at the beginning of the game. They are constantly pulled downwards through a simulated gravitational force and can regain height through a series of small jumps (flaps). A number of flapper units are spawned at the beginning of the game and each has a neural network attached to it. In the beginning, flappers have random weights &amp; biases in their neural networks.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pipes"><a class="anchor" href="#_pipes"></a>Pipes</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Here are some of the built-in extensions of Darwin:</p>
+<p>Pipes are added to the scene at a fixed time interval. Ratio of the top and the bottom pipe heights are sequentially chosen from a repeating series of values, leading to a fixed set of pipe obstacles that each flapper must navigate through. The same series of pipes have been used for all training sessions in order to ensure comparable scores across generations and sessions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tracks"><a class="anchor" href="#_tracks"></a>Tracks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The cars spawned in the Wheels training sessions move through a curved race track. A car that hits the boundaries of any part of the road is considered to be a failure. Successful cars can move past the various curves in the track without hitting the boundaries. The same track has been used for all training sessions to ensure comparable scores across generations and sessions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_neural_networks"><a class="anchor" href="#_neural_networks"></a>Neural Networks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Input:</strong> Each neural network receives four numerical input parameters from the Flapper that it is attached to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="jumpers.html">Jumpers</a></p>
+<p>Horizontal distance of the flapper to rightward pipe</p>
 </li>
 <li>
-<p><a href="wheels.html">Wheels</a></p>
+<p>Vertical distance of the flapper to rightward top pipe</p>
 </li>
 <li>
-<p><a href="flappers.html">Flappers</a></p>
+<p>Vertical distance of the flapper to rightward bottom pipe</p>
+</li>
+<li>
+<p>Vertical velocity of the flapper</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p><strong>Output:</strong> A number ranging from 0 to 1. If it&#8217;s greater than 0.5, the number is interpreted as a decision to flap(jump).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_scoring_system"><a class="anchor" href="#_scoring_system"></a>Scoring System</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Flappers die when they hit an obstacle - i.e. the various pipes, the ceiling, or the ground/base. Success is determined by the time, in seconds (accurate to the nearest millisecond), which a flapper manages to stay alive. Highly successful units can navigate all the pipe obstacles in its path without failing.</p>
+</div>
+</div>
 </div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -179,7 +218,7 @@
     <script>
   window.antora = window.antora || {}
   window.antora.basePath = '../../..'
-  window.antora.pagePath = '/Darwin/0.1/extensions/introduction.html'
+  window.antora.pagePath = '/Darwin/0.1/extensions/flappers.html'
 </script>
 <script src="../../../_/js/site.js"></script>
 <script src="../../../_/js/vendor/lunr.js"></script>

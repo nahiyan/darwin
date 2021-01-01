@@ -1,0 +1,5 @@
+= Control Panel
+
+Building Darwin yields a single executable file now; previously we had one executable for each extension. Opening the executable brings up a GUI-based control panel which can be used to select and run the various extensions. The control panel provides various functions such as viewing training sessions and generations, as well as resuming from a session or generation. Thus, all extensions can be viewed and run from a single window now. wxWidgets has been used to create the Control Panel's GUI. wxWidgets was chosen because it's cross-platform and has a friendly API.
+
+image:control_panel.png[]

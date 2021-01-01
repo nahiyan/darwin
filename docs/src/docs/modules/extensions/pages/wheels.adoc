@@ -1,0 +1,21 @@
+= Wheels
+
+*Wheels* is an extension of Darwin that enables it to run self-driving car simulations. Its aim is to produce  cars that successfully navigate around a curved race track without hitting any of the boundary walls on the side of the road. 
+
+== Cars
+
+The cars in this extension are depicted by sprites that can control its movement by making changes to two of its classes - acceleration and steering. In other words, a car can at any moment choose to accelerate/decelerate/remain at same speed, or turn left/right/take no turns at all. Each car has three proximity sensors attached to the head, which are used to detect if there is an obstacle ahead. 
+
+== Tracks
+
+The cars spawned in the Wheels training sessions move through a curved race track. A car that hits the boundaries of any part of the road is considered to be a failure. Successful cars can move past the various curves in the track without hitting the boundaries. The same track has been used for all training sessions to ensure comparable scores across generations and sessions.
+
+== Neural Networks
+
+*Input*: Each sensor provides a number between 0 and 1, based on the value of the ray tracing operation. The closer the value is to 1, the closer the boundary is. A value of zero indicates that the linear space covered in the ray tracing operation detected no obstacle.
+
+*Output*: Two output values are produced - one for acceleration and the other for steering. For the quantity corresponding to acceleration, a number greater than 0 causes the car to accelerate whereas a value less than or equal to 0 causes no acceleration (it only experiences deceleration due to friction). For the quantity corresponding to turning, a value greater than 0 causes the car to turn right, a value smaller than -1 causes it to turn left while all other values in between cause its movement direction to remain unchanged.
+
+== Scoring System
+
+The cars inside Wheels are scored based on the distance they have covered inside the track without colliding with the boundary walls. Units that cover higher distances have higher ranking. After a certain number of training sessions, most units of a generation should be able to successfully traverse the entire distance of the track. 

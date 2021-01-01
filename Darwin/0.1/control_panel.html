@@ -4,7 +4,7 @@
   <head>
         <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dependencies :: Darwin Docs</title>
+    <title>Control Panel :: Darwin Docs</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../_/css/site.css">
 <link rel="stylesheet" href="../../_/css/search.css">
@@ -48,10 +48,10 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="getting_started.html">Getting Started</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="1">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="dependencies.html">Dependencies</a>
   </li>
-  <li class="nav-item" data-depth="1">
+  <li class="nav-item is-current-page" data-depth="1">
     <a class="nav-link" href="control_panel.html">Control Panel</a>
   </li>
   <li class="nav-item" data-depth="1">
@@ -141,62 +141,19 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="index.html">Darwin</a></li>
-    <li><a href="dependencies.html">Dependencies</a></li>
+    <li><a href="control_panel.html">Control Panel</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/ROOT/pages/dependencies.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/ROOT/pages/control_panel.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Dependencies</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><em>wxWidgets</em> for cross-platform GUI of the Control Panel.</p>
-</li>
-<li>
-<p><em>cocos2d-x</em> for visual simulation of evolution.</p>
-</li>
-<li>
-<p><em>SQLite3</em> for relational data storage.</p>
-</li>
-<li>
-<p><em>FlatBuffers</em> for binary data serialization/deserialization.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_wxwidgets_cocos2d_x_and_sqlite3"><a class="anchor" href="#_wxwidgets_cocos2d_x_and_sqlite3"></a>wxWidgets, cocos2d-x, and SQLite3</h2>
-<div class="sectionbody">
+<h1 class="page">Control Panel</h1>
 <div class="paragraph">
-<p>wxWidgets, cocos2d-x, SQLite3 are stored in <code>/wxwidgets</code>, <code>/cocos2d</code>, and <code>/core/sqlite3</code> respectively, as <a href="https://cmake.org/cmake/help/latest/command/add_subdirectory.html">sub-directories</a>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_flatbuffers"><a class="anchor" href="#_flatbuffers"></a>FlatBuffers</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>FlatBuffers is used for storing/retrieving states of generations, along with scores of population members, to/from the database in form of binary.</p>
+<p>Building Darwin yields a single executable file now; previously we had one executable for each extension. Opening the executable brings up a GUI-based control panel which can be used to select and run the various extensions. The control panel provides various functions such as viewing training sessions and generations, as well as resuming from a session or generation. Thus, all extensions can be viewed and run from a single window now. wxWidgets has been used to create the Control Panel&#8217;s GUI. wxWidgets was chosen because it&#8217;s cross-platform and has a friendly API.</p>
 </div>
 <div class="paragraph">
-<p>If an extension defines its own FlatBuffers schemas, the files are included in <code>/extensions/&lt;extension_name&gt;/flatbuffers</code>, where <code>&lt;extension_name&gt;</code> is the name of the extension. However, most extensions rely on common FlatBuffers schemas, which are part of the core of Darwin.</p>
-</div>
-<div class="paragraph">
-<p>You can use FlatBuffers schema compiler to compile the schemas. Afterwards, place the newly generated files in their respective locations.</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="paragraph">
-<p>FlatBuffers isn&#8217;t used as a library but as a tool that generates header files. The header files are what makes serialization/deserialization of data possible.</p>
-</div>
-</blockquote>
-</div>
-</div>
+<p><span class="image"><img src="_images/control_panel.png" alt="control panel"></span></p>
 </div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -208,7 +165,7 @@
     <script>
   window.antora = window.antora || {}
   window.antora.basePath = '../..'
-  window.antora.pagePath = '/Darwin/0.1/dependencies.html'
+  window.antora.pagePath = '/Darwin/0.1/control_panel.html'
 </script>
 <script src="../../_/js/site.js"></script>
 <script src="../../_/js/vendor/lunr.js"></script>

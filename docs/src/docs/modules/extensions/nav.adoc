@@ -1,2 +1,6 @@
 * Extensions
 ** xref:introduction.adoc[Introduction]
+** xref:creating_custom_extensions.adoc[Creating Custom Extensions]
+** xref:jumpers.adoc[Jumpers]
+** xref:wheels.adoc[Wheels]
+** xref:flappers.adoc[Flappers]

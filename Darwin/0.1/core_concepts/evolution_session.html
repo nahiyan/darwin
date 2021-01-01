@@ -4,7 +4,7 @@
   <head>
         <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Introduction :: Darwin Docs</title>
+    <title>Evolution Session :: Darwin Docs</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/search.css">
@@ -66,22 +66,22 @@
     <span class="nav-text">Core Concepts</span>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/overview.html">Overview</a>
+    <a class="nav-link" href="overview.html">Overview</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="evolution_session.html">Evolution Session</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/evolution_session.html">Evolution Session</a>
+    <a class="nav-link" href="scoring_and_ranking.html">Scoring and Ranking</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/scoring_and_ranking.html">Scoring and Ranking</a>
+    <a class="nav-link" href="reproduction.html">Reproduction</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/reproduction.html">Reproduction</a>
+    <a class="nav-link" href="rendering_and_event_management.html">Rendering and Event Management</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/rendering_and_event_management.html">Rendering and Event Management</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../core_concepts/data_storage.html">Data Storage</a>
+    <a class="nav-link" href="data_storage.html">Data Storage</a>
   </li>
 </ul>
   </li>
@@ -93,20 +93,20 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Extensions</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="introduction.html">Introduction</a>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../extensions/introduction.html">Introduction</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="creating_custom_extensions.html">Creating Custom Extensions</a>
+    <a class="nav-link" href="../extensions/creating_custom_extensions.html">Creating Custom Extensions</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="jumpers.html">Jumpers</a>
+    <a class="nav-link" href="../extensions/jumpers.html">Jumpers</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="wheels.html">Wheels</a>
+    <a class="nav-link" href="../extensions/wheels.html">Wheels</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="flappers.html">Flappers</a>
+    <a class="nav-link" href="../extensions/flappers.html">Flappers</a>
   </li>
 </ul>
   </li>
@@ -141,33 +141,20 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Darwin</a></li>
-    <li>Extensions</li>
-    <li><a href="introduction.html">Introduction</a></li>
+    <li>Core Concepts</li>
+    <li><a href="evolution_session.html">Evolution Session</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/extensions/pages/introduction.adoc">Edit this Page</a></div>
+  <div class="edit-this-page"><a href="file:///Users/nahiyanalamgir/code/darwin-gh-pages/docs/src/docs/modules/core_concepts/pages/evolution_session.adoc">Edit this Page</a></div>
 </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Introduction</h1>
+<h1 class="page">Evolution Session</h1>
 <div class="paragraph">
-<p>Everytime you want Darwin to simulate evolution of a custom entity in a custom environment with your own scoring and reproduction system, you need to create an extension.</p>
+<p>Darwin manages evolution through an entity called <strong>EvolutionSession</strong>. It represents a session of evolution, comprising a population that is undergoing evolution. It stores information associated with each generation of the population and has its own configuration parameters such as classification fractions, crossover type, mutation rate, etc.</p>
 </div>
 <div class="paragraph">
-<p>Here are some of the built-in extensions of Darwin:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="jumpers.html">Jumpers</a></p>
-</li>
-<li>
-<p><a href="wheels.html">Wheels</a></p>
-</li>
-<li>
-<p><a href="flappers.html">Flappers</a></p>
-</li>
-</ul>
+<p>The session also holds information about each generation, such as the scores and states of each member of the population. Besides controlling every sequential step in the evolution session, it also manages the storage of the entire generation’s state in a persistent storage system.</p>
 </div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -179,7 +166,7 @@
     <script>
   window.antora = window.antora || {}
   window.antora.basePath = '../../..'
-  window.antora.pagePath = '/Darwin/0.1/extensions/introduction.html'
+  window.antora.pagePath = '/Darwin/0.1/core_concepts/evolution_session.html'
 </script>
 <script src="../../../_/js/site.js"></script>
 <script src="../../../_/js/vendor/lunr.js"></script>

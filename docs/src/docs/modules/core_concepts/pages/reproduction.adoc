@@ -1,0 +1,9 @@
+= Reproduction
+
+After the classification is done, a new generation is initiated with a new set of objects for the population. Members of the upper (elite) class remain unchanged. Members of upper and middle classes reproduce to produce new offspring.
+
+To produce new offspring, the chromosomes of the members are accumulated into what we can call a chromosome pool. Randomly selected pairs from the chromosome pool undergo crossover and mutation to produce new chromosomes.
+
+Mutation rate is used to determine the extent of mutation. Uniform crossover is used by default. However, it can be changed at the beginning of an evolution session. Other methods of crossover, such as one-point or two-point crossover may be used if desired.
+
+Throughout the entire process, memory instances are preserved and re-used, if possible, to attain higher efficiency.

@@ -1,0 +1,5 @@
+= Creating Custom Extensions
+
+The process of creating a custom extension is designed to be easy, simple, yet flexible and powerful.
+
+> TODO

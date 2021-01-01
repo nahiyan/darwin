@@ -2,4 +2,5 @@ name: Darwin
 version: 0.1
 nav:
   - modules/ROOT/nav.adoc
+  - modules/core_concepts/nav.adoc
   - modules/extensions/nav.adoc
