@@ -135,7 +135,7 @@ else()
 endif()
 
 # Link libraries, and include headers
-target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base wx::adv wx::propgrid)
+target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
