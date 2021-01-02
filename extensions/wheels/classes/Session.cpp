@@ -5,7 +5,7 @@
 
 using namespace Wheels;
 
-EvolutionSession<Car> *Session::evolutionSession = nullptr;
+Core::EvolutionSession<Car> *Session::evolutionSession = nullptr;
 Session::CurrentGenerationInfo Session::currentGenerationInfo = Session::CurrentGenerationInfo{0};
 int Session::populationSize = 0;
 
@@ -75,7 +75,7 @@ void Session::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    Session::evolutionSession->evolve(EvolutionCommon<Car>::crossoverAndMutate, EvolutionCommon<Car>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(Core::EvolutionCommon<Car>::crossoverAndMutate, Core::EvolutionCommon<Car>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

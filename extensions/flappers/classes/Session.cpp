@@ -7,7 +7,7 @@
 
 using namespace Flappers;
 
-EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
+Core::EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 std::vector<Node *> Session::pipes = std::vector<Node *>{};
 int Session::pipeCounter = 0;
 float Session::timeSinceLastPipe = 0;
@@ -17,7 +17,7 @@ void Session::nextGeneration()
 {
     // Increment the generation index
     Core::Session::generationIndex++;
-    HUD::update(Session::hud, Session::evolutionSession->getMutationRate());
+    Core::HUD::update(Session::hud, Session::evolutionSession->getMutationRate());
 
     Session::pipeCounter = 0;
     const auto &mainScene = MainScene::getInstance();
@@ -52,7 +52,7 @@ void Session::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(Core::EvolutionCommon<Flapper>::crossoverAndMutate, Core::EvolutionCommon<Flapper>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

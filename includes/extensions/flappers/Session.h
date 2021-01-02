@@ -17,7 +17,7 @@ namespace Flappers
         static int pipeCounter;
         static float timeSinceLastPipe;
         static Label* hud;
-        static EvolutionSession<Flapper> *evolutionSession;
+        static Core::EvolutionSession<Flapper> *evolutionSession;
 
         static void nextGeneration();
     };

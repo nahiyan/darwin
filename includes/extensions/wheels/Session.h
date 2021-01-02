@@ -22,7 +22,7 @@ namespace Wheels
 
     public:
         static void nextGeneration();
-        static EvolutionSession<Car> *evolutionSession;
+        static Core::EvolutionSession<Car> *evolutionSession;
         static void decrementCarQuantity();
         static void setCarQuantity(int);
         static void setPopulationSize(int);

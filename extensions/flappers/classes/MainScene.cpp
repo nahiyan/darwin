@@ -70,7 +70,7 @@ bool MainScene::init()
     this->addPipe();
 
     // Evolution session
-    Session::evolutionSession = new EvolutionSession<Flapper>(.01, 0.05, .3, .05);
+    Session::evolutionSession = new Core::EvolutionSession<Flapper>(.01, 0.05, .3, .05);
 
     // // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -96,7 +96,7 @@ bool MainScene::init()
             for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)
                 nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
 
-        Session::evolutionSession->evolve(EvolutionCommon<Flapper>::crossoverAndMutate, EvolutionCommon<Flapper>::randomize);
+        Session::evolutionSession->evolve(Core::EvolutionCommon<Flapper>::crossoverAndMutate, Core::EvolutionCommon<Flapper>::randomize);
     }
 
     // Add flappers
@@ -143,7 +143,7 @@ bool MainScene::init()
     this->addChild(Roof::create(), -1);
 
     // HUD
-    Session::hud = HUD::create(Session::evolutionSession->getMutationRate());
+    Session::hud = Core::HUD::create(Session::evolutionSession->getMutationRate());
     this->addChild(Session::hud, 10);
 
     // Core listeners

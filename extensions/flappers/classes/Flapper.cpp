@@ -24,7 +24,7 @@ Flapper::Flapper(std::vector<double> parameters)
         this->neuralNetwork->set_parameters(parameters);
     else
         // Randomize parameters
-        EvolutionCommon<Flapper>::randomize(this);
+        Core::EvolutionCommon<Flapper>::randomize(this);
 }
 
 Flapper::~Flapper()

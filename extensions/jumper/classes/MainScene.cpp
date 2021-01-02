@@ -55,7 +55,7 @@ bool MainScene::init()
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("jumpers/sprite-sheet.plist");
 
     // Evolution session
-    this->evolutionSession = new EvolutionSession<JumperGroup>;
+    this->evolutionSession = new Core::EvolutionSession<JumperGroup>;
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -85,7 +85,7 @@ bool MainScene::init()
             }
         }
 
-        this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize);
+        this->evolutionSession->evolve(Core::EvolutionCommon<JumperGroup>::crossoverAndMutate, Core::EvolutionCommon<JumperGroup>::randomize);
     }
 
     // Jumpers
@@ -230,7 +230,7 @@ void MainScene::nextGeneration()
     builder.Finish(state);
 
     // Perform evolution
-    this->evolutionSession->evolve(EvolutionCommon<JumperGroup>::crossoverAndMutate, EvolutionCommon<JumperGroup>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
+    this->evolutionSession->evolve(Core::EvolutionCommon<JumperGroup>::crossoverAndMutate, Core::EvolutionCommon<JumperGroup>::randomize, Core::Session::sessionId, builder.GetBufferPointer(), builder.GetSize());
 
     // Add jumper nodes
     for (int i = 0; i < this->evolutionSession->population.size(); i++)

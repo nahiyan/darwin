@@ -64,7 +64,7 @@ bool MainScene::init()
 
     // Evolution session
     Session::setPopulationSize(POPULATION_SIZE);
-    Session::evolutionSession = new EvolutionSession<Car>;
+    Session::evolutionSession = new Core::EvolutionSession<Car>;
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
@@ -94,7 +94,7 @@ bool MainScene::init()
             }
         }
 
-        Session::evolutionSession->evolve(EvolutionCommon<Car>::crossoverAndMutate, EvolutionCommon<Car>::randomize);
+        Session::evolutionSession->evolve(Core::EvolutionCommon<Car>::crossoverAndMutate, Core::EvolutionCommon<Car>::randomize);
     }
 
     // Add cars
