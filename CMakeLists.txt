@@ -38,12 +38,6 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/opennn)
 # Root path
 set(INCLUDES_PATH ${CMAKE_CURRENT_SOURCE_DIR}/includes)
 
-# Extension paths
-set(JUMPER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/jumper)
-set(PREDATION_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/predation)
-set(WHEELS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/wheels)
-set(FLAPPERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/extensions/flappers)
-
 if(XCODE)
     if(NOT DEFINED CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET)
         SET (CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 8.0)
@@ -71,10 +65,7 @@ endif()
 
 # add cross-platforms source files and header files
 file(GLOB_RECURSE GAME_SOURCE
-  "${WHEELS_PATH}/classes/*.cpp"
-  "${JUMPER_PATH}/classes/*.cpp"
-  "${PREDATION_PATH}/classes/*.cpp"
-  "${FLAPPERS_PATH}/classes/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/extensions/*/classes/*.cpp",
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
@@ -144,7 +135,7 @@ else()
 endif()
 
 # Link libraries, and include headers
-target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base)
+target_link_libraries(${APP_NAME} cocos2d opennn core wx::net wx::core wx::base wx::adv wx::propgrid)
 target_include_directories(${APP_NAME}
     PRIVATE ${INCLUDES_PATH}
     PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
