@@ -5,15 +5,18 @@
 
 USING_NS_CC;
 
-class Debug
+namespace Core
 {
-public:
-    static Vec2 log(Vec2 vec)
+    class Debug
     {
-        cocos2d::log("Vec2(%f, %f)", vec.x, vec.y);
+    public:
+        static Vec2 log(Vec2 vec)
+        {
+            cocos2d::log("Vec2(%f, %f)", vec.x, vec.y);
 
-        return vec;
-    }
-};
+            return vec;
+        }
+    };
+} // namespace Core
 
 #endif // __CORE_DEBUG_H__
