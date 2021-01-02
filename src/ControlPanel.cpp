@@ -8,16 +8,16 @@
 #include <wx/listbase.h>
 #include <wx/listctrl.h>
 #include <wx/stattext.h>
+#include <wx/spinctrl.h>
 #include <string>
 #include <functional>
 #include <wx/event.h>
 #include <core/Database.h>
 #include <fstream>
 #include <extensions/jumper/AppDelegate.h>
-#include <extensions/predation/AppDelegate.h>
 #include <extensions/wheels/AppDelegate.h>
 #include <extensions/flappers/AppDelegate.h>
-#include <core/CoreSession.h>
+#include <core/Session.h>
 #include "cocos2d.h"
 
 #define EXTENSIONS_LIST_BOX_ID 1
@@ -56,12 +56,13 @@ bool ControlPanel::OnInit()
 ControlPanelFrame::ControlPanelFrame()
     : wxFrame(NULL, wxID_ANY, wxT("Darwin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE & ~(wxRESIZE_BORDER | wxMAXIMIZE_BOX))
 {
+    // Open the database
     std::ifstream dbPathFile;
     dbPathFile.open(cocos2d::FileUtils::getInstance()->fullPathForFilename("db_path.txt"));
     dbPathFile >> this->dbPath;
     dbPathFile.close();
 
-    Database::open(this->dbPath);
+    Core::Database::open(this->dbPath);
 
     // Initialization
     this->sessionIds = std::vector<int>{};
@@ -100,7 +101,7 @@ ControlPanelFrame::ControlPanelFrame()
 
     this->extensionsListBox = new wxListBox(extensionsPanel, EXTENSIONS_LIST_BOX_ID);
 
-    auto extensionNames_ = Database::getExtensionNames();
+    auto extensionNames_ = Core::Database::getExtensionNames();
     for (auto extensionName : extensionNames_)
         this->extensionNames.push_back(extensionName);
 
@@ -129,6 +130,48 @@ ControlPanelFrame::ControlPanelFrame()
     this->generationsListBox->SetMinSize(wxSize(LIST_BOX_MIN_WIDTH, LIST_BOX_MIN_HEIGHT));
     generationsListBox->Enable(false);
     generationsStaticBoxSizer->Add(this->generationsListBox, 0, wxEXPAND | wxALL, 5);
+
+    // Settings row
+    auto settingsPanel = new wxPanel(masterPanel);
+    masterPanelSizer->Add(settingsPanel, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
+    auto settingsStaticBoxSizer = new wxStaticBoxSizer(wxHORIZONTAL, settingsPanel, "Settings");
+    settingsPanel->SetSizer(settingsStaticBoxSizer);
+
+    // Grid panel
+    auto gridPanel = new wxPanel(settingsPanel);
+    settingsStaticBoxSizer->Add(gridPanel, 0, wxEXPAND);
+    auto gridPanelSizer = new wxFlexGridSizer(2, wxSize(10, 10));
+    gridPanel->SetSizer(gridPanelSizer);
+
+    // Mutation Rate
+    auto mutationRateText = new wxStaticText(gridPanel, wxID_ANY, wxT("Mutation Rate (%): "));
+    gridPanelSizer->Add(mutationRateText);
+
+    auto mutationRate = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    mutationRate->SetIncrement(1);
+    mutationRate->SetDigits(1);
+    mutationRate->SetRange(0, 100);
+    gridPanelSizer->Add(mutationRate);
+
+    // Speed
+    auto speedText = new wxStaticText(gridPanel, wxID_ANY, wxT("Speed: "));
+    gridPanelSizer->Add(speedText, 0, wxLEFT | wxEXPAND, 0);
+
+    auto speed = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    speed->SetIncrement(.1);
+    speed->SetDigits(1);
+    speed->SetRange(0, 100);
+    gridPanelSizer->Add(speed);
+
+    // Population size
+    auto populationSizeText = new wxStaticText(gridPanel, wxID_ANY, wxT("Population Size: "));
+    gridPanelSizer->Add(populationSizeText, 0, wxLEFT | wxEXPAND, 0);
+
+    auto populationSize = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    populationSize->SetIncrement(1);
+    populationSize->SetDigits(0);
+    populationSize->SetRange(0, 10000);
+    gridPanelSizer->Add(populationSize);
 
     // Summary row
     auto summaryRow = new wxPanel(masterPanel);
@@ -182,7 +225,7 @@ void ControlPanelFrame::SelectExtension(wxCommandEvent &event)
     this->generationsListBox->Enable(false);
 
     auto extensionName = event.GetString().ToStdString();
-    auto ids = Database::getSessionIds(extensionName);
+    auto ids = Core::Database::getSessionIds(extensionName);
     std::copy(ids.begin(), ids.end(), std::back_inserter(this->sessionIds));
 
     std::vector<wxString> items;
@@ -208,7 +251,7 @@ void ControlPanelFrame::SelectSession(wxCommandEvent &event)
 
     auto extensionName = this->extensionsListBox->GetStringSelection().ToStdString();
     auto sessionId = this->sessionIds[event.GetSelection()];
-    auto ids = Database::getGenerationIds(sessionId);
+    auto ids = Core::Database::getGenerationIds(sessionId);
     std::copy(ids.begin(), ids.end(), std::back_inserter(this->generationIds));
 
     std::vector<wxString> items;
@@ -241,16 +284,16 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     if (this->generationsListBox->GetStringSelection().ToStdString().size() != 0)
         generationId = this->generationIds[this->generationsListBox->GetSelection()];
 
-    CoreSession::sessionId = sessionId;
-    CoreSession::generationId = generationId;
+    Core::Session::sessionId = sessionId;
+    Core::Session::generationId = generationId;
 
     try
     {
-        CoreSession::generationIndex = std::stoi(this->generationsListBox->GetStringSelection().ToStdString()) + 1;
+        Core::Session::generationIndex = std::stoi(this->generationsListBox->GetStringSelection().ToStdString()) + 1;
     }
     catch (...)
     {
-        CoreSession::generationIndex = 1;
+        Core::Session::generationIndex = 1;
     }
 
     this->Destroy();
@@ -259,11 +302,6 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     if (extensionName == "Jumper")
     {
         Jumper::AppDelegate app;
-        cocos2d::Application::getInstance()->run();
-    }
-    else if (extensionName == "Predation")
-    {
-        Predation::AppDelegate app;
         cocos2d::Application::getInstance()->run();
     }
     else if (extensionName == "Wheels")
