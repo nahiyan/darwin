@@ -65,7 +65,7 @@ endif()
 
 # add cross-platforms source files and header files
 file(GLOB_RECURSE GAME_SOURCE
-  "${CMAKE_CURRENT_SOURCE_DIR}/extensions/*/classes/*.cpp",
+  "${CMAKE_CURRENT_SOURCE_DIR}/extensions/*/classes/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
