@@ -6,6 +6,8 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/spinctrl.h>
+
 class ControlPanel : public wxApp
 {
 public:
@@ -28,6 +30,7 @@ private:
     wxButton *clearSelectionButton;
     wxButton *openPortal;
     wxStaticText *summary;
+    wxSpinCtrlDouble *mutationRate, *speed, *populationSize;
 
     // lists
     std::vector<wxString> extensionNames;

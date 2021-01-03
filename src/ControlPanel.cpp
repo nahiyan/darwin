@@ -147,31 +147,34 @@ ControlPanelFrame::ControlPanelFrame()
     auto mutationRateText = new wxStaticText(gridPanel, wxID_ANY, wxT("Mutation Rate (%): "));
     gridPanelSizer->Add(mutationRateText);
 
-    auto mutationRate = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
-    mutationRate->SetIncrement(1);
-    mutationRate->SetDigits(1);
-    mutationRate->SetRange(0, 100);
-    gridPanelSizer->Add(mutationRate);
+    this->mutationRate = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    this->mutationRate->SetIncrement(1);
+    this->mutationRate->SetDigits(1);
+    this->mutationRate->SetRange(0, 100);
+    this->mutationRate->SetValue(1);
+    gridPanelSizer->Add(this->mutationRate);
 
     // Speed
     auto speedText = new wxStaticText(gridPanel, wxID_ANY, wxT("Speed: "));
     gridPanelSizer->Add(speedText, 0, wxLEFT | wxEXPAND, 0);
 
-    auto speed = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
-    speed->SetIncrement(.1);
-    speed->SetDigits(1);
-    speed->SetRange(0, 100);
-    gridPanelSizer->Add(speed);
+    this->speed = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    this->speed->SetIncrement(.1);
+    this->speed->SetDigits(1);
+    this->speed->SetRange(0, 100);
+    this->speed->SetValue(1);
+    gridPanelSizer->Add(this->speed);
 
     // Population size
     auto populationSizeText = new wxStaticText(gridPanel, wxID_ANY, wxT("Population Size: "));
     gridPanelSizer->Add(populationSizeText, 0, wxLEFT | wxEXPAND, 0);
 
-    auto populationSize = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
-    populationSize->SetIncrement(1);
-    populationSize->SetDigits(0);
-    populationSize->SetRange(0, 10000);
-    gridPanelSizer->Add(populationSize);
+    this->populationSize = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    this->populationSize->SetIncrement(1);
+    this->populationSize->SetDigits(0);
+    this->populationSize->SetRange(0, 10000);
+    this->populationSize->SetValue(50);
+    gridPanelSizer->Add(this->populationSize);
 
     // Summary row
     auto summaryRow = new wxPanel(masterPanel);
@@ -295,6 +298,10 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     {
         Core::Session::generationIndex = 1;
     }
+
+    Core::Session::speed = this->speed->GetValue();
+    Core::Session::populationSize = this->populationSize->GetValue();
+    Core::Session::mutationRate = this->mutationRate->GetValue() / 100;
 
     this->Destroy();
     this->Close(true);

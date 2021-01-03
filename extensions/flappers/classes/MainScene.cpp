@@ -19,8 +19,6 @@
 #include <extensions/flappers/Base.h>
 #include <extensions/flappers/Roof.h>
 
-#define POPULATION_SIZE 50
-
 USING_NS_CC;
 using namespace Flappers;
 
@@ -70,10 +68,10 @@ bool MainScene::init()
     this->addPipe();
 
     // Evolution session
-    Session::evolutionSession = new Core::EvolutionSession<Flapper>(.01, 0.05, .3, .05);
+    Session::evolutionSession = new Core::EvolutionSession<Flapper>(Core::Session::mutationRate, 0.05, .3, .05);
 
     // // Database
-    std::vector<double> nnParameters[POPULATION_SIZE];
+    std::vector<double> nnParameters[Core::Session::populationSize];
 
     if (Core::Session::sessionId == 0)
     {
@@ -92,7 +90,7 @@ bool MainScene::init()
 
         auto state = Core::GetGenerationState(stateBinary);
 
-        for (int i = 0; i < state->population()->size(); i++)
+        for (int i = 0; i < std::min<int>(state->population()->size(), Core::Session::populationSize); i++)
             for (int j = 0; j < state->population()->Get(i)->chromosomes()->size(); j++)
                 nnParameters[i].push_back(state->population()->Get(i)->chromosomes()->Get(j));
 
@@ -100,7 +98,7 @@ bool MainScene::init()
     }
 
     // Add flappers
-    for (int i = 0; i < POPULATION_SIZE; i++)
+    for (int i = 0; i < Core::Session::populationSize; i++)
     {
         auto flapper = new Flapper(nnParameters[i]);
         this->addChild(flapper->node, 0, i);

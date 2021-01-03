@@ -5,17 +5,19 @@ namespace Core
 {
     class Session
     {
-    private:
     public:
         enum HUDSelection
         {
             MutationRate,
             Speed
         };
+
         static int extensionId;
         static int sessionId;
         static int generationId;
         static int generationIndex;
+        static int populationSize;
+        static float mutationRate;
         static float speed;
         static HUDSelection hudSelection;
     };
