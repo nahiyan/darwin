@@ -30,22 +30,6 @@ export default {
         this.scores = data.scores;
         this.generation = data.generation;
 
-        // var chart = new Chart("chart", {
-        //   type: "bar",
-        //   data: {
-        //     labels: Array.from({ length: this.scores.length }, (_, i) => i + 1),
-        //     datasets: [
-        //       {
-        //         label: "Scores",
-        //         backgroundColor: "rgb(255, 99, 132)",
-        //         borderColor: "rgb(255, 99, 132)",
-        //         data: this.scores,
-        //       },
-        //     ],
-        //   },
-        //   options: { animation: { duration: 0 } },
-        // });
-
         var options = {
           series: [
             {
