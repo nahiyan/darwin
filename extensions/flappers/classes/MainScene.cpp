@@ -68,7 +68,7 @@ bool MainScene::init()
     this->addPipe();
 
     // Evolution session
-    Session::evolutionSession = new Core::EvolutionSession<Flapper>(Core::Session::mutationRate, 0.05, .3, .05);
+    Session::evolutionSession = new Core::EvolutionSession<Flapper>(Core::Session::mutationRate, Core::Session::eliteFraction, Core::Session::fertileFraction, Core::Session::randomFraction);
 
     // // Database
     std::vector<double> nnParameters[Core::Session::populationSize];

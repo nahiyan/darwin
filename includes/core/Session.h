@@ -18,6 +18,9 @@ namespace Core
         static int generationIndex;
         static int populationSize;
         static float mutationRate;
+        static float eliteFraction;
+        static float fertileFraction;
+        static float randomFraction;
         static float speed;
         static HUDSelection hudSelection;
     };

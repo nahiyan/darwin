@@ -87,16 +87,16 @@ namespace Core
             // Population size
             int populationSize = this->population.size();
 
-            // Upper class
-            int upperClassCount = round(upperFraction * populationSize);
+            // Elite class
+            int upperClassCount = floor(upperFraction * populationSize);
             int upperClassRange[2] = {0, upperClassCount - 1};
 
-            // Middle class
-            int middleClassCount = round(middleFraction * populationSize);
+            // Fertile class
+            int middleClassCount = floor(middleFraction * populationSize);
             int middleClassRange[2] = {upperClassCount > 0 ? upperClassRange[1] + 1 : 0, (middleClassCount + upperClassCount) - 1};
 
             // Random class
-            int randomMembersCount = round(randomFraction * populationSize);
+            int randomMembersCount = floor(randomFraction * populationSize);
             int randomMembersRange[2] = {randomMembersCount > 0 ? populationSize - randomMembersCount : 0, populationSize - 1};
 
             // Reproduction

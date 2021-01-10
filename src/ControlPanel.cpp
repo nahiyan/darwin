@@ -26,6 +26,10 @@
 #define START_BUTTON_ID 4
 #define CLEAR_SELECTION_BUTTON_ID 5
 #define OPEN_PORTAL_BUTTON_ID 6
+#define POPULATION_SIZE_SPIN_BUTTON_ID 7
+#define ELITE_FRACTION_SPIN_BUTTON_ID 8
+#define FERTILE_FRACTION_SPIN_BUTTON_ID 9
+#define RANDOM_FRACTION_SPIN_BUTTON_ID 10
 #define LIST_BOX_MIN_WIDTH 170
 #define LIST_BOX_MIN_HEIGHT 300
 
@@ -140,7 +144,7 @@ ControlPanelFrame::ControlPanelFrame()
     // Grid panel
     auto gridPanel = new wxPanel(settingsPanel);
     settingsStaticBoxSizer->Add(gridPanel, 0, wxEXPAND);
-    auto gridPanelSizer = new wxFlexGridSizer(2, wxSize(10, 10));
+    auto gridPanelSizer = new wxFlexGridSizer(4, wxSize(10, 10));
     gridPanel->SetSizer(gridPanelSizer);
 
     // Mutation Rate
@@ -154,6 +158,17 @@ ControlPanelFrame::ControlPanelFrame()
     this->mutationRate->SetValue(1);
     gridPanelSizer->Add(this->mutationRate);
 
+    // Elite Fraction
+    auto eliteFractionText = new wxStaticText(gridPanel, wxID_ANY, wxT("Elite Fraction (%): "));
+    gridPanelSizer->Add(eliteFractionText, 0, wxLEFT | wxEXPAND, 0);
+
+    this->eliteFraction = new wxSpinCtrlDouble(gridPanel, ELITE_FRACTION_SPIN_BUTTON_ID);
+    this->eliteFraction->SetIncrement(1);
+    this->eliteFraction->SetDigits(0);
+    this->eliteFraction->SetRange(0, 100);
+    this->eliteFraction->SetValue(5);
+    gridPanelSizer->Add(this->eliteFraction);
+
     // Speed
     auto speedText = new wxStaticText(gridPanel, wxID_ANY, wxT("Speed: "));
     gridPanelSizer->Add(speedText, 0, wxLEFT | wxEXPAND, 0);
@@ -165,16 +180,38 @@ ControlPanelFrame::ControlPanelFrame()
     this->speed->SetValue(1);
     gridPanelSizer->Add(this->speed);
 
+    // Fertile Fraction
+    auto fertileFractionText = new wxStaticText(gridPanel, wxID_ANY, wxT("Fertile Fraction (%): "));
+    gridPanelSizer->Add(fertileFractionText, 0, wxLEFT | wxEXPAND, 0);
+
+    this->fertileFraction = new wxSpinCtrlDouble(gridPanel, FERTILE_FRACTION_SPIN_BUTTON_ID);
+    this->fertileFraction->SetIncrement(1);
+    this->fertileFraction->SetDigits(0);
+    this->fertileFraction->SetRange(0, 100);
+    this->fertileFraction->SetValue(30);
+    gridPanelSizer->Add(this->fertileFraction);
+
     // Population size
     auto populationSizeText = new wxStaticText(gridPanel, wxID_ANY, wxT("Population Size: "));
     gridPanelSizer->Add(populationSizeText, 0, wxLEFT | wxEXPAND, 0);
 
-    this->populationSize = new wxSpinCtrlDouble(gridPanel, wxID_ANY);
+    this->populationSize = new wxSpinCtrlDouble(gridPanel, POPULATION_SIZE_SPIN_BUTTON_ID);
     this->populationSize->SetIncrement(1);
     this->populationSize->SetDigits(0);
     this->populationSize->SetRange(0, 10000);
     this->populationSize->SetValue(50);
     gridPanelSizer->Add(this->populationSize);
+
+    // Random Fraction
+    auto randomFractionText = new wxStaticText(gridPanel, wxID_ANY, wxT("Random Fraction (%): "));
+    gridPanelSizer->Add(randomFractionText, 0, wxLEFT | wxEXPAND, 0);
+
+    this->randomFraction = new wxSpinCtrlDouble(gridPanel, RANDOM_FRACTION_SPIN_BUTTON_ID);
+    this->randomFraction->SetIncrement(1);
+    this->randomFraction->SetDigits(0);
+    this->randomFraction->SetRange(0, 100);
+    this->randomFraction->SetValue(15);
+    gridPanelSizer->Add(this->randomFraction);
 
     // Summary row
     auto summaryRow = new wxPanel(masterPanel);
@@ -182,7 +219,7 @@ ControlPanelFrame::ControlPanelFrame()
     auto summaryRowSizer = new wxBoxSizer(wxHORIZONTAL);
     summaryRow->SetSizer(summaryRowSizer);
 
-    this->summary = new wxStaticText(summaryRow, wxID_ANY, wxT("No selection."));
+    this->summary = new wxStaticText(summaryRow, wxID_ANY, wxT(""));
     summaryRowSizer->Add(this->summary, 0, wxLEFT, 10);
 
     // Actions row
@@ -205,6 +242,7 @@ ControlPanelFrame::ControlPanelFrame()
     this->openPortal = new wxButton(actionsRow, OPEN_PORTAL_BUTTON_ID, wxT("Open Portal"));
     actionsRowSizer->Add(this->openPortal, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
+    this->updateSummary();
     frameSizer->Fit(this);
 
     // Events
@@ -214,6 +252,10 @@ ControlPanelFrame::ControlPanelFrame()
     Bind(wxEVT_BUTTON, &ControlPanelFrame::StartEvolution, this, START_BUTTON_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::ClearSelection, this, CLEAR_SELECTION_BUTTON_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::OpenPortal, this, OPEN_PORTAL_BUTTON_ID);
+    Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdatePopulationSize, this, POPULATION_SIZE_SPIN_BUTTON_ID);
+    Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdateEliteFraction, this, ELITE_FRACTION_SPIN_BUTTON_ID);
+    Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdateFertileFraction, this, FERTILE_FRACTION_SPIN_BUTTON_ID);
+    Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdateRandomFraction, this, RANDOM_FRACTION_SPIN_BUTTON_ID);
 }
 
 void ControlPanelFrame::OnExit(wxCommandEvent &event)
@@ -302,24 +344,44 @@ void ControlPanelFrame::StartEvolution(wxCommandEvent &event)
     Core::Session::speed = this->speed->GetValue();
     Core::Session::populationSize = this->populationSize->GetValue();
     Core::Session::mutationRate = this->mutationRate->GetValue() / 100;
+    Core::Session::eliteFraction = this->eliteFraction->GetValue() / 100;
+    Core::Session::fertileFraction = this->fertileFraction->GetValue() / 100;
+    Core::Session::randomFraction = this->randomFraction->GetValue() / 100;
 
-    this->Destroy();
-    this->Close(true);
+    int eliteCount = floor(this->populationSize->GetValue() * (this->eliteFraction->GetValue() / 100));
+    int randomCount = floor(this->populationSize->GetValue() * (this->randomFraction->GetValue() / 100));
+    int offspringCount = this->populationSize->GetValue() - randomCount - eliteCount;
 
-    if (extensionName == "Jumper")
+    if (this->eliteFraction->GetValue() + this->randomFraction->GetValue() > 100)
     {
-        Jumper::AppDelegate app;
-        cocos2d::Application::getInstance()->run();
+        wxMessageBox("Elite Fraction + Random Fraction exceeds 100%.", "Invalid Fractions", wxICON_ERROR | wxOK | wxCENTRE, this);
+        return;
     }
-    else if (extensionName == "Wheels")
+    else
     {
-        Wheels::AppDelegate app;
-        cocos2d::Application::getInstance()->run();
-    }
-    else if (extensionName == "Flappers")
-    {
-        Flappers::AppDelegate app;
-        cocos2d::Application::getInstance()->run();
+        if (this->fertileFraction->GetValue() > 0 && offspringCount <= 0)
+        {
+            wxMessageBox("You've set a non-zero fertile fraction, yet there is no room for reproduction since the elite and random members comprise the entirety of the population.", "No Room for Reproduction", wxICON_EXCLAMATION | wxOK | wxCENTRE, this);
+        }
+
+        this->Destroy();
+        this->Close(true);
+
+        if (extensionName == "Jumper")
+        {
+            Jumper::AppDelegate app;
+            cocos2d::Application::getInstance()->run();
+        }
+        else if (extensionName == "Wheels")
+        {
+            Wheels::AppDelegate app;
+            cocos2d::Application::getInstance()->run();
+        }
+        else if (extensionName == "Flappers")
+        {
+            Flappers::AppDelegate app;
+            cocos2d::Application::getInstance()->run();
+        }
     }
 }
 
@@ -346,24 +408,55 @@ void ControlPanelFrame::OpenPortal(wxCommandEvent &event)
     wxLaunchDefaultBrowser("http://127.0.0.1:8000");
 }
 
+void ControlPanelFrame::UpdatePopulationSize(wxCommandEvent &event)
+{
+    this->updateSummary();
+}
+
+void ControlPanelFrame::UpdateEliteFraction(wxCommandEvent &event)
+{
+    this->updateSummary();
+}
+
+void ControlPanelFrame::UpdateFertileFraction(wxCommandEvent &event)
+{
+    this->updateSummary();
+}
+
+void ControlPanelFrame::UpdateRandomFraction(wxCommandEvent &event)
+{
+    this->updateSummary();
+}
+
 void ControlPanelFrame::updateSummary()
 {
     std::string text;
 
+    int eliteCount = floor(this->populationSize->GetValue() * (this->eliteFraction->GetValue() / 100));
+    int randomCount = floor(this->populationSize->GetValue() * (this->randomFraction->GetValue() / 100));
+    int offspringCount = this->populationSize->GetValue() - randomCount - eliteCount;
+
+    std::ostringstream out;
+    out << "Elite Members: " << eliteCount << ", Offsprings: " << offspringCount << ", Random Members: " << randomCount << ".\n\n";
+    text = out.str();
+
+    if (offspringCount == 0 && this->fertileFraction->GetValue() > 0)
+        text += "Warning: No offspring will be produced across the generations despite the fertile fraction being non-zero.\n\n";
+
     if (extensionsListBox->GetSelection() == wxNOT_FOUND)
     {
-        text = "No Selection.";
+        text += "No Selection.";
     }
     else
     {
         auto extensionName = extensionsListBox->GetStringSelection().ToStdString();
 
         if (sessionsListBox->GetSelection() == wxNOT_FOUND)
-            text = "Evolution of " + extensionName + " will begin with a new session.";
+            text += "Evolution of " + extensionName + " will begin with a new session.";
         else if (generationsListBox->GetSelection() == wxNOT_FOUND)
-            text = "Evolution of " + extensionName + " will continue from " + sessionsListBox->GetStringSelection() + " session.\nWarning: This will remove all existing generations in the session.";
+            text += "Evolution of " + extensionName + " will continue from " + sessionsListBox->GetStringSelection() + " session.\n\nWarning: This will remove all existing generations in the session.";
         else
-            text = "Evolution of " + extensionName + " will continue from " + generationsListBox->GetStringSelection() + " generation of  " + sessionsListBox->GetStringSelection() + " session.";
+            text += "Evolution of " + extensionName + " will continue from " + generationsListBox->GetStringSelection() + " generation of  " + sessionsListBox->GetStringSelection() + " session.";
     }
 
     this->summary->SetLabel(wxString(text));

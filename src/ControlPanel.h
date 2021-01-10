@@ -30,7 +30,7 @@ private:
     wxButton *clearSelectionButton;
     wxButton *openPortal;
     wxStaticText *summary;
-    wxSpinCtrlDouble *mutationRate, *speed, *populationSize;
+    wxSpinCtrlDouble *mutationRate, *speed, *populationSize, *eliteFraction, *fertileFraction, *randomFraction;
 
     // lists
     std::vector<wxString> extensionNames;
@@ -44,6 +44,10 @@ private:
     void StartEvolution(wxCommandEvent &event);
     void ClearSelection(wxCommandEvent &event);
     void OpenPortal(wxCommandEvent &event);
+    void UpdatePopulationSize(wxCommandEvent &event);
+    void UpdateEliteFraction(wxCommandEvent &event);
+    void UpdateFertileFraction(wxCommandEvent &event);
+    void UpdateRandomFraction(wxCommandEvent &event);
     void updateSummary();
 };
 
