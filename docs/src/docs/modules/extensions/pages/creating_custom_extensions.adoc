@@ -50,7 +50,7 @@ Please follow cocos2d-x documentation for defining the classes.
 
 To add your extension to the web portal, you need to add an entry to the `extensions` table in the `/portal/database/database.db` database. It's an SQLite database and can be modified with any standard SQLite database reader. It's conventional to use snake case in the entry of your extension's name.
 
-It's advised to create an entry for your extension through seeding. Please following Laravel's documentation for seeders.
+It's advised to create an entry for your extension through seeding.Please follow Laravel's documentation for seeders.
 
 == Step 4: Making the Extension Runnable Through the Control Panel
 
