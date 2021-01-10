@@ -64,7 +64,7 @@ bool MainScene::init()
 
     // Evolution session
     Session::setPopulationSize(POPULATION_SIZE);
-    Session::evolutionSession = new Core::EvolutionSession<Car>;
+    Session::evolutionSession = new Core::EvolutionSession<Car>(Core::Session::mutationRate, Core::Session::eliteFraction, Core::Session::fertileFraction, Core::Session::randomFraction);
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];

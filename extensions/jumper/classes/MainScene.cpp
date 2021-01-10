@@ -55,7 +55,7 @@ bool MainScene::init()
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("jumpers/sprite-sheet.plist");
 
     // Evolution session
-    this->evolutionSession = new Core::EvolutionSession<JumperGroup>;
+    this->evolutionSession = new Core::EvolutionSession<JumperGroup>(Core::Session::mutationRate, Core::Session::eliteFraction, Core::Session::fertileFraction, Core::Session::randomFraction);
 
     // Database
     std::vector<double> nnParameters[POPULATION_SIZE];
