@@ -1,0 +1,14 @@
+= Database
+
+`Database` module provides a friendly interface for performing common database operations such as:
+
+* Opening/Closing Database
+* Clearing Sessions
+* Fetching Extension and Session IDs
+* Fetching Extension Names
+* Adding Sessions and Generations
+* Fetching Generation State
+
+> Sessions and Generations are both mentioned in the context of Evolution.
+
+It provides a higher-level API and encapsulates the lower-level database operations through the SQLite 3 C API.

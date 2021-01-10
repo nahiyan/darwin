@@ -4,7 +4,7 @@
   <head>
         <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Untitled :: Darwin Docs</title>
+    <title>Session :: Darwin Docs</title>
     <meta name="generator" content="Antora 2.3.4">
     <link rel="stylesheet" href="../../../_/css/site.css">
 <link rel="stylesheet" href="../../../_/css/search.css">
@@ -186,7 +186,53 @@
 </div>
   <div class="content">
 <article class="doc">
-
+<h1 class="page">Session</h1>
+<div class="paragraph">
+<p><code>Session</code> module holds data associated with a Darwin session, common to most, if not all, extensions.</p>
+</div>
+<div class="paragraph">
+<p>All of its properties are static, meaning that these would be in the memory throughout the execution of a Darwin session. This is quite useful for storing session-specific data even before start of evolution.</p>
+</div>
+<div class="paragraph">
+<p>Here are some of the data it holds:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Extension ID</p>
+</li>
+<li>
+<p>Session ID</p>
+</li>
+<li>
+<p>Generation ID</p>
+</li>
+<li>
+<p>Generation Index</p>
+</li>
+<li>
+<p>Population Size</p>
+</li>
+<li>
+<p>Mutation Rate</p>
+</li>
+<li>
+<p>Elite Class Fraction</p>
+</li>
+<li>
+<p>Fertile Class Fraction</p>
+</li>
+<li>
+<p>Random Class Fraction</p>
+</li>
+<li>
+<p>cocos2d-x Session Speed</p>
+</li>
+<li>
+<p>HUD Selection (speed, mutation rate, etc)</p>
+</li>
+</ul>
+</div>
 </article>
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
   <div class="toc-menu"></div>

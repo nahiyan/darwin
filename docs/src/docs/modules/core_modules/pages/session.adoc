@@ -1,0 +1,19 @@
+= Session
+
+`Session` module holds data associated with a Darwin session, common to most, if not all, extensions.
+
+All of its properties are static, meaning that these would be in the memory throughout the execution of a Darwin session. This is quite useful for storing session-specific data even before start of evolution.
+
+Here are some of the data it holds:
+
+* Extension ID
+* Session ID
+* Generation ID
+* Generation Index
+* Population Size
+* Mutation Rate
+* Elite Class Fraction
+* Fertile Class Fraction
+* Random Class Fraction
+* cocos2d-x Session Speed
+* HUD Selection (speed, mutation rate, etc)

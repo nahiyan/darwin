@@ -1,0 +1,3 @@
+= Debug
+
+`Debug` module contains methods handy for debugging, such as printing out the contents of a 2D Vector.

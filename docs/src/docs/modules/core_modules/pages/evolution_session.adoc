@@ -1,0 +1,17 @@
+# Evolution Session
+
+Whenever evolution specific to any extension initiates, the entirety of the runtime is an evolution session. `EvolutionSession` modules handles everything associated with an evolution session, such as:
+
+* Population Ranking
+* Crossover
+* Mutation
+* Persistent Storage of Generation States
+
+It also stores attributes specific to an evolution session, notably:
+
+* Population Members
+* Mutation Rate
+* Elite Fraction
+* Fertile Fraction
+* Random Fraction
+* Generation Index
