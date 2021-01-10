@@ -456,7 +456,7 @@ void ControlPanelFrame::updateSummary()
         else if (generationsListBox->GetSelection() == wxNOT_FOUND)
             text += "Evolution of " + extensionName + " will continue from " + sessionsListBox->GetStringSelection() + " session.\n\nWarning: This will remove all existing generations in the session.";
         else
-            text += "Evolution of " + extensionName + " will continue from " + generationsListBox->GetStringSelection() + " generation of  " + sessionsListBox->GetStringSelection() + " session.";
+            text += "Evolution of " + extensionName + " will continue from " + generationsListBox->GetStringSelection() + " generation of " + sessionsListBox->GetStringSelection() + " session.";
     }
 
     this->summary->SetLabel(wxString(text));
