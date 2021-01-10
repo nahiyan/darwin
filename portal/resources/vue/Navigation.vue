@@ -48,16 +48,9 @@ export default {
   },
   props: ["extension", "session", "session_scores", "generation"],
   mounted() {
-    console.log(this.extension);
     if (this.extension == undefined) this.extensionActive = true;
     else if (this.session == undefined) this.sessionActive = true;
     else if (this.generation === undefined) this.generationActive = true;
-
-    console.log(
-      this.extensionActive,
-      this.sessionActive,
-      this.generationActive
-    );
   },
 };
 </script>

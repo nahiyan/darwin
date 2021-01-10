@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Extension;
 use App\Models\Generation;
 use App\Models\Session;
-use Core\GenerationState as CoreGenerationState;
 use Google\FlatBuffers\ByteBuffer;
+use Google\FlatBuffers\FlatbufferBuilder;
+use Google\FlatBuffers\VectorOffset;
 use Illuminate\Support\Facades\Log;
 
 /*
@@ -54,7 +55,7 @@ Route::get('/generation_scores/{generationId}', function ($generationId) {
         $byteBuffer->put($i, $stateBinary[$i]);
     }
 
-    $generationState = CoreGenerationState::getRootAsGenerationState($byteBuffer);
+    $generationState = Core\GenerationState::getRootAsGenerationState($byteBuffer);
 
     for ($i = 0; $i < $generationState->getPopulationLength(); $i++) {
         $scores[] = $generationState->getPopulation($i)->getScore();
@@ -82,7 +83,7 @@ Route::get('/session_scores/{sessionId}', function ($sessionId) {
             $byteBuffer->put($j, $stateBinary[$j]);
         }
 
-        $generationState = CoreGenerationState::getRootAsGenerationState($byteBuffer);
+        $generationState = Core\GenerationState::getRootAsGenerationState($byteBuffer);
 
         for ($k = 0; $k < $generationState->getPopulationLength(); $k++) {
             $generation_scores_average += $generationState->getPopulation($k)->getScore();
@@ -96,4 +97,19 @@ Route::get('/session_scores/{sessionId}', function ($sessionId) {
     $session->extension = $session->extension;
 
     return ['scores' => $session_scores, 'session' => $session];
+});
+
+Route::get('/generation/{id}/export', function ($id) {
+    return response()->streamDownload(function () use ($id) {
+        $generation = Generation::find($id);
+
+        echo $generation->state;
+    }, "generation-$id.export");
+});
+
+Route::post('/generation/{id}/import', function ($id, Request $request) {
+    $generation = new Generation;
+    $generation->state = file_get_contents($request->generation_state->path());
+    $generation->session_id = $id;
+    $generation->save();
 });
