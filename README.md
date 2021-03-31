@@ -4,7 +4,7 @@ Darwin is an open-source, extensible, and modular evolution simulator. It's prim
 
 # Contributors
 - [Nahiyan Alamgir](https://github.com/nahiyan): Development and planning
-- [Momena Akhter Shukhi](https://github.com/MomenaAkhter): Testing and planning
+- [Momena Akhter Shukhi](https://github.com/MomenaAkhter): Testing, planning, and documentation.
 
 # Table of Contents
    * [Darwin](#darwin)
