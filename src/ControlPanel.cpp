@@ -7,6 +7,7 @@
 
 #include <wx/listbase.h>
 #include <wx/listctrl.h>
+#include <wx/listbox.h>
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
 #include <string>
@@ -107,9 +108,11 @@ ControlPanelFrame::ControlPanelFrame()
 
     auto extensionNames_ = Core::Database::getExtensionNames();
     for (auto extensionName : extensionNames_)
+    {
         this->extensionNames.push_back(extensionName);
+        this->extensionsListBox->Append(extensionName);
+    }
 
-    this->extensionsListBox->Append(this->extensionNames);
     this->extensionsListBox->SetMinSize(wxSize(LIST_BOX_MIN_WIDTH, LIST_BOX_MIN_HEIGHT));
     extensionsStaticBoxSizer->Add(this->extensionsListBox, 0, wxEXPAND | wxALL, 5);
 
@@ -238,10 +241,6 @@ ControlPanelFrame::ControlPanelFrame()
     this->clearSelectionButton->Enable(false);
     actionsRowSizer->Add(this->clearSelectionButton, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
-    // Open Portal
-    this->openPortal = new wxButton(actionsRow, OPEN_PORTAL_BUTTON_ID, wxT("Open Portal"));
-    actionsRowSizer->Add(this->openPortal, 0, wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
-
     this->updateSummary();
     frameSizer->Fit(this);
 
@@ -251,7 +250,6 @@ ControlPanelFrame::ControlPanelFrame()
     Bind(wxEVT_LISTBOX, &ControlPanelFrame::SelectGeneration, this, GENERATIONS_LIST_BOX_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::StartEvolution, this, START_BUTTON_ID);
     Bind(wxEVT_BUTTON, &ControlPanelFrame::ClearSelection, this, CLEAR_SELECTION_BUTTON_ID);
-    Bind(wxEVT_BUTTON, &ControlPanelFrame::OpenPortal, this, OPEN_PORTAL_BUTTON_ID);
     Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdatePopulationSize, this, POPULATION_SIZE_SPIN_BUTTON_ID);
     Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdateEliteFraction, this, ELITE_FRACTION_SPIN_BUTTON_ID);
     Bind(wxEVT_SPINCTRLDOUBLE, &ControlPanelFrame::UpdateFertileFraction, this, FERTILE_FRACTION_SPIN_BUTTON_ID);
@@ -275,14 +273,17 @@ void ControlPanelFrame::SelectExtension(wxCommandEvent &event)
 
     std::vector<wxString> items;
     for (int i = ids.size(); i > 0; i--)
-        items.push_back(wxString(ordinal(i)));
+    {
+        auto item = wxString(ordinal(i));
+        items.push_back(item);
+        this->sessionsListBox->Append(item);
+    }
 
     if (items.size() > 0)
         this->sessionsListBox->Enable(true);
     else
         this->sessionsListBox->Enable(false);
 
-    this->sessionsListBox->Append(items);
     this->startButton->Enable(true);
 
     this->clearSelectionButton->Enable(true);
@@ -301,14 +302,16 @@ void ControlPanelFrame::SelectSession(wxCommandEvent &event)
 
     std::vector<wxString> items;
     for (int i = ids.size(); i > 0; i--)
-        items.push_back(wxString(ordinal(i)));
+    {
+        auto item = wxString(ordinal(i));
+        items.push_back(item);
+        this->generationsListBox->Append(item);
+    }
 
     if (items.size() > 0)
         this->generationsListBox->Enable(true);
     else
         this->generationsListBox->Enable(false);
-
-    this->generationsListBox->Append(items);
 
     this->updateSummary();
 }
@@ -400,12 +403,6 @@ void ControlPanelFrame::ClearSelection(wxCommandEvent &event)
     this->startButton->Enable(false);
 
     this->updateSummary();
-}
-
-void ControlPanelFrame::OpenPortal(wxCommandEvent &event)
-{
-    system(("cd " + dbPath.substr(0, dbPath.find("portal") + 6) + "; php artisan serve &").c_str());
-    wxLaunchDefaultBrowser("http://127.0.0.1:8000");
 }
 
 void ControlPanelFrame::UpdatePopulationSize(wxCommandEvent &event)

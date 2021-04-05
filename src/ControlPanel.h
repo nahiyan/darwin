@@ -7,6 +7,8 @@
 #endif
 
 #include <wx/spinctrl.h>
+#include <wx/string.h>
+#include <vector>
 
 class ControlPanel : public wxApp
 {
@@ -28,7 +30,6 @@ private:
     wxListBox *generationsListBox;
     wxButton *startButton;
     wxButton *clearSelectionButton;
-    wxButton *openPortal;
     wxStaticText *summary;
     wxSpinCtrlDouble *mutationRate, *speed, *populationSize, *eliteFraction, *fertileFraction, *randomFraction;
 
@@ -43,7 +44,6 @@ private:
     void SelectGeneration(wxCommandEvent &event);
     void StartEvolution(wxCommandEvent &event);
     void ClearSelection(wxCommandEvent &event);
-    void OpenPortal(wxCommandEvent &event);
     void UpdatePopulationSize(wxCommandEvent &event);
     void UpdateEliteFraction(wxCommandEvent &event);
     void UpdateFertileFraction(wxCommandEvent &event);
