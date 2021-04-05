@@ -1,8 +1,0 @@
-= Evolution Common
-
-`EvolutionCommon` module holds algorithmic methods shared by most extensions, especially ones which have chromosomes comprising data of the C++ *double* data type.
-
-It features the following algorithms:
-
-* Crossover & Mutation
-* Randomization of Chromosomes

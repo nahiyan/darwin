@@ -1,7 +1,0 @@
-= Overview
-
-Darwin comprises extensions, each responsible for its own kind of evolution simulation. Together with the core components, they function in their unique ways without adding redundancy to the system. They also make it much easier to manage the common modules from one place.
-
-Darwin utilizes genetic algorithms for simulating evolution. The extensions, if needed, use OpenNN for neural networks. A powerful game engine called cocos2d-x is used for visualization and integration with the physics engine, Chipmunk. SQLite3 is used as a database engine, while FlatBuffers is used for serialization/deserialization of data to be stored as BLOB (Binary Large OBject) in the local database.
-
-Overall, it’s a solid foundation on top of which the whole evolution ecosystem runs. It is mostly written in C++ and C.

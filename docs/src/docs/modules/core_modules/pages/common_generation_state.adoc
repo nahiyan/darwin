@@ -1,3 +1,0 @@
-= Common Generation State
-
-*Common Generation State* module represents a _FlatBuffers Table_, generated from a FlatBuffers schema, associated with the serialization/deserialization of the states of generations.

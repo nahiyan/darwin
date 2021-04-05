@@ -1,3 +1,0 @@
-= Introduction
-
-Core modules are part of Darwin that are used by the extensions to reduce redundancy. They form the evolutionary framework of Darwin, reducing the burden on extension developers regarding genetic algorithms, database, population management, common listeners, sessions, heads-up display, etc.

@@ -1,5 +1,0 @@
-= Evolution Session
-
-Darwin manages evolution through an entity called *EvolutionSession*. It represents a session of evolution, comprising a population that is undergoing evolution. It stores information associated with each generation of the population and has its own configuration parameters such as classification fractions, crossover type, mutation rate, etc. 
-
-The session also holds information about each generation, such as the scores and states of each member of the population. Besides controlling every sequential step in the evolution session, it also manages the storage of the entire generation’s state in a persistent storage system.
