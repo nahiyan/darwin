@@ -2,7 +2,9 @@
 
 Darwin is an open-source, extensible, and modular evolution simulator. It's primarily designed for evolution of entities based on neural networks.
 
-
+# Contributors
+- [Nahiyan Alamgir](https://github.com/nahiyan): Development and planning
+- [Momena Akhter Shukhi](https://github.com/MomenaAkhter): Testing, planning, and documentation.
 
 # Table of Contents
    * [Darwin](#darwin)
@@ -134,7 +136,3 @@ FlatBuffers schema files are included in `/extensions/<extension_name>/flatbuffe
 Darwin includes a web portal located in `/portal` which can be used to easily manage the extensions, sessions, generations, etc right from the browser. The portal also visualizes statistical information related to the population members of each generation.
 
 You can start the portal by running `php artisan serve` and visiting the address, printed in the console, in your browser.
-
-# Contributors
-
-- [Nahiyan Alamgir](https://github.com/nahiyan/).
