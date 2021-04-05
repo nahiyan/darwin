@@ -1,5 +1,7 @@
-*.sh
-*.code-workspace
+/*.sh
+/cocos2d/**/*.sh
+/*.code-workspace
 *.vscode
 /*-build
 /resources/db_path.txt
+/config.toml
