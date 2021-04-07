@@ -6,3 +6,6 @@
 /resources/db_path.txt
 /config.toml
 .github
+/backup
+/extensions/dawkins
+/src/core
