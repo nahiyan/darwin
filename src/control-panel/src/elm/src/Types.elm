@@ -1,8 +1,15 @@
 module Types exposing (..)
 
 
+type InitialModels
+    = Saved
+    | Random
+
+
 type alias Extension =
-    { name : String }
+    { name : String
+    , initialModels : InitialModels
+    }
 
 
 type alias Model =
@@ -10,4 +17,5 @@ type alias Model =
 
 
 type Msg
-    = StartExtension String
+    = StartExtension Extension
+    | SetInitialsModels String InitialModels

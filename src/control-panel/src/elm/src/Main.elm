@@ -4,14 +4,14 @@ import Browser
 import Extension
 import Html exposing (Html, div, h1, text)
 import Html.Attributes exposing (class, id)
-import Types exposing (Model, Msg(..))
+import Types exposing (InitialModels(..), Model, Msg(..))
 
 
 
 -- PORTS
 
 
-port startExtension : String -> Cmd msg
+port startExtension : ( String, String ) -> Cmd msg
 
 
 init : List String -> ( Model, Cmd msg )
@@ -33,7 +33,34 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StartExtension extension ->
-            ( model, startExtension extension )
+            ( model
+            , startExtension
+                ( extension.name
+                , if extension.initialModels == Random then
+                    "random"
+
+                  else
+                    "saved"
+                )
+            )
+
+        SetInitialsModels extensionName initialModels ->
+            let
+                newModel =
+                    { model
+                        | extensions =
+                            model.extensions
+                                |> List.map
+                                    (\extension ->
+                                        if extension.name == extensionName then
+                                            { extension | initialModels = initialModels }
+
+                                        else
+                                            extension
+                                    )
+                    }
+            in
+            ( newModel, Cmd.none )
 
 
 view : Model -> Html Msg
