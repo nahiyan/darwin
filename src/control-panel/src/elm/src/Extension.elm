@@ -12,18 +12,18 @@ toHtml_ extension =
         [ class "card mt-3" ]
         [ div
             [ class "card-body" ]
-            [ div
-                [ class "row justify-content-between" ]
+            [ div [ class "row" ]
                 [ div
-                    [ class "col-md-12" ]
+                    [ class "col-sm-8" ]
                     [ h5
                         [ class "card-title" ]
                         [ text extension.name ]
                     ]
-                , div [ class "col-md-12" ]
+                , div
+                    [ class "col-sm-4 d-flex justify-content-sm-end" ]
                     [ button
-                        [ type_ "button", class "btn btn-outline-success btn-sm", onClick (StartExtension extension.name) ]
-                        [ i [ class "fas fa-play" ] [], text " Play" ]
+                        [ type_ "button", class "btn btn-outline-success btn-sm align-self-start", onClick (StartExtension extension.name) ]
+                        [ i [ class "fas fa-play" ] [], text " Start" ]
                     ]
                 ]
             ]

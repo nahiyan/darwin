@@ -7,16 +7,29 @@ const path = require('path')
 const toml = require('toml')
 const fs = require('fs')
 
+function prepareConfig (extension, config) {
+  const preparedConfig = {}
+
+  if (config[extension] === undefined) { config[extension] = {} }
+
+  Object.keys(config.common).concat(Object.keys(config[extension])).forEach(function (key) {
+    preparedConfig[key] = config[extension][key] === undefined ? config.common[key] : config[extension][key]
+  })
+
+  return preparedConfig
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   try {
-    const configFile = fs.readFileSync(path.resolve('../../config.toml'))
-    const extensions = toml.parse(configFile).extensions
+    const config = toml.parse(fs.readFileSync(path.resolve('../../config.toml')))
+    const extensions = config.extensions
 
     const app = Elm.Main.init({ node: document.getElementById('main'), flags: extensions })
 
     app.ports.startExtension.subscribe(function (extension) {
-      console.log(extension)
-      exec('../../extensions/bin/neurogen/Contents/MacOS/NeuroGen', function (error, stdout, stderr) {
+      const preparedConfig = JSON.stringify(prepareConfig(extension, config))
+
+      exec(`../../extensions/bin/${extension} "${preparedConfig}"`, function (error, stdout, stderr) {
         if (error) {
           console.log(`error: ${error.message}`)
           return
