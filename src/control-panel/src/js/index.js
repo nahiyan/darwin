@@ -1,6 +1,6 @@
 import '../sass/base.sass'
 import { Elm } from '../elm/src/Main.elm'
-import '@fortawesome/fontawesome-free/js/all.js'
+import '@fortawesome/fontawesome-free/js/all'
 import { exec } from 'child_process'
 
 const path = require('path')

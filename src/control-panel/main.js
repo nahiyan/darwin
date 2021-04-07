@@ -1,6 +1,5 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron')
-const path = require('path')
 
 try {
   require('electron-reloader')(module)
@@ -12,7 +11,6 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false
     }
