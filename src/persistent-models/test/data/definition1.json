@@ -1,0 +1,16 @@
+{
+    "models": [
+        {
+            "definition": "one",
+            "fitness": 300.0
+        },
+        {
+            "definition": "two",
+            "fitness": 100.0
+        },
+        {
+            "definition": "three",
+            "fitness": 1000.0
+        }
+    ]
+}

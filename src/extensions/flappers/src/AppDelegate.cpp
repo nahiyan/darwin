@@ -1,0 +1,139 @@
+#include "AppDelegate.h"
+#include "MainScene.h"
+#include "rapidjson/document.h"
+#include <iostream>
+#include <core/Session.h>
+
+// #define USE_AUDIO_ENGINE 1
+#define TITLE "Flappers"
+
+#if USE_AUDIO_ENGINE
+#include "audio/include/AudioEngine.h"
+#endif
+
+USING_NS_CC;
+
+static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
+static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
+
+using namespace Flappers;
+using namespace std;
+using namespace rapidjson;
+
+AppDelegate::AppDelegate()
+{
+}
+AppDelegate::AppDelegate(int argc, const char **argv)
+{
+    // Handle configuration
+    if (argc == 2)
+    {
+        Document document;
+        document.Parse(argv[1]);
+
+        Core::Session::speed = document.HasMember("speed") ? document["speed"].GetFloat() : 1;
+        Core::Session::mutationRate = document.HasMember("mutation_rate") ? document["mutation_rate"].GetFloat() : 0.01;
+        Core::Session::eliteFraction = document.HasMember("elite_fraction") ? document["elite_fraction"].GetFloat() : 0.1;
+        Core::Session::fertileFraction = document.HasMember("fertile_fraction") ? document["fertile_fraction"].GetFloat() : .7;
+        Core::Session::randomFraction = document.HasMember("random_fraction") ? document["random_fraction"].GetFloat() : 0.2;
+        Core::Session::populationSize = document.HasMember("population_size") ? document["population_size"].GetFloat() : 10;
+    }
+}
+
+AppDelegate::~AppDelegate()
+{
+#if USE_AUDIO_ENGINE
+    AudioEngine::end();
+#endif
+}
+
+// if you want a different context, modify the value of glContextAttrs
+// it will affect all platforms
+void AppDelegate::initGLContextAttrs()
+{
+    // set OpenGL context attributes: red,green,blue,alpha,depth,stencil,multisamplesCount
+    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
+
+    GLView::setGLContextAttrs(glContextAttrs);
+}
+
+// if you want to use the package manager to install more packages,
+// don't modify or remove this function
+static int register_all_packages()
+{
+    return 0; //flag for packages manager
+}
+
+bool AppDelegate::applicationDidFinishLaunching()
+{
+    // initialize director
+    auto director = Director::getInstance();
+    auto glview = director->getOpenGLView();
+    if (!glview)
+    {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+        glview = GLViewImpl::createWithRect(TITLE, cocos2d::Rect(0, 0, mediumResolutionSize.width, mediumResolutionSize.height));
+#else
+        glview = GLViewImpl::create(TITLE);
+#endif
+        director->setOpenGLView(glview);
+    }
+
+    // display render statistics
+    director->setDisplayStats(false);
+
+    // set FPS. the default value is 1.0/60 if you don't call this
+    director->setAnimationInterval(1.0f / 60);
+
+    // Set the design resolution
+    glview->setDesignResolutionSize(mediumResolutionSize.width, mediumResolutionSize.height, ResolutionPolicy::NO_BORDER);
+    auto frameSize = glview->getFrameSize();
+    // if the frame's height is larger than the height of medium size.
+    if (frameSize.height > mediumResolutionSize.height)
+    {
+        director->setContentScaleFactor(MIN(largeResolutionSize.height / mediumResolutionSize.height, largeResolutionSize.width / mediumResolutionSize.width));
+    }
+    // if the frame's height is larger than the height of small size.
+    else if (frameSize.height > smallResolutionSize.height)
+    {
+        director->setContentScaleFactor(MIN(mediumResolutionSize.height / mediumResolutionSize.height, mediumResolutionSize.width / mediumResolutionSize.width));
+    }
+    // if the frame's height is smaller than the height of medium size.
+    else
+    {
+        director->setContentScaleFactor(MIN(smallResolutionSize.height / mediumResolutionSize.height, smallResolutionSize.width / mediumResolutionSize.width));
+    }
+
+    register_all_packages();
+
+    // create a scene. it's an autorelease object
+    auto scene = MainScene::createScene();
+    scene->scheduleUpdate();
+
+    // run
+    director->runWithScene(scene);
+
+    return true;
+}
+
+// This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
+void AppDelegate::applicationDidEnterBackground()
+{
+    Director::getInstance()->stopAnimation();
+
+#if USE_AUDIO_ENGINE
+    AudioEngine::pauseAll();
+#endif
+}
+
+// this function will be called when the app is active again
+void AppDelegate::applicationWillEnterForeground()
+{
+    Director::getInstance()->startAnimation();
+
+#if USE_AUDIO_ENGINE
+    AudioEngine::resumeAll();
+#endif
+}
