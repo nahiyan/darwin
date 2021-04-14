@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "gtest/gtest.h"
-#include "main.h"
+#include "persistent-models.h"
 
 #define DEFINITION_1 "{\"models\":[{\"definition\":\"one\",\"fitness\":300},{\"definition\":\"two\",\"fitness\":100},{\"definition\":\"three\",\"fitness\":1000}]}"
 #define FILE_PATH_1 "test/data/definition1.json"

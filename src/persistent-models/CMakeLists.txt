@@ -20,5 +20,7 @@ else()
   add_library(${APP_NAME} SHARED ${SOURCES})
 endif()
 
-target_include_directories(${APP_NAME}
-                           PUBLIC include/persistent-models/persistent-models)
+target_include_directories(
+  ${APP_NAME}
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/persistent-models/persistent-models
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/persistent-models)
