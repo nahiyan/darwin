@@ -1,13 +1,13 @@
 #include "Flapper.h"
 #include <algorithm>
 #include <cmath>
-#include <core/Debug.h>
-#include <helpers/random.h>
-#include <helpers/time.h>
+#include "core/Debug.h"
+#include "helpers/random.h"
+#include "helpers/time.h"
 #include "MainScene.h"
 #include "Session.h"
 #include "Constants.h"
-#include <core/EvolutionCommon.h>
+#include "core/EvolutionCommon.h"
 
 using namespace Flappers;
 
@@ -33,7 +33,7 @@ Flapper::~Flapper()
 
 void Flapper::update(float delta)
 {
-    // Record distance travelled and recharge
+    // Record time survived
     this->score += delta;
 
     // Neural network inputs
@@ -82,7 +82,7 @@ void Flapper::kill()
     if (this->dead == false)
     {
         this->dead = true;
-        MainScene::getInstance()->removeChild(this->node);
+        MainScene::getInstance()->removeChild(this->node, true);
     }
 }
 

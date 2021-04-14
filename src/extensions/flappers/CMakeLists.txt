@@ -22,18 +22,16 @@ if(NOT DEFINED BUILD_ENGINE_DONE)
   add_subdirectory(${COCOS2DX_ROOT_PATH}/cocos ${ENGINE_BINARY_PATH}/cocos/core)
 endif()
 
-# record sources, headers, resources...
+# record sources, headers, and resources
 file(GLOB_RECURSE GAME_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-set(GAME_HEADER)
+file(GLOB_RECURSE GAME_HEADER
+     "${CMAKE_CURRENT_SOURCE_DIR}/include/flappers/flappers/*.h")
 
 set(GAME_RES_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 if(APPLE OR WINDOWS)
   cocos_mark_multi_resources(common_res_files RES_TO "resources" FOLDERS
                              ${GAME_RES_FOLDER})
 endif()
-
-# add cross-platforms source files and header files
-file(GLOB_RECURSE GAME_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 if(ANDROID)
   # change APP_NAME to the share library name for Android, it's value depend on
@@ -89,7 +87,7 @@ if(MACOSX)
 endif()
 
 # Link libraries
-target_link_libraries(${APP_NAME} cocos2d opennn core)
+target_link_libraries(${APP_NAME} cocos2d opennn core pm)
 
 # mark app resources
 setup_cocos_app_config(${APP_NAME})
@@ -126,5 +124,8 @@ endif()
 target_include_directories(
   ${APP_NAME}
   PRIVATE ${DARWIN_ROOT}/include
+  PRIVATE ${DARWIN_ROOT}/src/persistent-models/include/persistent-models
+  PRIVATE ${DARWIN_ROOT}/src/core/include/core
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers/flappers
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

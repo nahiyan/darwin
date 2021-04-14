@@ -7,20 +7,21 @@
 #include <helpers/time.h>
 #include "MainScene.h"
 #include "Listeners.h"
-#include <core/Database.h>
-#include <core/Session.h>
-#include <core/Debug.h>
-#include <core/HUD.h>
+#include "core/Session.h"
+#include "core/Debug.h"
+#include "core/HUD.h"
 #include "Session.h"
-#include <core/GenerationState_generated.h>
-#include <core/EvolutionCommon.h>
-#include <core/Listeners.h>
+#include "core/EvolutionCommon.h"
+#include "core/Listeners.h"
 #include "Pipe.h"
 #include "Base.h"
 #include "Roof.h"
+#include "persistent-models/persistent-models.h"
+#include "rapidjson/document.h"
 
 USING_NS_CC;
 using namespace Flappers;
+using namespace rapidjson;
 
 MainScene *MainScene::instance = nullptr;
 
@@ -70,10 +71,30 @@ bool MainScene::init()
     // Evolution session
     Session::evolutionSession = new Core::EvolutionSession<Flapper>(Core::Session::mutationRate, Core::Session::eliteFraction, Core::Session::fertileFraction, Core::Session::randomFraction);
 
-    // // Database
+    // Database
     std::vector<double> nnParameters[Core::Session::populationSize];
 
-    // TODO: Load models from the models file
+    // Load models from the models file
+    if (Session::modelsFilePath.size() > 0)
+    {
+        pm_load_file(Session::modelsFilePath.c_str());
+        int modelsCount = min(pm_count(), Core::Session::populationSize);
+
+        for (int i = 0; i < modelsCount; i++)
+        {
+            auto definition = pm_get_model(i).definition;
+
+            Document document;
+            document.Parse(definition);
+            if (document.HasMember("genome") && document["genome"].IsArray())
+            {
+                auto genome = document["genome"].GetArray();
+                auto genomeSize = genome.Size();
+                for (int j = 0; j < genomeSize; j++)
+                    nnParameters[i].push_back(genome[j].GetDouble());
+            }
+        }
+    }
 
     // Add flappers
     for (int i = 0; i < Core::Session::populationSize; i++)

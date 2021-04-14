@@ -7,7 +7,16 @@ const path = require('path')
 const toml = require('toml')
 const fs = require('fs')
 
-function prepareConfig (extensionName, config, generateRandomModels) {
+function getModelsFilePath (extensionName) {
+  return path.resolve('..', '..', 'models', extensionName + '.json')
+}
+
+function readConfigFile () {
+  return toml.parse(fs.readFileSync(path.resolve('../../config.toml')))
+}
+
+function prepareConfig (extensionName, generateRandomModels) {
+  const config = readConfigFile()
   const preparedConfig = {}
 
   if (config[extensionName] === undefined) { config[extensionName] = {} }
@@ -16,14 +25,16 @@ function prepareConfig (extensionName, config, generateRandomModels) {
     preparedConfig[key] = config[extensionName][key] === undefined ? config.common[key] : config[extensionName][key]
   })
 
-  preparedConfig.models_file_path = generateRandomModels === true ? path.resolve('..', '..', 'models', extensionName + '.json') : ''
+  preparedConfig.models_file_path = generateRandomModels === false ? getModelsFilePath(extensionName) : ''
+
+  console.log(JSON.stringify(preparedConfig))
 
   return preparedConfig
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   try {
-    const config = toml.parse(fs.readFileSync(path.resolve('../../config.toml')))
+    const config = readConfigFile()
     const extensions = config.extensions
 
     const app = Elm.Main.init({ node: document.getElementById('main'), flags: extensions })
@@ -31,8 +42,12 @@ window.addEventListener('DOMContentLoaded', () => {
     app.ports.startExtension.subscribe(function (info) {
       const extensionName = info[0]
       const generateRandomModels = info[1] === 'random'
+      const modelsFilePath = getModelsFilePath(extensionName)
 
-      const preparedConfig = JSON.stringify(prepareConfig(extensionName, config, generateRandomModels)).replace(/"+/g, '\\"')
+      // Create models file if it doesn't exist
+      if (!generateRandomModels && !fs.existsSync(modelsFilePath)) { fs.writeFileSync(modelsFilePath, JSON.stringify({ models: [] })) }
+
+      const preparedConfig = JSON.stringify(prepareConfig(extensionName, generateRandomModels)).replace(/"/g, '\\"')
 
       let binaryPath = path.resolve('..', '..', 'extensions', 'bin', extensionName)
       if (os.platform() === 'darwin') { binaryPath = path.join(binaryPath, 'Contents', 'MacOS', extensionName) }

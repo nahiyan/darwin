@@ -1,8 +1,9 @@
 #include "AppDelegate.h"
 #include "MainScene.h"
-#include "rapidjson/document.h"
 #include <iostream>
-#include <core/Session.h>
+#include "Session.h"
+#include "core/Session.h"
+#include "core/Config.h"
 
 // #define USE_AUDIO_ENGINE 1
 #define TITLE "Flappers"
@@ -19,26 +20,28 @@ static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 using namespace Flappers;
+using namespace Core;
 using namespace std;
 using namespace rapidjson;
 
 AppDelegate::AppDelegate()
 {
 }
+
 AppDelegate::AppDelegate(int argc, const char **argv)
 {
     // Handle configuration
     if (argc == 2)
     {
-        Document document;
-        document.Parse(argv[1]);
+        Config::parse(argv[1]);
 
-        Core::Session::speed = document.HasMember("speed") ? document["speed"].GetFloat() : 1;
-        Core::Session::mutationRate = document.HasMember("mutation_rate") ? document["mutation_rate"].GetFloat() : 0.01;
-        Core::Session::eliteFraction = document.HasMember("elite_fraction") ? document["elite_fraction"].GetFloat() : 0.1;
-        Core::Session::fertileFraction = document.HasMember("fertile_fraction") ? document["fertile_fraction"].GetFloat() : .7;
-        Core::Session::randomFraction = document.HasMember("random_fraction") ? document["random_fraction"].GetFloat() : 0.2;
-        Core::Session::populationSize = document.HasMember("population_size") ? document["population_size"].GetFloat() : 10;
+        Core::Session::speed = Config::getFloat("speed", 1);
+        Core::Session::mutationRate = Config::getFloat("mutation_rate", 0.01);
+        Core::Session::eliteFraction = Config::getFloat("elite_fraction", 0.1);
+        Core::Session::fertileFraction = Config::getFloat("fertile_fraction", 0.7);
+        Core::Session::randomFraction = Config::getFloat("random_fraction", 0.2);
+        Core::Session::populationSize = Config::getInt("population_size", 10);
+        Session::modelsFilePath = Config::getString("models_file_path", "");
     }
 }
 

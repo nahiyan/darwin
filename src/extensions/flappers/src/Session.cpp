@@ -1,17 +1,22 @@
 #include "Session.h"
-#include <core/GenerationState_generated.h>
-#include <core/EvolutionCommon.h>
+#include "core/EvolutionCommon.h"
 #include "Pipe.h"
-#include <core/Session.h>
-#include <core/HUD.h>
+#include "core/Session.h"
+#include "core/HUD.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "persistent-models/persistent-models.h"
 
 using namespace Flappers;
+using namespace std;
+using namespace rapidjson;
 
 Core::EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
-std::vector<Node *> Session::pipes = std::vector<Node *>{};
+vector<Node *> Session::pipes = vector<Node *>{};
 int Session::pipeCounter = 0;
 float Session::timeSinceLastPipe = 0;
 Label *Session::hud = nullptr;
+string Session::modelsFilePath = "";
 
 void Session::nextGeneration()
 {
@@ -31,28 +36,33 @@ void Session::nextGeneration()
 
     Session::pipes.clear();
 
-    // Contructing a FlatBuffers builder
-    flatbuffers::FlatBufferBuilder builder(1024);
-
-    auto population_ = std::vector<flatbuffers::Offset<Core::Member>>();
-
-    for (auto object : Session::evolutionSession->population)
+    // Saving models
+    if (modelsFilePath.size() > 0)
     {
-        auto chromosomes = std::vector<double>();
-        auto parameters = object->neuralNetwork->get_parameters();
-        for (auto parameter : parameters)
-            chromosomes.push_back(parameter);
-        auto member = Core::CreateMember(builder, builder.CreateVector<double>(chromosomes), object->getScore());
-        population_.push_back(member);
+        for (auto member : Session::evolutionSession->population)
+        {
+            StringBuffer s;
+            Writer<StringBuffer> writer(s);
+            writer.StartObject();
+            writer.Key("genome");
+            writer.StartArray();
+            auto parameters = member->neuralNetwork->get_parameters();
+            for (auto parameter : parameters)
+                writer.Double(parameter);
+            writer.EndArray();
+            writer.EndObject();
+
+            string definition;
+            definition.append(s.GetString());
+
+            pm_add_stage(definition.c_str(), member->getScore());
+        }
+        pm_commit(10);
+        pm_save_file(modelsFilePath.c_str());
     }
 
-    auto population = builder.CreateVector(population_);
-
-    auto state = CreateGenerationState(builder, population);
-    builder.Finish(state);
-
     // Perform evolution
-    Session::evolutionSession->evolve(Core::EvolutionCommon<Flapper>::crossoverAndMutate, Core::EvolutionCommon<Flapper>::randomize, builder.GetBufferPointer(), builder.GetSize());
+    Session::evolutionSession->evolve(Core::EvolutionCommon<Flapper>::crossoverAndMutate, Core::EvolutionCommon<Flapper>::randomize);
 
     // Add nodes
     for (int i = 0; i < Session::evolutionSession->population.size(); i++)

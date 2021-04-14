@@ -20,4 +20,5 @@ else()
   add_library(${APP_NAME} SHARED ${SOURCES})
 endif()
 
-target_include_directories(${APP_NAME} PUBLIC include)
+target_include_directories(${APP_NAME}
+                           PUBLIC include/persistent-models/persistent-models)

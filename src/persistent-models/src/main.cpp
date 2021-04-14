@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
-#include "main.h"
+#include "persistent-models.h"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
