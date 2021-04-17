@@ -16,7 +16,7 @@
 #include "Pipe.h"
 #include "Base.h"
 #include "Roof.h"
-#include "persistent-models/persistent-models.h"
+#include "persistent_models.h"
 #include "rapidjson/document.h"
 
 USING_NS_CC;
@@ -77,15 +77,16 @@ bool MainScene::init()
     // Load models from the models file
     if (Session::modelsFilePath.size() > 0)
     {
-        pm_load_file(Session::modelsFilePath.c_str());
-        int modelsCount = min(pm_count(), Core::Session::populationSize);
+        Session::pm = pm_load_file(Session::modelsFilePath.c_str());
+        int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
 
         for (int i = 0; i < modelsCount; i++)
         {
-            auto definition = pm_get_model(i).definition;
+            auto definition = pm_get_model(&Session::pm, i).definition;
 
             Document document;
             document.Parse(definition);
+            pm_free_string((char *)definition);
             if (document.HasMember("genome") && document["genome"].IsArray())
             {
                 auto genome = document["genome"].GetArray();

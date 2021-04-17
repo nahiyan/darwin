@@ -87,7 +87,7 @@ if(MACOSX)
 endif()
 
 # Link libraries
-target_link_libraries(${APP_NAME} cocos2d opennn core pm)
+target_link_libraries(${APP_NAME} cocos2d opennn core persistent_models)
 
 # mark app resources
 setup_cocos_app_config(${APP_NAME})
@@ -124,7 +124,7 @@ endif()
 target_include_directories(
   ${APP_NAME}
   PRIVATE ${DARWIN_ROOT}/include
-  PRIVATE ${DARWIN_ROOT}/src/persistent-models/include/persistent-models
+  PRIVATE ${DARWIN_ROOT}/src/persistent-models/c-headers
   PRIVATE ${DARWIN_ROOT}/src/core/include/core
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers/flappers

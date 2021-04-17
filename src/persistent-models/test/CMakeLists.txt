@@ -1,13 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-set(CMAKE_CXX_STANDARD 11)
-project(pm-test)
-set(BUNDLE OFF)
-set(SOURCES main.cpp)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../ pm)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib/googletest googletest)
-
-add_executable(pm-test ${SOURCES})
-target_include_directories(
-  pm-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/googletest/googletest/)
-target_link_libraries(pm-test pm gtest)
+project(april11-rust)
+add_executable(main main.cpp)
+target_link_directories(main PRIVATE
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../target/debug)
+target_link_libraries(main persistent_models)

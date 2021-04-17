@@ -41,6 +41,7 @@ AppDelegate::AppDelegate(int argc, const char **argv)
         Core::Session::fertileFraction = Config::getFloat("fertile_fraction", 0.7);
         Core::Session::randomFraction = Config::getFloat("random_fraction", 0.2);
         Core::Session::populationSize = Config::getInt("population_size", 10);
+        Core::Session::savedModelsCount = Config::getInt("saved_models_count", 10);
         Session::modelsFilePath = Config::getString("models_file_path", "");
     }
 }

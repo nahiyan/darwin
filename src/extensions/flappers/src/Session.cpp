@@ -5,7 +5,7 @@
 #include "core/HUD.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "persistent-models/persistent-models.h"
+#include "persistent_models.h"
 
 using namespace Flappers;
 using namespace std;
@@ -17,6 +17,7 @@ int Session::pipeCounter = 0;
 float Session::timeSinceLastPipe = 0;
 Label *Session::hud = nullptr;
 string Session::modelsFilePath = "";
+PersistentModels *Session::pm = nullptr;
 
 void Session::nextGeneration()
 {
@@ -55,10 +56,11 @@ void Session::nextGeneration()
             string definition;
             definition.append(s.GetString());
 
-            pm_add_stage(definition.c_str(), member->getScore());
+            pm_add_to_stage(&Session::pm, definition.c_str(), member->getScore());
         }
-        pm_commit(10);
-        pm_save_file(modelsFilePath.c_str());
+
+        pm_commit(&Session::pm, Core::Session::savedModelsCount);
+        pm_save_file(&Session::pm, modelsFilePath.c_str());
     }
 
     // Perform evolution

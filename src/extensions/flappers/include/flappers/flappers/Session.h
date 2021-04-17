@@ -5,6 +5,7 @@
 #include "MainScene.h"
 #include "Flapper.h"
 #include "core/EvolutionSession.h"
+#include "persistent_models.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -22,6 +23,7 @@ namespace Flappers
         static string modelsFilePath;
 
         static void nextGeneration();
+        static PersistentModels* pm;
     };
 } // namespace Flappers
 #endif // __FLAPPERS_SESSION_H__
