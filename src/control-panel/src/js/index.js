@@ -25,7 +25,8 @@ function prepareConfig (extensionName, generateRandomModels) {
     preparedConfig[key] = config[extensionName][key] === undefined ? config.common[key] : config[extensionName][key]
   })
 
-  preparedConfig.models_file_path = generateRandomModels === false ? getModelsFilePath(extensionName) : ''
+  preparedConfig.models_file_path = getModelsFilePath(extensionName)
+  preparedConfig.start_from_saved_models = !generateRandomModels
 
   console.log(JSON.stringify(preparedConfig))
 
