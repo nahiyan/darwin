@@ -4,7 +4,10 @@ import Browser
 import Extension
 import Html exposing (Html, div, h1, text)
 import Html.Attributes exposing (class, id)
-import Types exposing (InitialModels(..), Model, Msg(..))
+import Json.Decode as JD
+import Json.Encode as JE
+import List.Extra exposing (updateIf)
+import Types exposing (ExtensionModel, InitialModels(..), Model, Msg(..))
 
 
 
@@ -14,14 +17,20 @@ import Types exposing (InitialModels(..), Model, Msg(..))
 port startExtension : ( String, String ) -> Cmd msg
 
 
+port fetchModels : String -> Cmd msg
+
+
+port receiveModels : (JE.Value -> msg) -> Sub msg
+
+
 init : List String -> ( Model, Cmd msg )
 init extensionNames =
-    ( { extensions = Extension.fromString extensionNames }, Cmd.none )
+    ( Extension.fromString extensionNames, Cmd.none )
 
 
-subscriptions : a -> Sub msg
+subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    receiveModels SetModels
 
 
 main : Program (List String) Model Msg
@@ -47,18 +56,69 @@ update msg model =
         SetInitialsModels extensionName initialModels ->
             let
                 newModel =
-                    { model
-                        | extensions =
-                            model.extensions
-                                |> List.map
-                                    (\extension ->
-                                        if extension.name == extensionName then
-                                            { extension | initialModels = initialModels }
+                    updateIf
+                        (\extension -> extension.name == extensionName)
+                        (\extension ->
+                            { extension | initialModels = initialModels }
+                        )
+                        model
+            in
+            ( newModel, Cmd.none )
+
+        ShowModels extensionName ->
+            let
+                ( newExtensions, newCommand ) =
+                    List.foldl
+                        (\extension ( extensions, command ) ->
+                            if extension.name == extensionName then
+                                let
+                                    newCommand_ =
+                                        if extension.models |> List.isEmpty then
+                                            fetchModels extension.name
 
                                         else
-                                            extension
-                                    )
-                    }
+                                            Cmd.none
+
+                                    newExtensions_ =
+                                        if extension.models |> List.isEmpty |> not then
+                                            extensions ++ [ { extension | models = [] } ]
+
+                                        else
+                                            extensions ++ [ extension ]
+                                in
+                                ( newExtensions_, newCommand_ )
+
+                            else
+                                ( extensions ++ [ extension ], command )
+                        )
+                        ( [], Cmd.none )
+                        model
+            in
+            ( newExtensions, newCommand )
+
+        SetModels info ->
+            let
+                decoder =
+                    JD.map2
+                        (\extensionName extensionModels ->
+                            updateIf
+                                (\extension -> extension.name == extensionName)
+                                (\extension -> { extension | models = extensionModels })
+                                model
+                        )
+                        (JD.field "extension_name" JD.string)
+                        (JD.field "models"
+                            (JD.list
+                                (JD.map2
+                                    ExtensionModel
+                                    (JD.field "fitness" JD.float)
+                                    (JD.field "definition_size" JD.int)
+                                )
+                            )
+                        )
+
+                newModel =
+                    Result.withDefault model (JD.decodeValue decoder info)
             in
             ( newModel, Cmd.none )
 
@@ -67,5 +127,5 @@ view : Model -> Html Msg
 view model =
     div [ class "container mt-1" ]
         [ h1 [] [ text "Extensions" ]
-        , div [ id "extensions-list" ] (Extension.toHtml model.extensions)
+        , div [ id "extensions-list" ] (Extension.toHtml model)
         ]

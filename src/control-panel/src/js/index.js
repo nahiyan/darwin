@@ -67,6 +67,23 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(stdout)
       })
     })
+
+    app.ports.fetchModels.subscribe(function (extensionName) {
+      fs.readFile(getModelsFilePath(extensionName), 'utf8', (err, data) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+
+        const models = []
+
+        JSON.parse(data).models.forEach(function (model) {
+          models.push({ definition_size: model.definition.length, fitness: model.fitness })
+        })
+
+        app.ports.receiveModels.send({ extension_name: extensionName, models: models })
+      })
+    })
   } catch (e) {
     console.error('Parsing error on line ' + e.line + ', column ' + e.column +
       ': ' + e.message)
