@@ -43,6 +43,7 @@ AppDelegate::AppDelegate(int argc, const char **argv)
         Core::Session::populationSize = Config::getInt("population_size", 10);
         Core::Session::savedModelsCount = Config::getInt("saved_models_count", 10);
         Session::modelsFilePath = Config::getString("models_file_path", "");
+        Core::Session::startFromSavedModels = Config::getBool("start_from_saved_models", false);
     }
 }
 

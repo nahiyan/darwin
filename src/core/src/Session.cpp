@@ -10,4 +10,5 @@ float Session::eliteFraction = .05;
 float Session::fertileFraction = .3;
 float Session::randomFraction = .15;
 int Session::savedModelsCount = 10;
+bool Session::startFromSavedModels = false;
 Session::HUDSelection Session::hudSelection = MutationRate;

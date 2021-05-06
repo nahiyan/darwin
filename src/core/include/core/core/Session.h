@@ -21,6 +21,7 @@ namespace Core
         static int savedModelsCount;
         static float speed;
         static HUDSelection hudSelection;
+        static bool startFromSavedModels;
     };
 } // namespace Core
 

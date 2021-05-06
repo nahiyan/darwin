@@ -19,6 +19,7 @@ namespace Core
         static string getString(string, string);
         static int getInt(string, int);
         static double getDouble(string, double);
+        static bool getBool(string, bool);
         static float getFloat(string, float);
     };
 }

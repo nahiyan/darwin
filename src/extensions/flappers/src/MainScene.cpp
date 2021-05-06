@@ -75,7 +75,7 @@ bool MainScene::init()
     std::vector<double> nnParameters[Core::Session::populationSize];
 
     // Load models from the models file
-    if (Session::modelsFilePath.size() > 0)
+    if (Core::Session::startFromSavedModels && Session::modelsFilePath.size() > 0)
     {
         Session::pm = pm_load_file(Session::modelsFilePath.c_str());
         int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
@@ -112,27 +112,12 @@ bool MainScene::init()
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     }
 
-    // Mouse listener
-    // {
-    //     auto listener = EventListenerMouse::create();
-    //     listener->onMouseMove = Listeners::onMouseMove;
-    //     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    // }
-
     // Keyboard listener
     {
         auto listener = EventListenerKeyboard::create();
         listener->onKeyPressed = std::bind(Listeners::onKeyPressed, std::placeholders::_1, std::placeholders::_2, Session::evolutionSession->population[0]);
-        // listener->onKeyReleased = std::bind(Listeners::onKeyReleased, std::placeholders::_1, std::placeholders::_2, Session::evolutionSession->population[0]);
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     }
-
-    // Mouse listener
-    // {
-    //     auto listener = EventListenerMouse::create();
-    //     listener->onMouseMove = Listeners::onMouseMove;
-    //     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-    // }
 
     // Base
     this->addChild(Base::create(), -1);

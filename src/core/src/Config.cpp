@@ -24,6 +24,10 @@ int Config::getInt(string key, int default_)
 {
     return document.HasMember(key.c_str()) ? document[key.c_str()].GetInt() : default_;
 }
+bool Config::getBool(string key, bool default_)
+{
+    return document.HasMember(key.c_str()) ? document[key.c_str()].GetBool() : default_;
+}
 
 double Config::getDouble(string key, double default_)
 {
