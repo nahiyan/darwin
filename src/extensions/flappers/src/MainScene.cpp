@@ -77,26 +77,27 @@ bool MainScene::init()
         Session::pm = pm_load_file(Session::modelsFilePath.c_str());
 
     // Load models from the models file
-    if (Core::Session::startFromSavedModels)
-    {
-        int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
+    // if (Core::Session::startFromSavedModels)
+    // {
+    //     int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
 
-        for (int i = 0; i < modelsCount; i++)
-        {
-            auto definition = pm_get_model(&Session::pm, i).definition;
+    //     for (int i = 0; i < modelsCount; i++)
+    //     {
+    //         auto definition = pm_get_model(&Session::pm, i).definition;
 
-            Document document;
-            document.Parse<rapidjson::ParseFlag::kParseFullPrecisionFlag>(definition);
-            if (document.HasMember("genome") && document["genome"].IsArray())
-            {
-                auto genome = document["genome"].GetArray();
-                auto genomeSize = genome.Size();
-                for (int j = 0; j < genomeSize; j++)
-                    nnParameters[i].push_back(genome[j].GetDouble());
-            }
-            pm_free_string((char *)definition);
-        }
-    }
+    //         // std::stringstream ss(definition);
+
+    //         // for (double gene; ss >> i;)
+    //         // {
+    //         //     cout << gene << "\n";
+    //         //     if (ss.peek() == ',')
+    //         //         ss.ignore();
+    //         // }
+    //         // nnParameters[i].push_back(genome[j].GetDouble());
+
+    //         pm_free_string((char *)definition);
+    //     }
+    // }
 
     // Add flappers
     for (int i = 0; i < Core::Session::populationSize; i++)

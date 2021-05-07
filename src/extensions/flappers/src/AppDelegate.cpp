@@ -22,7 +22,6 @@ static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 using namespace Flappers;
 using namespace Core;
 using namespace std;
-using namespace rapidjson;
 
 AppDelegate::AppDelegate()
 {

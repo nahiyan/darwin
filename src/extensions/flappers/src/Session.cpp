@@ -1,15 +1,16 @@
+#include <vector>
+#include <algorithm>
+// #include <iomanip>
+// #include <limits>
 #include "Session.h"
 #include "core/EvolutionCommon.h"
 #include "Pipe.h"
 #include "core/Session.h"
 #include "core/HUD.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
 #include "persistent_models.h"
 
 using namespace Flappers;
 using namespace std;
-using namespace rapidjson;
 
 Core::EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 vector<Node *> Session::pipes = vector<Node *>{};
@@ -40,27 +41,38 @@ void Session::nextGeneration()
     // Saving models
     if (modelsFilePath.size() > 0)
     {
+        vector<float> scores; // List of scores for logging
         for (auto member : Session::evolutionSession->population)
         {
-            StringBuffer s;
-            Writer<StringBuffer> writer(s);
-            writer.StartObject();
-            writer.Key("genome");
-            writer.StartArray();
-            auto parameters = member->neuralNetwork->get_parameters();
-            for (auto parameter : parameters)
-                writer.Double(parameter);
-            writer.EndArray();
-            writer.EndObject();
 
-            string definition;
-            definition.append(s.GetString());
+            //     auto parameters = member->neuralNetwork->get_parameters();
+            //     std::ostringstream strs;
+            //     for (double parameter : parameters)
+            //         strs << setprecision(numeric_limits<double>::digits10) << parameter << ",";
 
-            pm_add_to_stage(&Session::pm, definition.c_str(), member->getScore());
+            //     cout << strs.str() << "\n";
+            //     //            printf("%s\n", definition.c_str());
+
+            //     pm_add_to_stage(&Session::pm, strs.str().c_str(), member->getScore());
+
+            //     // Add scores for logging
+            scores.push_back(member->getScore());
         }
 
-        pm_commit(&Session::pm, Core::Session::savedModelsCount);
-        pm_save_file(&Session::pm, modelsFilePath.c_str());
+        // pm_commit(&Session::pm, Core::Session::savedModelsCount);
+        // pm_save_file(&Session::pm, modelsFilePath.c_str());
+
+        // Log scores
+        string message = "Scores for generation ";
+        message += to_string(Core::Session::generationIndex - 1);
+        message += ": ";
+        sort(scores.begin(), scores.end());
+        reverse(scores.begin(), scores.end());
+        for (float score : scores)
+        {
+            message += to_string(score) + " ";
+        }
+        cout << message << "\n";
     }
 
     // Perform evolution
