@@ -53,8 +53,6 @@ bool MainScene::init()
     // Set the speed of the simulation
     this->setSpeed(Core::Session::speed);
 
-    // this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-
     // Control gravity
     this->getPhysicsWorld()->setGravity(Vec2(0, -500));
 
@@ -74,10 +72,13 @@ bool MainScene::init()
     // Database
     std::vector<double> nnParameters[Core::Session::populationSize];
 
-    // Load models from the models file
-    if (Core::Session::startFromSavedModels && Session::modelsFilePath.size() > 0)
-    {
+    // Initialize Persistent Models
+    if (Session::modelsFilePath.size() > 0)
         Session::pm = pm_load_file(Session::modelsFilePath.c_str());
+
+    // Load models from the models file
+    if (Core::Session::startFromSavedModels)
+    {
         int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
 
         for (int i = 0; i < modelsCount; i++)
@@ -85,8 +86,7 @@ bool MainScene::init()
             auto definition = pm_get_model(&Session::pm, i).definition;
 
             Document document;
-            document.Parse(definition);
-            pm_free_string((char *)definition);
+            document.Parse<rapidjson::ParseFlag::kParseFullPrecisionFlag>(definition);
             if (document.HasMember("genome") && document["genome"].IsArray())
             {
                 auto genome = document["genome"].GetArray();
@@ -94,6 +94,7 @@ bool MainScene::init()
                 for (int j = 0; j < genomeSize; j++)
                     nnParameters[i].push_back(genome[j].GetDouble());
             }
+            pm_free_string((char *)definition);
         }
     }
 

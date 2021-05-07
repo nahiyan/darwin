@@ -28,8 +28,6 @@ function prepareConfig (extensionName, generateRandomModels) {
   preparedConfig.models_file_path = getModelsFilePath(extensionName)
   preparedConfig.start_from_saved_models = !generateRandomModels
 
-  console.log(JSON.stringify(preparedConfig))
-
   return preparedConfig
 }
 
