@@ -117,7 +117,6 @@ void Flapper::generateNode()
     physicsBody->setCategoryBitmask(1);
     physicsBody->setCollisionBitmask(6);   // Pipes + Base/Roof
     physicsBody->setContactTestBitmask(6); // Pipes + Base/Roof
-    // physicsBody->setVelocityLimit(300);
     this->node->addComponent(physicsBody);
 
     Vector<SpriteFrame *> frames;

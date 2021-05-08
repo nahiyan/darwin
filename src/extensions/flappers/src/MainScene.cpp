@@ -74,29 +74,7 @@ bool MainScene::init()
         Session::pm = pm_load_file(Session::modelsFilePath.c_str());
 
     // Load models from the models file
-<<<<<<< HEAD
-    // if (Core::Session::startFromSavedModels)
-    // {
-    //     int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
 
-    //     for (int i = 0; i < modelsCount; i++)
-    //     {
-    //         auto definition = pm_get_model(&Session::pm, i).definition;
-
-    //         // std::stringstream ss(definition);
-
-    //         // for (double gene; ss >> i;)
-    //         // {
-    //         //     cout << gene << "\n";
-    //         //     if (ss.peek() == ',')
-    //         //         ss.ignore();
-    //         // }
-    //         // nnParameters[i].push_back(genome[j].GetDouble());
-
-    //         pm_free_string((char *)definition);
-    //     }
-    // }
-=======
     std::vector<double> nnParameters[Core::Session::populationSize];
     if (Core::Session::startFromSavedModels)
     {
@@ -120,7 +98,6 @@ bool MainScene::init()
             pm_free_string((char *)definition);
         }
     }
->>>>>>> test
 
     // Add flappers
     for (int i = 0; i < Core::Session::populationSize; i++)
