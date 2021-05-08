@@ -13,7 +13,7 @@ namespace Darwin
         static double nnParameter(long long seed = TimeHelper::now())
         {
             static std::default_random_engine e(seed);
-            static std::uniform_real_distribution<> dis(-1, 1);
+            static std::uniform_real_distribution<> dis(-100, 100);
             return dis(e);
         }
     };

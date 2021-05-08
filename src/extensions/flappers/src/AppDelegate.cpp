@@ -4,6 +4,7 @@
 #include "Session.h"
 #include "core/Session.h"
 #include "core/Config.h"
+#include "rapidjson/document.h"
 
 // #define USE_AUDIO_ENGINE 1
 #define TITLE "Flappers"
@@ -19,8 +20,8 @@ static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
-using namespace Flappers;
 using namespace Core;
+using namespace Flappers;
 using namespace std;
 
 AppDelegate::AppDelegate()
@@ -32,6 +33,9 @@ AppDelegate::AppDelegate(int argc, const char **argv)
     // Handle configuration
     if (argc == 2)
     {
+        Document d;
+        d.Parse("{}");
+
         Config::parse(argv[1]);
 
         Core::Session::speed = Config::getFloat("speed", 1);
@@ -41,7 +45,7 @@ AppDelegate::AppDelegate(int argc, const char **argv)
         Core::Session::randomFraction = Config::getFloat("random_fraction", 0.2);
         Core::Session::populationSize = Config::getInt("population_size", 10);
         Core::Session::savedModelsCount = Config::getInt("saved_models_count", 10);
-        Session::modelsFilePath = Config::getString("models_file_path", "");
+        Flappers::Session::modelsFilePath = Config::getString("models_file_path", "");
         Core::Session::startFromSavedModels = Config::getBool("start_from_saved_models", false);
     }
 }

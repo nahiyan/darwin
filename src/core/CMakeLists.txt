@@ -12,5 +12,5 @@ add_library(core SHARED ${SOURCE})
 # Includes directory
 target_include_directories(
   core
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/core
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/core/core)
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/public/core
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/private)

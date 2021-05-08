@@ -18,7 +18,7 @@ Flapper::Flapper(std::vector<double> parameters)
     this->reset();
 
     // Neural network
-    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Approximation, OpenNN::Vector<size_t>{4, 20, 1});
+    this->neuralNetwork = std::make_shared<OpenNN::NeuralNetwork>(OpenNN::NeuralNetwork::Classification, OpenNN::Vector<size_t>{4, 20, 1});
 
     if (parameters.size() > 0)
         this->neuralNetwork->set_parameters(parameters);
@@ -33,6 +33,8 @@ Flapper::~Flapper()
 
 void Flapper::update(float delta)
 {
+    flapTemperature = max<double>((double)0, flapTemperature - delta);
+
     // Record time survived
     this->score += delta;
 
@@ -63,7 +65,10 @@ void Flapper::update(float delta)
     input[3] = (double)this->node->getPhysicsBody()->getVelocity().y;
 
     auto outputs = this->neuralNetwork->calculate_outputs(input);
-    if (outputs[0] >= .5)
+
+    // printf("Step: %.2f %.2f %.2f %.2f %.2f\n", input[0], input[1], input[2], input[3], outputs[0]);
+
+    if (outputs[0] >= .5 && flapTemperature == 0)
         this->flap();
 }
 
@@ -96,6 +101,7 @@ void Flapper::reset()
     this->generateNode();
     this->score = 0;
     this->dead = false;
+    this->flapTemperature = 0;
 }
 
 void Flapper::generateNode()
@@ -111,7 +117,7 @@ void Flapper::generateNode()
     physicsBody->setCategoryBitmask(1);
     physicsBody->setCollisionBitmask(6);   // Pipes + Base/Roof
     physicsBody->setContactTestBitmask(6); // Pipes + Base/Roof
-    physicsBody->setVelocityLimit(300);
+    // physicsBody->setVelocityLimit(300);
     this->node->addComponent(physicsBody);
 
     Vector<SpriteFrame *> frames;
@@ -127,4 +133,5 @@ void Flapper::generateNode()
 void Flapper::flap()
 {
     this->node->getPhysicsBody()->applyImpulse(Vec2(0, 30 * 1000));
+    flapTemperature += 0.3;
 }

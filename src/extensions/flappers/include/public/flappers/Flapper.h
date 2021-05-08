@@ -14,6 +14,7 @@ namespace Flappers
         float score;
         bool dead;
         void generateNode();
+        float flapTemperature;
 
     public:
         std::shared_ptr<OpenNN::NeuralNetwork> neuralNetwork;
