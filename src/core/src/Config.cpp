@@ -1,3 +1,4 @@
+#define __CORE_CONFIG_CPP__
 #include "Config.h"
 
 using namespace Core;

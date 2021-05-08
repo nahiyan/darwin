@@ -3,13 +3,10 @@
 #include "Pipe.h"
 #include "core/Session.h"
 #include "core/HUD.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
 #include "persistent_models.h"
 
 using namespace Flappers;
 using namespace std;
-using namespace rapidjson;
 
 Core::EvolutionSession<Flapper> *Session::evolutionSession = nullptr;
 vector<Node *> Session::pipes = vector<Node *>{};
@@ -35,32 +32,53 @@ void Session::nextGeneration()
     for (auto &pipe : Session::pipes)
         mainScene->removeChild(pipe);
 
+    for (auto &flapper : Session::evolutionSession->population)
+        flapper->kill();
+
     Session::pipes.clear();
 
     // Saving models
     if (modelsFilePath.size() > 0)
     {
+        vector<float> scores; // List of scores for logging
         for (auto member : Session::evolutionSession->population)
         {
-            StringBuffer s;
-            Writer<StringBuffer> writer(s);
-            writer.StartObject();
-            writer.Key("genome");
-            writer.StartArray();
             auto parameters = member->neuralNetwork->get_parameters();
-            for (auto parameter : parameters)
-                writer.Double(parameter);
-            writer.EndArray();
-            writer.EndObject();
+            std::ostringstream strs;
+            for (double parameter : parameters)
+                strs << setprecision(numeric_limits<double>::digits10) << parameter << ",";
 
-            string definition;
-            definition.append(s.GetString());
+            string definition = strs.str();
 
-            pm_add_to_stage(&Session::pm, definition.c_str(), member->getScore());
+            pm_add_to_stage(&Session::pm, definition.substr(0, definition.length() - 1).c_str(), member->getScore());
+
+            // Add scores for logging
+            scores.push_back(member->getScore());
         }
 
         pm_commit(&Session::pm, Core::Session::savedModelsCount);
         pm_save_file(&Session::pm, modelsFilePath.c_str());
+
+        // Log scores
+        string message = "";
+        int i = 0;
+        for (float score : scores)
+        {
+            message += to_string(i) + " -> " + to_string(score) + "\n";
+            i++;
+        }
+        cout << message << "\n";
+
+        message = "Scores for generation ";
+        message += to_string(Core::Session::generationIndex - 1);
+        message += ": ";
+        sort(scores.begin(), scores.end());
+        reverse(scores.begin(), scores.end());
+
+        for (float score : scores)
+            message += to_string(score) + " ";
+
+        cout << message << "\n";
     }
 
     // Perform evolution

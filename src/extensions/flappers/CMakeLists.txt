@@ -125,7 +125,7 @@ target_include_directories(
   ${APP_NAME}
   PRIVATE ${DARWIN_ROOT}/include
   PRIVATE ${DARWIN_ROOT}/src/persistent-models/c-headers
-  PRIVATE ${DARWIN_ROOT}/src/core/include/core
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/flappers/flappers
+  PRIVATE ${DARWIN_ROOT}/src/core/include/public
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/private
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/public/flappers
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)

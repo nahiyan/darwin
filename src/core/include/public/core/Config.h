@@ -1,17 +1,21 @@
 #ifndef __CORE_CONFIG_H__
 #define __CORE_CONFIG_H__
 
-#include "rapidjson/document.h"
 #include <string>
-
+#ifdef __CORE_CONFIG_CPP__
+#include "rapidjson/document.h"
 using namespace rapidjson;
+#endif
+
 using namespace std;
 
 namespace Core
 {
     class Config
     {
+#ifdef __CORE_CONFIG_CPP__
         static Document document;
+#endif
 
     public:
         static void parse(string);

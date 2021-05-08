@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <algorithm>
+#include <sstream>
 #include <opennn/neural_network.h>
 #include <helpers/time.h>
 #include "MainScene.h"
@@ -17,11 +18,10 @@
 #include "Base.h"
 #include "Roof.h"
 #include "persistent_models.h"
-#include "rapidjson/document.h"
 
 USING_NS_CC;
 using namespace Flappers;
-using namespace rapidjson;
+// using namespace rapidjson;
 
 MainScene *MainScene::instance = nullptr;
 
@@ -69,14 +69,12 @@ bool MainScene::init()
     // Evolution session
     Session::evolutionSession = new Core::EvolutionSession<Flapper>(Core::Session::mutationRate, Core::Session::eliteFraction, Core::Session::fertileFraction, Core::Session::randomFraction);
 
-    // Database
-    std::vector<double> nnParameters[Core::Session::populationSize];
-
     // Initialize Persistent Models
     if (Session::modelsFilePath.size() > 0)
         Session::pm = pm_load_file(Session::modelsFilePath.c_str());
 
     // Load models from the models file
+    std::vector<double> nnParameters[Core::Session::populationSize];
     if (Core::Session::startFromSavedModels)
     {
         int modelsCount = min((int)pm_count(&Session::pm), Core::Session::populationSize);
@@ -85,15 +83,17 @@ bool MainScene::init()
         {
             auto definition = pm_get_model(&Session::pm, i).definition;
 
-            Document document;
-            document.Parse<rapidjson::ParseFlag::kParseFullPrecisionFlag>(definition);
-            if (document.HasMember("genome") && document["genome"].IsArray())
+            std::stringstream ss(definition);
+            ss.precision(numeric_limits<double>::digits10);
+
+            for (double gene; ss >> gene;)
             {
-                auto genome = document["genome"].GetArray();
-                auto genomeSize = genome.Size();
-                for (int j = 0; j < genomeSize; j++)
-                    nnParameters[i].push_back(genome[j].GetDouble());
+                if (ss.peek() == ',')
+                    ss.ignore();
+
+                nnParameters[i].push_back(gene);
             }
+
             pm_free_string((char *)definition);
         }
     }
@@ -187,7 +187,6 @@ void MainScene::addPipe()
     float values[10] = {0.3, .8, 0.5, 0.25, 0.5, 0.15, 0.35, 0.9, 0.85, 0.6};
 
     auto pipe = Pipe::create(values[Session::pipeCounter]);
-    // auto pipe = Pipe::create(random<float>(0.1, 0.9));
     this->addChild(pipe);
     if (Session::pipeCounter == 9)
         Session::nextGeneration();
