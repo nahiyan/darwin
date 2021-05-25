@@ -1,0 +1,3 @@
+[submodule "src/extensions/flappers/godot-cpp"]
+	path = src/extensions/flappers/godot-cpp
+	url = https://github.com/godotengine/godot-cpp
