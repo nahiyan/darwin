@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scenes/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/Ground.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/Main.gd" type="Script" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 1, 269 )
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 5 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 85, 266.56 )
+
+[node name="Ground" parent="." instance=ExtResource( 2 )]
+
+[node name="PipeAddTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="Wall" type="StaticBody2D" parent="."]
+position = Vector2( -109, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
+position = Vector2( 0, 270 )
+shape = SubResource( 1 )
+
+[connection signal="timeout" from="PipeAddTimer" to="." method="_on_PipeAddTimer_timeout"]
