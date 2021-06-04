@@ -1,11 +1,9 @@
 /*.sh
-/cocos2d/**/*.sh
 /*.code-workspace
 *.vscode
 /*-build
-/resources/db_path.txt
 /config.toml
 .github
-/backup
 /extensions/dawkins
-/src/persistent-models-old
+/src/extensions/flappers/modules
+/src/extensions/flappers/bin
