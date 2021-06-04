@@ -7,7 +7,10 @@
     "app:start": "electron-forge start",
     "app:package": "electron-forge package",
     "app:make": "electron-forge make",
-    "build:watch": "npx webpack --mode development --watch"
+    "watch:dev": "npx webpack --mode development --watch",
+    "watch:prod": "npx webpack --mode production --watch",
+    "build:dev": "npx webpack --mode development",
+    "build:prod": "npx webpack --mode production"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
