@@ -1,9 +1,9 @@
-[submodule "src/extensions/flappers/godot-cpp"]
-	path = src/extensions/flappers/godot-cpp
+[submodule "extensions/flappers/godot-cpp"]
+	path = extensions/flappers/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
 [submodule "extensions/pong/godot-headers"]
 	path = extensions/pong/godot-headers
 	url = https://github.com/godotengine/godot-headers
-[submodule "extensions/NeuroGen"]
-	path = extensions/NeuroGen
-	url = https://github.com/MomenaAkhter/NeuroGen
+[submodule "extensions/neurogen"]
+	path = extensions/neurogen
+	url = https://github.com/MomenaAkhter/neurogen
