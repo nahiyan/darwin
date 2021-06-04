@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://sprites/ground.png" type="Texture" id=1]
+[ext_resource path="res://scripts/Parallax.gd" type="Script" id=2]
+[ext_resource path="res://sprites/background.png" type="Texture" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 512, 30 )
+
+[node name="Parallax" type="StaticBody2D"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource( 2 )
+
+[node name="Ground" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1024, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Ground"]
+position = Vector2( 0, 540 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 5, 1024, 60 )
+
+[node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.3, 1 )
+motion_mirroring = Vector2( 1024, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/Background"]
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 60, 1024, 540 )
+
+[node name="GroundCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2( 512, 570 )
+shape = SubResource( 1 )

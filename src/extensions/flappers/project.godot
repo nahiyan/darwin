@@ -38,7 +38,7 @@ flap={
 
 2d_physics/layer_1="players"
 2d_physics/layer_2="pipes"
-2d_physics/layer_3="walls"
+2d_physics/layer_3="boundaries"
 2d_physics/layer_4="ground"
 
 [rendering]
