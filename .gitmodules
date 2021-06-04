@@ -4,3 +4,6 @@
 [submodule "extensions/pong/godot-headers"]
 	path = extensions/pong/godot-headers
 	url = https://github.com/godotengine/godot-headers
+[submodule "extensions/NeuroGen"]
+	path = extensions/NeuroGen
+	url = https://github.com/MomenaAkhter/NeuroGen
