@@ -1,6 +1,6 @@
 /*.sh
 /*.code-workspace
-*.vscode
+/*.vscode
 /*-build
 /config.toml
 .github

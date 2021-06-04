@@ -11,7 +11,18 @@ config_version=4
 [application]
 
 config/name="Pong"
+run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/size/resizable=false
+
+[layer_names]
+
+2d_physics/layer_1="paddles"
+2d_physics/layer_2="ball"
+2d_physics/layer_3="boundaries"
 
 [physics]
 

@@ -1,3 +1,6 @@
 [submodule "src/extensions/flappers/godot-cpp"]
 	path = src/extensions/flappers/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
+[submodule "extensions/pong/godot-headers"]
+	path = extensions/pong/godot-headers
+	url = https://github.com/godotengine/godot-headers
