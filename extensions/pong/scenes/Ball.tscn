@@ -13,6 +13,7 @@ collision_layer = 2
 collision_mask = 5
 physics_material_override = SubResource( 2 )
 gravity_scale = 0.0
+continuous_cd = 2
 contact_monitor = true
 linear_velocity = Vector2( 300, 300 )
 linear_damp = 0.0

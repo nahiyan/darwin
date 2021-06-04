@@ -14,4 +14,4 @@ position = Vector2( 505.995, 150.578 )
 [node name="Boundaries" parent="." instance=ExtResource( 2 )]
 
 [node name="Paddle" parent="." instance=ExtResource( 4 )]
-position = Vector2( 512, 580 )
+position = Vector2( 512, 590 )
