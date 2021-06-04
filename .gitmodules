@@ -4,3 +4,6 @@
 [submodule "extensions/flappers/godot-headers"]
 	path = extensions/flappers/godot-headers
 	url = https://github.com/godotengine/godot-headers/
+[submodule "extensions/neurogen"]
+	path = extensions/neurogen
+	url = https://github.com/MomenaAkhter/neurogen
