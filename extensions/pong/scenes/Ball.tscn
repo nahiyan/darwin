@@ -16,7 +16,8 @@ gravity = Vector3( 0, 0, 0 )
 initial_velocity = 10.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
-scale = 2.0
+hue_variation = 1.0
+hue_variation_random = 1.0
 
 [node name="Ball" type="RigidBody2D"]
 collision_layer = 2
@@ -26,7 +27,7 @@ gravity_scale = 0.0
 continuous_cd = 2
 contacts_reported = 1
 contact_monitor = true
-linear_velocity = Vector2( 300, 300 )
+linear_velocity = Vector2( 600, 600 )
 linear_damp = 0.0
 script = ExtResource( 1 )
 
@@ -36,10 +37,11 @@ shape = SubResource( 2 )
 [node name="Particles2D" type="Particles2D" parent="."]
 z_index = -1
 emitting = false
-amount = 10
+amount = 50
 lifetime = 2.0
 one_shot = true
 speed_scale = 8.0
 process_material = SubResource( 3 )
 
 [connection signal="body_entered" from="." to="." method="_on_Ball_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_Ball_body_exited"]

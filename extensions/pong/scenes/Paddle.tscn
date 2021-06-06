@@ -5,7 +5,9 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 70, 5 )
 
-[node name="Paddle" type="KinematicBody2D"]
+[node name="Paddle" type="KinematicBody2D" groups=[
+"paddles",
+]]
 collision_mask = 6
 script = ExtResource( 1 )
 
