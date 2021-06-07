@@ -1,11 +1,13 @@
 extends Node2D
 
 var paddle_scene = preload("res://scenes/Paddle.tscn")
-var population_size = 30
+var population_size = 50
 var population: Array = []
 onready var neat: Node = $Neat
 var starting_position: Vector2 = Vector2.ZERO
 var generation_id: int = 1
+onready var hud: Node = $Hud
+var max_fitness: float = 0
 
 func _ready() -> void:
     # Initialize the objects
@@ -17,22 +19,31 @@ func _ready() -> void:
 
     # Prepare the population
     neat.prepare(population_size)
+    $Ball.set_linear_velocity(Vector2(600, 600))
+
+#    Quotations are going to be excluded
+#    print(OS.get_cmdline_args())
 
 
 func next_generation() -> void:
     var ball = $Ball
     remove_child(ball)
+    ball.set_position(Vector2(500, 150))
+    if generation_id % 2 != 0:
+        ball.set_linear_velocity(Vector2(600, 600))
+    else:
+        ball.set_linear_velocity(Vector2(-600, -600))
     add_child(ball)
 
-    var max_fitness = 0
     var fitnesses = ''
     for member in population:
         fitnesses += str(member.fitness) + ' '
         max_fitness = max(member.fitness, max_fitness)
 
     print(fitnesses)
-    print("New generation: " + str(generation_id) + ' ' + str(max_fitness))
     generation_id += 1
+    hud.set_generation(generation_id)
+    hud.set_max_fitness(max_fitness)
 
     # Finalize fitness, reset fitness, position and add to scene
     for member in population:

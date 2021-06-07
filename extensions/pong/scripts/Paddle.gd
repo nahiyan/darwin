@@ -21,7 +21,7 @@ func _process(delta: float) -> void:
 #    position.x = clamp(position.x + neat.evaluate(id, horizontal_distance, vertical_distance) * 25, extents.x, get_viewport().size.x - extents.x)
 
     var _collision: KinematicCollision2D = move_and_collide(
-        neat.evaluate(id, horizontal_distance, vertical_distance) * Vector2(1500, 0) * delta
+        neat.evaluate(id, horizontal_distance, vertical_distance) * Vector2(1000, 0) * delta
     )
 
 func reposition() -> void:
@@ -29,8 +29,8 @@ func reposition() -> void:
     position = Vector2(viewport_size.x / 2, viewport_size.y - 10)
 
 
-func reward() -> void:
-    fitness += 1
+func reward(amount: float) -> void:
+    fitness += amount
 
 
 func kill() -> void:

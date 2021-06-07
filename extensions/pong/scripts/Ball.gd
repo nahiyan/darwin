@@ -7,11 +7,6 @@ var cycles_count: int = 0 # Cycles count for current generation
 var trigger_next_generation: bool = false
 
 
-func _ready() -> void:
-    set_position(Vector2(500, 150))
-    set_linear_velocity(Vector2(600, 600))
-
-
 func _process(_delta: float) -> void:
     if abs(get_linear_velocity().x) > max_speed or abs(get_linear_velocity().y) > max_speed:
         var new_speed = get_linear_velocity().normalized()
@@ -30,7 +25,7 @@ func _on_Ball_body_entered(body: Node) -> void:
 #    ($Particles2D.process_material as ParticlesMaterial).direction = Vector3(-velocity_normal.x, -velocity_normal.y, 0)
 
     if body.is_in_group("paddles"):
-        body.reward()
+        body.reward(1)
         selection.append(body)
     elif body.is_in_group("harmful_boundaries"):
         trigger_next_generation = true
@@ -40,9 +35,13 @@ func _on_Ball_body_entered(body: Node) -> void:
 func _on_Ball_body_exited(body: Node) -> void:
     if body.is_in_group("paddles") and selection.size() > 0:
         main.kill_except(selection)
-        selection = []
         cycles_count += 1
 
         if cycles_count >= 5:
             print("Cycles count exhausted")
             trigger_next_generation = true
+
+            for item in selection:
+                item.reward(10)
+
+        selection = []

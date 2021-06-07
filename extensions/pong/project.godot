@@ -14,6 +14,10 @@ config/name="Pong"
 run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
 
+[debug]
+
+gdscript/warnings/unsafe_call_argument=true
+
 [display]
 
 window/size/resizable=false
