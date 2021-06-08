@@ -34,4 +34,5 @@ func reward(amount: float) -> void:
 
 
 func kill() -> void:
+    fitness = max(fitness - 1, 0)
     $"/root/Main".remove_child(self)

@@ -29,18 +29,15 @@ func next_generation() -> void:
     var ball = $Ball
     remove_child(ball)
     ball.set_position(Vector2(500, 150))
-    if generation_id % 2 != 0:
-        ball.set_linear_velocity(Vector2(600, 600))
-    else:
-        ball.set_linear_velocity(Vector2(-600, -600))
+    ball.set_linear_velocity(Vector2(600, 600))
     add_child(ball)
 
     var fitnesses = ''
     for member in population:
         fitnesses += str(member.fitness) + ' '
         max_fitness = max(member.fitness, max_fitness)
+    print(fitnesses + '\n')
 
-    print(fitnesses)
     generation_id += 1
     hud.set_generation(generation_id)
     hud.set_max_fitness(max_fitness)

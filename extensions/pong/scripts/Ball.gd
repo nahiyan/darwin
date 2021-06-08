@@ -5,6 +5,7 @@ var selection: Array = []  # selection for survivors in the current round
 onready var main: Node2D = $"/root/Main"
 var cycles_count: int = 0 # Cycles count for current generation
 var trigger_next_generation: bool = false
+onready var viewport_rect: Rect2 = get_viewport_rect()
 
 
 func _process(_delta: float) -> void:
@@ -25,7 +26,7 @@ func _on_Ball_body_entered(body: Node) -> void:
 #    ($Particles2D.process_material as ParticlesMaterial).direction = Vector3(-velocity_normal.x, -velocity_normal.y, 0)
 
     if body.is_in_group("paddles"):
-        body.reward(1)
+        body.reward(1 - abs(body.position.x - position.x) / viewport_rect.size.x)
         selection.append(body)
     elif body.is_in_group("harmful_boundaries"):
         trigger_next_generation = true
@@ -37,11 +38,11 @@ func _on_Ball_body_exited(body: Node) -> void:
         main.kill_except(selection)
         cycles_count += 1
 
-        if cycles_count >= 5:
-            print("Cycles count exhausted")
-            trigger_next_generation = true
-
-            for item in selection:
-                item.reward(10)
+#        if cycles_count >= 5:
+#            print("Cycles count exhausted")
+#            trigger_next_generation = true
+#
+#            for item in selection:
+#                item.reward(10)
 
         selection = []
