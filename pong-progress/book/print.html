@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html"><strong aria-hidden="true">2.</strong> Week 2</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -218,6 +218,56 @@
 </ul>
 </li>
 </ul>
+<h1 id="week-2-progress"><a class="header" href="#week-2-progress">Week 2 Progress</a></h1>
+<h2 id="goal-1"><a class="header" href="#goal-1">Goal</a></h2>
+<p>Build a new module of Darwin, featuring the C++ implementation of the NEAT algorithm. This
+will involve the development of an API that will act as a front-end of the module intended for
+connecting with the extension.</p>
+<h2 id="c-implementation-of-the-neat-algorithm"><a class="header" href="#c-implementation-of-the-neat-algorithm">C++ Implementation of the NEAT Algorithm</a></h2>
+<p>Since the extension, Pong, is developed using Godot, GDScript is used for doing all the scripting. GDScript, however, doesn't have a large community and isn't very popular. Moreover, it's designed for game scripting, not anything else.</p>
+<p>For general-purpose and high-performance programming, and also considering the fact that the NEAT algorithm's most popular implementation is based on C/C++, it's logical to do all the neuroevolution programming in C/C++.</p>
+<p>The official C++ implementation of the NEAT algorithm, however, isn't well documented and not very easy to use. This called for a hunt for much better libraries featuring the NEAT algorithm. Here are the CPP-based NEAT libraries that I found along the way:</p>
+<ul>
+<li><a href="http://www.multineat.com/">MultiNEAT</a></li>
+<li><a href="https://github.com/hav4ik/tinyai">hav4ik/tinyai</a></li>
+<li><a href="https://github.com/F3R70/NEAT">F3R70/NEAT</a></li>
+</ul>
+<p><strong>MultiNEAT</strong> appeared to be a well-structured and feature-rich NEAT library but it resulted in a lot of unexpected runtime errors, which were getting a bit too tedious to debug and fix. In short, the attempt to use MultiNEAT was a failure.</p>
+<p><strong>FER70/NEAT</strong> is just a slightly improved version of the official C++ implementation of the NEAT algorithm with nothing extra added on top, which I considered as a backup library if <strong>hav4ik/tinyai</strong> wouldn't work.</p>
+<p><strong>hav4ik/tinyai</strong> is a compact NEAT implementation in C++ that is straightforward and simply works out of the box. It has just all the features that was needed for powering the neuroevolution of the pong simulation.</p>
+<p>On a side note, a Rust implementation of the NEAT algorithm,  <a href="https://github.com/TLmaK0/rustneat">TLmaK0/rustneat</a>, also looked promising. However, Godot's FFI only supports C and C++, not Rust, which would mean that a C/C++ library would have to be created to talk with the Rust library on Godot's behalf, further complicating the process.</p>
+<p>Thus, <strong>hav4ik/tinyai</strong> has been chosen for integrating the NEAT algorithm into the extension.</p>
+<h2 id="development-of-the-api"><a class="header" href="#development-of-the-api">Development of the API</a></h2>
+<p>The API serves as the frontend of the NEAT module of Darwin, providing an interface for the extension to use the NEAT algorithm through GDScript.</p>
+<p>The API is simple and hides the complexity of the module, exposing only the following methods:</p>
+<ul>
+<li>prepare</li>
+<li>evaluate</li>
+<li>setFitness</li>
+<li>nextGeneration</li>
+</ul>
+<p>Internally, it holds the following properties:</p>
+<ul>
+<li>pool</li>
+<li>genomes</li>
+<li>neuralNetworks</li>
+</ul>
+<h3 id="properties"><a class="header" href="#properties">Properties</a></h3>
+<h4 id="pool"><a class="header" href="#pool">pool</a></h4>
+<p><code>pool</code> represents the pool of genomes in the population, along with innovation tracking. It acts as the center of the whole system: handling settings, evolution, etc.</p>
+<h4 id="genomes"><a class="header" href="#genomes">genomes</a></h4>
+<p><code>genomes</code> holds the genomes of all species in the current generation. The list is cleared and populated at the start of every generation.</p>
+<h4 id="neuralnetworks"><a class="header" href="#neuralnetworks">neuralNetworks</a></h4>
+<p><code>neuralNetworks</code> is a list of the neural networks associated with each genome; or rather, the phenotype of each genotype. Since the neural networks, which are needed several times in a generation, have to be generated from a genome every single time, it's efficient to store them in a place instead of spawning them unnecessarily.</p>
+<h3 id="methods"><a class="header" href="#methods">Methods</a></h3>
+<h4 id="prepare"><a class="header" href="#prepare">prepare</a></h4>
+<p>This method takes the parameters and initiates the <code>pool</code> along with the rest of the properties for the initial generation. It's called once at the beginning of the session.</p>
+<h4 id="evaluate"><a class="header" href="#evaluate">evaluate</a></h4>
+<p>Called by each genome to get the output value from the input values by evaluating the associated neural network.</p>
+<h4 id="setfitness"><a class="header" href="#setfitness">setFitness</a></h4>
+<p>Registers the fitness value of a specific genome.</p>
+<h4 id="nextgeneration"><a class="header" href="#nextgeneration">nextGeneration</a></h4>
+<p>Proceeds to the next generation by triggering the pool and updating the list of genotypes and phenotypes (neural networks).</p>
 
                     </main>
 
