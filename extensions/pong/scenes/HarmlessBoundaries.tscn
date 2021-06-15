@@ -4,7 +4,7 @@
 extents = Vector2( 512, 10 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 10, 300 )
+extents = Vector2( 10, 320 )
 
 [node name="HarmlessBoundaries" type="StaticBody2D" groups=[
 "harmless_boundaries",

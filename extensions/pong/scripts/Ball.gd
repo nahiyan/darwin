@@ -26,9 +26,12 @@ func _on_Ball_body_entered(body: Node) -> void:
 #    ($Particles2D.process_material as ParticlesMaterial).direction = Vector3(-velocity_normal.x, -velocity_normal.y, 0)
 
     if body.is_in_group("paddles"):
-        body.reward(1 - abs(body.position.x - position.x) / viewport_rect.size.x)
+        body.reward((1 - abs(body.position.x - position.x) / viewport_rect.size.x) * 10)
         selection.append(body)
     elif body.is_in_group("harmful_boundaries"):
+        for group in main.population:
+            for member in group.members:
+                member.reward(1 - abs(body.position.x - position.x) / viewport_rect.size.x)
         trigger_next_generation = true
 
 
@@ -38,11 +41,11 @@ func _on_Ball_body_exited(body: Node) -> void:
         main.kill_except(selection)
         cycles_count += 1
 
-#        if cycles_count >= 5:
-#            print("Cycles count exhausted")
-#            trigger_next_generation = true
-#
-#            for item in selection:
-#                item.reward(10)
+        if cycles_count >= 5:
+            print("Cycles count exhausted")
+            trigger_next_generation = true
+
+            for item in selection:
+                item.reward(10)
 
         selection = []

@@ -1,60 +1,98 @@
 extends Node2D
 
 var paddle_scene = preload("res://scenes/Paddle.tscn")
-var population_size = 50
+var paddle_group_scene = preload("res://scenes/PaddleGroup.tscn")
+var population_size = 30
 var population: Array = []
 onready var neat: Node = $Neat
 var starting_position: Vector2 = Vector2.ZERO
 var generation_id: int = 1
 onready var hud: Node = $Hud
 var max_fitness: float = 0
+var ball_velocity: Vector2 = Vector2(600, 600)
+var ball_starting_position: Vector2 = Vector2(1024 / 2, 600 / 2)
+onready var ball: Node2D = $Ball
 
 func _ready() -> void:
     # Initialize the objects
     for i in range(population_size):
-        var paddle: Node2D = paddle_scene.instance()
-        paddle.id = i + 1
-        add_child(paddle)
-        population.append(paddle)
+        var paddle_group: Node = paddle_group_scene.instance()
+        add_child(paddle_group)
+        population.append(paddle_group)
+
+        var paddle_left: Node2D = paddle_scene.instance()
+        var paddle_right: Node2D = paddle_scene.instance()
+        paddle_left.id = i + 1
+        paddle_left.type = 0
+        paddle_right.id = i + 1
+        paddle_right.type = 1
+
+        paddle_group.add_child(paddle_left)
+        paddle_group.add_child(paddle_right)
+        paddle_group.members.append(paddle_left)
+        paddle_group.members.append(paddle_right)
+        paddle_left.reposition_left()
+        paddle_right.reposition_right()
+
 
     # Prepare the population
     neat.prepare(population_size)
-    $Ball.set_linear_velocity(Vector2(600, 600))
+    $Ball.set_position(ball_starting_position)
+    $Ball.set_linear_velocity(ball_velocity)
 
 #    Quotations are going to be excluded
 #    print(OS.get_cmdline_args())
 
 
 func next_generation() -> void:
-    var ball = $Ball
     remove_child(ball)
-    ball.set_position(Vector2(500, 150))
-    ball.set_linear_velocity(Vector2(600, 600))
+    ball.set_position(ball_starting_position)
+    ball.set_linear_velocity(ball_velocity)
     add_child(ball)
 
-    var fitnesses = ''
-    for member in population:
-        fitnesses += str(member.fitness) + ' '
-        max_fitness = max(member.fitness, max_fitness)
-    print(fitnesses + '\n')
+    var scores = []
+    for group in population:
+        var score: float = 0
+        for member in group.members:
+            score += member.fitness
+
+        scores.append(score)
+        max_fitness = max(score, max_fitness)
+
+    scores.sort()
+    var message = ''
+    for i in population_size:
+        message += str(scores[population_size - i - 1]) + ' '
+    print(message, '\n')
 
     generation_id += 1
     hud.set_generation(generation_id)
     hud.set_max_fitness(max_fitness)
 
     # Finalize fitness, reset fitness, position and add to scene
-    for member in population:
-        neat.set_fitness(member.id, member.fitness)
-        member.fitness = 0
-        if member.get_parent() == null:
-            add_child(member)
-        else:
-            member.reposition()
+    for group in population:
+        var score: float = 0
+        for member in group.members:
+            score += member.fitness
+            member.fitness = 0
+
+            if member.get_parent() == null:
+                group.add_child(member)
+
+            if member.type == 0:
+                member.reposition_left()
+            else:
+                member.reposition_right()
+
+        if group.members.size() > 0:
+            neat.set_fitness(group.members[0].id, score)
 
     neat.next_generation()
 
 
 func kill_except(exclusion: Array) -> void:
-    for member in population:
-        if !exclusion.has(member) and member.get_parent() != null:
-            member.kill()
+    for group in population:
+        for member in group.members:
+            if !exclusion.has(member) and member.get_parent() != null:
+                member.reward(1 - abs(member.position.x - ball.position.x) / get_viewport_rect().size.x)
+                member.kill()
