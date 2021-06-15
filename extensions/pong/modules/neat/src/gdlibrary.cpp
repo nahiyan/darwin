@@ -11,7 +11,6 @@ class Neat : public Reference {
     GODOT_CLASS(Neat, Reference)
 
 private:
-    vector<Neat*> numbers;
     shared_ptr<neat::pool> pool;
     vector<neat::genome*> genomes;
     vector<ann::neuralnet> neuralNetworks;
