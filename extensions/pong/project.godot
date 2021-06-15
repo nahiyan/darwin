@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "Configuration",
+"language": "GDScript",
+"path": "res://scripts/Configuration.gd"
+} ]
+_global_script_class_icons={
+"Configuration": ""
+}
+
 [application]
 
 config/name="Pong"
