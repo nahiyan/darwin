@@ -6,6 +6,15 @@ onready var main: Node2D = $"/root/Main"
 var cycles_count: int = 0 # Cycles count for current generation
 var trigger_next_generation: bool = false
 onready var viewport_rect: Rect2 = get_viewport_rect()
+var harmful: bool = false
+
+
+func inverse_harmful() -> void:
+    harmful = !harmful
+    if harmful:
+        set_modulate(Color(1, .392, .392, 1))
+    else:
+        set_modulate(Color(1, 1, 1, 1))
 
 
 func _process(_delta: float) -> void:
@@ -26,21 +35,28 @@ func _on_Ball_body_entered(body: Node) -> void:
 #    ($Particles2D.process_material as ParticlesMaterial).direction = Vector3(-velocity_normal.x, -velocity_normal.y, 0)
 
     if body.is_in_group("paddles"):
-        body.reward((1 - abs(body.position.x - position.x) / viewport_rect.size.x) * 10)
+        if harmful:
+            body.penalize_ball_hit()
+        else:
+            body.reward_ball_hit()
+
         selection.append(body)
     elif body.is_in_group("harmful_boundaries"):
-        for group in main.population:
-            for member in group.members:
-                member.reward(1 - abs(body.position.x - position.x) / viewport_rect.size.x)
+        main.reward_all_paddles()
         trigger_next_generation = true
 
 
 
 func _on_Ball_body_exited(body: Node) -> void:
     if body.is_in_group("paddles") and selection.size() > 0:
-        main.kill_except(selection)
-        cycles_count += 1
+        main.reward_all_paddles()
+        if !harmful:
+            main.kill_except(selection)
+        else:
+#            main.kill(selection)
+            main.call_deferred("kill", selection)
 
+        cycles_count += 1
         if cycles_count >= 5:
             print("Cycles count exhausted")
             trigger_next_generation = true

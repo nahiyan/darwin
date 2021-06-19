@@ -42,6 +42,7 @@ func _ready() -> void:
 
 #    Quotations are going to be excluded
 #    print(OS.get_cmdline_args())
+#    Configuration.parse('{"speed": 4}')
 
 
 func next_generation() -> void:
@@ -49,6 +50,7 @@ func next_generation() -> void:
     ball.set_position(ball_starting_position)
     ball.set_linear_velocity(ball_velocity)
     add_child(ball)
+    ball.inverse_harmful()
 
     var scores = []
     for group in population:
@@ -94,5 +96,19 @@ func kill_except(exclusion: Array) -> void:
     for group in population:
         for member in group.members:
             if !exclusion.has(member) and member.get_parent() != null:
-                member.reward(1 - abs(member.position.x - ball.position.x) / get_viewport_rect().size.x)
                 member.kill()
+
+func kill(inclusion: Array) -> void:
+    for member in inclusion:
+        if member.get_parent() != null:
+            member.kill()
+
+
+func reward_all_paddles() -> void:
+    for group in population:
+        for member in group.members:
+            if member.get_parent() != null:
+                if ball.harmful:
+                    member.reward_for_avoiding(ball)
+                else:
+                    member.reward_for_approaching(ball)

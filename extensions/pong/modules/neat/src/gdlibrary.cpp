@@ -45,7 +45,7 @@ public:
 
     void prepare(int population_size)
     {
-        pool = make_shared<neat::pool>(2, 1, 0, false);
+        pool = make_shared<neat::pool>(3, 1, 0, false);
         pool->speciating_parameters.population = population_size;
         srand(time(NULL));
 
@@ -57,9 +57,10 @@ public:
         genomes[id]->fitness = fitness;
     }
 
-    double evaluate(int id, float horizontalDistance, float verticalDistance)
+    double evaluate(int id, bool harmfulBall, float horizontalDistance, float verticalDistance)
     {
         vector<double> inputs, outputs(1, 0.0);
+        inputs.push_back(harmfulBall);
         inputs.push_back(horizontalDistance);
         inputs.push_back(verticalDistance);
         neuralNetworks[id].evaluate(inputs, outputs);
