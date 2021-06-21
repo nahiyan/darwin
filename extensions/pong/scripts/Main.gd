@@ -2,15 +2,13 @@ extends Node2D
 
 var paddle_scene = preload("res://scenes/Paddle.tscn")
 var paddle_group_scene = preload("res://scenes/PaddleGroup.tscn")
-var population_size = 30
+var population_size = 100
 var population: Array = []
 onready var neat: Node = $Neat
 var starting_position: Vector2 = Vector2.ZERO
 var generation_id: int = 1
 onready var hud: Node = $Hud
 var max_fitness: float = 0
-var ball_velocity: Vector2 = Vector2(600, 600)
-var ball_starting_position: Vector2 = Vector2(1024 / 2, 600 / 2)
 onready var ball: Node2D = $Ball
 
 func _ready() -> void:
@@ -21,24 +19,23 @@ func _ready() -> void:
         population.append(paddle_group)
 
         var paddle_left: Node2D = paddle_scene.instance()
-        var paddle_right: Node2D = paddle_scene.instance()
+#        var paddle_right: Node2D = paddle_scene.instance()
         paddle_left.id = i + 1
         paddle_left.type = 0
-        paddle_right.id = i + 1
-        paddle_right.type = 1
+#        paddle_right.id = i + 1
+#        paddle_right.type = 1
 
         paddle_group.add_child(paddle_left)
-        paddle_group.add_child(paddle_right)
+#        paddle_group.add_child(paddle_right)
         paddle_group.members.append(paddle_left)
-        paddle_group.members.append(paddle_right)
+#        paddle_group.members.append(paddle_right)
         paddle_left.reposition_left()
-        paddle_right.reposition_right()
+#        paddle_right.reposition_right()
 
 
     # Prepare the population
     neat.prepare(population_size)
-    $Ball.set_position(ball_starting_position)
-    $Ball.set_linear_velocity(ball_velocity)
+    $Ball.reset()
 
 #    Quotations are going to be excluded
 #    print(OS.get_cmdline_args())
@@ -47,10 +44,8 @@ func _ready() -> void:
 
 func next_generation() -> void:
     remove_child(ball)
-    ball.set_position(ball_starting_position)
-    ball.set_linear_velocity(ball_velocity)
+    ball.reset()
     add_child(ball)
-    ball.inverse_harmful()
 
     var scores = []
     for group in population:
