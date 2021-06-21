@@ -107,3 +107,9 @@ func reward_all_paddles() -> void:
                     member.reward_for_avoiding(ball)
                 else:
                     member.reward_for_approaching(ball)
+
+
+func force_reset_ball() -> void:
+    ball.sleeping = true
+    ball.reset()
+    ball.sleeping = false

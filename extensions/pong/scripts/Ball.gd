@@ -9,6 +9,7 @@ onready var viewport_rect: Rect2 = get_viewport_rect()
 var harmful: bool = false
 var initial_velocity: Vector2 = Vector2(600, 600)
 var starting_position: Vector2 = Vector2(512, 20)
+var reinstantiate_paddles = true
 
 
 func reset() -> void:
@@ -35,10 +36,18 @@ func _physics_process(_delta: float) -> void:
         trigger_next_generation = false
         cycles_count = 0
 
+    if reinstantiate_paddles:
+        for group in main.population:
+            for member in group.members:
+                if member.get_parent() == null:
+                    group.add_child(member)
+
+        reinstantiate_paddles = false
+
     # Prevent ball from leaving the viewport
     var boundaries: Vector2 = get_viewport_rect().size
     if position.x <= -10 or position.x >= boundaries.x + 10 or position.y <= -10  or position.y >= boundaries.y + 10:
-        reset()
+        main.force_reset_ball()
 
 
 func _on_Ball_body_entered(body: Node) -> void:
@@ -79,10 +88,10 @@ func _on_Ball_body_exited(body: Node) -> void:
                 print("Cycles count exhausted (first stage)")
                 toggle_harmful()
                 cycles_count = 0
+                reinstantiate_paddles = true
             else:
                 print("Cycles count exhausted (final stage)")
                 trigger_next_generation = true
                 toggle_harmful()
-
 
         selection = []
