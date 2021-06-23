@@ -1,15 +1,17 @@
 extends Node2D
 
+var generation_id: int = 1
+onready var hud: Node = $Hud
+var max_fitness: float = 0
+var starting_position: Vector2 = Vector2.ZERO
 var paddle_scene = preload("res://scenes/Paddle.tscn")
 var paddle_group_scene = preload("res://scenes/PaddleGroup.tscn")
 var population_size = 100
 var population: Array = []
 onready var neat: Node = $Neat
-var starting_position: Vector2 = Vector2.ZERO
-var generation_id: int = 1
-onready var hud: Node = $Hud
-var max_fitness: float = 0
 onready var ball: Node2D = $Ball
+onready var configuration: Configuration = Configuration.new()
+
 
 func _ready() -> void:
     # Initialize the objects
@@ -32,14 +34,29 @@ func _ready() -> void:
         paddle_left.reposition_left()
 #        paddle_right.reposition_right()
 
-
     # Prepare the population
-    neat.prepare(population_size)
+    configuration.parse('{"speed": 1}')
+    neat.prepare(
+        population_size,
+        configuration.gs_c_disjoints_difference,
+        configuration.gs_c_weights_difference,
+        configuration.gs_c_overall,
+        configuration.species_staleness_threshold,
+        configuration.connection_mutation,
+        configuration.perturb,
+        configuration.crossover,
+        configuration.link_mutation,
+        configuration.node_mutation,
+        configuration.bias_mutation,
+        configuration.disable_mutation,
+        configuration.enable_mutation
+    )
+
     $Ball.reset()
+
 
 #    Quotations are going to be excluded
 #    print(OS.get_cmdline_args())
-#    Configuration.parse('{"speed": 4}')
 
 
 func next_generation() -> void:
@@ -90,8 +107,9 @@ func next_generation() -> void:
 func kill_except(exclusion: Array) -> void:
     for group in population:
         for member in group.members:
-            if !exclusion.has(member) and member.get_parent() != null:
+            if ! exclusion.has(member) and member.get_parent() != null:
                 member.kill()
+
 
 func kill(inclusion: Array) -> void:
     for member in inclusion:
@@ -111,5 +129,6 @@ func reward_all_paddles() -> void:
 
 func force_reset_ball() -> void:
     ball.sleeping = true
+    print("Reset ball position by force")
     ball.reset()
     ball.sleeping = false

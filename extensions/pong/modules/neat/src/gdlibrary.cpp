@@ -43,9 +43,33 @@ public:
         }
     }
 
-    void prepare(int population_size)
+    void prepare(int population_size, double delta_disjoint, double delta_weights, double delta_threshold, unsigned int stale_species, double connection_mutate_chance, double perturb_chance, double crossover_chance, double link_mutation_chance, double node_mutation_chance, double bias_mutation_chance, double disable_mutation_chance, double enable_mutation_chance)
     {
-        pool = make_shared<neat::pool>(3, 1, 0, false);
+        neat::mutation_rate_container mutation_rates;
+        neat::speciating_parameter_container speciating_parameters;
+
+        // population size
+        speciating_parameters.population = population_size;
+
+        // deltas
+        speciating_parameters.delta_disjoint = delta_disjoint;
+        speciating_parameters.delta_weights = delta_weights;
+        speciating_parameters.delta_threshold = delta_threshold;
+
+        // stale species
+        speciating_parameters.stale_species = stale_species;
+
+        // probabilities
+        mutation_rates.connection_mutate_chance = connection_mutate_chance;
+        mutation_rates.perturb_chance = perturb_chance;
+        mutation_rates.crossover_chance = crossover_chance;
+        mutation_rates.link_mutation_chance = link_mutation_chance;
+        mutation_rates.node_mutation_chance = node_mutation_chance;
+        mutation_rates.bias_mutation_chance = bias_mutation_chance;
+        mutation_rates.disable_mutation_chance = disable_mutation_chance;
+        mutation_rates.enable_mutation_chance = enable_mutation_chance;
+
+        pool = make_shared<neat::pool>(3, 1, speciating_parameters, mutation_rates, 0, false);
         pool->speciating_parameters.population = population_size;
         srand(time(NULL));
 

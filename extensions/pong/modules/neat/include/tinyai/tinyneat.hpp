@@ -23,7 +23,7 @@
 
 namespace neat {
 
-typedef struct {
+struct mutation_rate_container {
     double connection_mutate_chance = 0.25;
     double perturb_chance = 0.90;
     double crossover_chance = 0.75;
@@ -36,9 +36,9 @@ typedef struct {
 
     void read(std::ifstream& o);
     void write(std::ofstream& o, std::string prefix);
-} mutation_rate_container;
+};
 
-typedef struct {
+struct speciating_parameter_container {
     unsigned int population = 240;
     double delta_disjoint = 2.0;
     double delta_weights = 0.4;
@@ -47,23 +47,23 @@ typedef struct {
 
     void read(std::ifstream& o);
     void write(std::ofstream& o, std::string prefix);
-} speciating_parameter_container;
+};
 
-typedef struct {
+struct network_info_container {
     unsigned int input_size;
     unsigned int bias_size;
     unsigned int output_size;
     unsigned int functional_nodes;
     bool recurrent;
-} network_info_container;
+};
 
-typedef struct {
+struct gene {
     unsigned int innovation_num = -1;
     unsigned int from_node = -1;
     unsigned int to_node = -1;
     double weight = 0.0;
     bool enabled = true;
-} gene;
+};
 
 class genome {
 private:
@@ -92,7 +92,7 @@ public:
 };
 
 /* a specie is group of genomes which differences is smaller than some threshold */
-typedef struct {
+struct specie {
     unsigned int top_fitness = 0;
     unsigned int average_fitness = 0;
     unsigned int staleness = 0;
@@ -101,7 +101,7 @@ typedef struct {
     std::string name;
 #endif
     std::vector<genome> genomes;
-} specie;
+};
 
 class innovation_container {
 private:
@@ -191,7 +191,9 @@ public:
     std::list<specie> species;
 
     // constructor
-    pool(unsigned int input, unsigned int output, unsigned int bias = 1,
+    pool(unsigned int input, unsigned int output,
+        speciating_parameter_container speciating_parameters, mutation_rate_container mutation_rates,
+        unsigned int bias = 1,
         bool rec = false)
     {
         this->network_info.input_size = input;
@@ -199,6 +201,9 @@ public:
         this->network_info.bias_size = bias;
         this->network_info.functional_nodes = input + output + bias;
         this->network_info.recurrent = rec;
+
+        this->speciating_parameters = speciating_parameters;
+        this->mutation_rates = mutation_rates;
 
         // seed the mersenne twister with
         // a random number from our computer
