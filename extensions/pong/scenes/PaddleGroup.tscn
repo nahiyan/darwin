@@ -2,5 +2,7 @@
 
 [ext_resource path="res://scripts/PaddleGroup.gd" type="Script" id=1]
 
-[node name="Node" type="Node"]
+[node name="PaddleGroup" type="Node" groups=[
+"paddle_groups",
+]]
 script = ExtResource( 1 )

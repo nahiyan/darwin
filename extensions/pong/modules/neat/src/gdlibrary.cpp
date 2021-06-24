@@ -70,7 +70,6 @@ public:
         mutation_rates.enable_mutation_chance = enable_mutation_chance;
 
         pool = make_shared<neat::pool>(3, 1, speciating_parameters, mutation_rates, 0, false);
-        pool->speciating_parameters.population = population_size;
         srand(time(NULL));
 
         update();
@@ -78,18 +77,28 @@ public:
 
     void setFitness(int id, float fitness)
     {
-        genomes[id]->fitness = fitness;
+        try {
+            genomes[id]->fitness = fitness;
+        } catch (...) {
+            Godot::print("ERror occurred while trying to set fitness.");
+        }
     }
 
     double evaluate(int id, bool harmfulBall, float horizontalDistance, float verticalDistance)
     {
-        vector<double> inputs, outputs(1, 0.0);
-        inputs.push_back(harmfulBall);
-        inputs.push_back(horizontalDistance);
-        inputs.push_back(verticalDistance);
-        neuralNetworks[id].evaluate(inputs, outputs);
+        try {
+            vector<double> inputs, outputs(1, 0.0);
+            inputs.push_back(harmfulBall);
+            inputs.push_back(horizontalDistance);
+            inputs.push_back(verticalDistance);
+            neuralNetworks[id].evaluate(inputs, outputs);
 
-        return outputs[0];
+            return outputs[0];
+        } catch (...) {
+            Godot::print("Error occurred while trying to evaluate.");
+
+            return 0;
+        }
     }
 
     void nextGeneration()

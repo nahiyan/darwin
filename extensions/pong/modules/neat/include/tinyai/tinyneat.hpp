@@ -191,10 +191,7 @@ public:
     std::list<specie> species;
 
     // constructor
-    pool(unsigned int input, unsigned int output,
-        speciating_parameter_container speciating_parameters, mutation_rate_container mutation_rates,
-        unsigned int bias = 1,
-        bool rec = false)
+    pool(unsigned int input, unsigned int output, speciating_parameter_container speciating_parameters, mutation_rate_container mutation_rates, unsigned int bias = 1, bool rec = false)
     {
         this->network_info.input_size = input;
         this->network_info.output_size = output;
