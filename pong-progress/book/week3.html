@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Week 2 - CSE498R Extended Work</title>
+        <title>Week 3 - CSE498R Extended Work</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html" class="active"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html" class="active"><strong aria-hidden="true">3.</strong> Week 3</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -163,71 +163,122 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="week-2-progress"><a class="header" href="#week-2-progress">Week 2 Progress</a></h1>
+                        <h1 id="week-3-progress"><a class="header" href="#week-3-progress">Week 3 Progress</a></h1>
 <h2 id="goal"><a class="header" href="#goal">Goal</a></h2>
-<p>Build a new module of Darwin, featuring the C++ implementation of the NEAT algorithm. This
-will involve the development of an API that will act as a front-end of the module intended for
-connecting with the extension.</p>
-<h2 id="c-implementation-of-the-neat-algorithm"><a class="header" href="#c-implementation-of-the-neat-algorithm">C++ Implementation of the NEAT Algorithm</a></h2>
-<p>Since the extension, Pong, is developed using Godot, GDScript is used for doing all the scripting. GDScript, however, doesn't have a large community and isn't very popular. Moreover, it's designed for game scripting, not anything else.</p>
-<p>For general-purpose and high-performance programming, and also considering the fact that the NEAT algorithm's most popular implementation is based on C/C++, it's logical to do all the neuroevolution programming in C/C++.</p>
-<p>The official C++ implementation of the NEAT algorithm, however, isn't well documented and not very easy to use. This called for a hunt for much better libraries featuring the NEAT algorithm. Here are the CPP-based NEAT libraries that I found along the way:</p>
+<p>Integrate the NEAT algorithm module, along with all other required modules of Darwin, into the extension. The extension needs to handle the evaluation of the genomes, calculating fitness values at the end of every generation, and connecting each player instance with its respective phenotype.</p>
+<h2 id="connecting-the-library-with-godot"><a class="header" href="#connecting-the-library-with-godot">Connecting the Library with Godot</a></h2>
+<p>The extension, Pong, uses the game framework, Godot, as its base. As a result, for connecting the NEAT algorithm's module, which is a library, to Godot, GDNative has to be used. GDNative is a mechanism for connecting the library with the game framework, Godot.</p>
+<p>To do so, the library, written in C++ and comprises the API built in the previous week, has to be linked with godot-cpp, a C++ library containing everything required to let Godot load and use it.</p>
+<p>Once connected, the library and its functions can be accessed through GDScript, as with any other GDScript-based function.</p>
+<h2 id="controlling-the-paddles"><a class="header" href="#controlling-the-paddles">Controlling the Paddles</a></h2>
+<pre><code class="language-python">func _process(delta: float) -&gt; void:
+    var extents: Vector2 = ($CollisionShape2D.shape as RectangleShape2D).extents
+
+    var ball_radius: float = (ball.get_node(&quot;CollisionShape2D&quot;).shape as CircleShape2D).radius
+    var horizontal_distance: float = position.x - ball.position.x
+    var vertical_distance: float = abs(position.y - extents.y - ball.position.y - ball_radius)
+
+    var evaluation = neat.evaluate(id, ball.harmful, horizontal_distance, vertical_distance)
+    var _collision: KinematicCollision2D = move_and_collide(
+        evaluation * Vector2(1000, 0) * delta
+    )
+</code></pre>
+<p>Each paddle is controlled every frame/step of the game framework by the respective neural network. The vertical and horizontal distance, along with the type of the ball, is fed into the neural network through its input layer.</p>
+<p>The output is simply a value ranging from -1 to 1 (inclusive) that is used to determine the horizontal velocity of the paddle.</p>
+<p><code>neat::evaluate</code> belongs to the NEAT algorithm module, which plays the role of evaluating the input parameters using the neural network.</p>
+<p>This is how it's handled by the C++ library:</p>
+<pre><code class="language-cpp">double evaluate(int id, bool harmfulBall, float horizontalDistance, float verticalDistance)
+{
+    try {
+        vector&lt;double&gt; inputs, outputs(1, 0.0);
+        inputs.push_back(harmfulBall);
+        inputs.push_back(horizontalDistance);
+        inputs.push_back(verticalDistance);
+        neuralNetworks[id].evaluate(inputs, outputs);
+
+        return outputs[0];
+    } catch (...) {
+        Godot::print(&quot;Error occurred while trying to evaluate.&quot;);
+
+        return 0;
+    }
+}
+</code></pre>
+<h2 id="calculating-the-fitness-of-each-genome"><a class="header" href="#calculating-the-fitness-of-each-genome">Calculating the Fitness of Each Genome</a></h2>
+<p>Whenever the ball hits a paddle or the bottom boundary, the fitness values are updated for the genomes of each paddle.</p>
 <ul>
-<li><a href="http://www.multineat.com/">MultiNEAT</a></li>
-<li><a href="https://github.com/hav4ik/tinyai">hav4ik/tinyai</a></li>
-<li><a href="https://github.com/F3R70/NEAT">F3R70/NEAT</a></li>
+<li>
+<p>Each genome is rewarded for its horizontal distance to the ball, depending on whether the ball is harmful or harmless.</p>
+</li>
+<li>
+<p>A harmless ball when hit successfully by a paddle is rewarded, whereas hitting a harmful ball penalizes the paddle that hit it.</p>
+</li>
 </ul>
-<p><strong>MultiNEAT</strong> appeared to be a well-structured and feature-rich NEAT library but it resulted in a lot of unexpected runtime errors, which were getting a bit too tedious to debug and fix. In short, the attempt to use MultiNEAT was a failure.</p>
-<p><strong>FER70/NEAT</strong> is just a slightly improved version of the official C++ implementation of the NEAT algorithm with nothing extra added on top, which I considered as a backup library if <strong>hav4ik/tinyai</strong> wouldn't work.</p>
-<p><strong>hav4ik/tinyai</strong> is a compact NEAT implementation in C++ that is straightforward and simply works out of the box. It has just all the features that was needed for powering the neuroevolution of the pong simulation.</p>
-<p>On a side note, a Rust implementation of the NEAT algorithm,  <a href="https://github.com/TLmaK0/rustneat">TLmaK0/rustneat</a>, also looked promising. However, Godot's FFI only supports C and C++, not Rust, which would mean that a C/C++ library would have to be created to talk with the Rust library on Godot's behalf, further complicating the process.</p>
-<p>Thus, <strong>hav4ik/tinyai</strong> has been chosen for integrating the NEAT algorithm into the extension.</p>
-<h2 id="development-of-the-api"><a class="header" href="#development-of-the-api">Development of the API</a></h2>
-<p>The API serves as the frontend of the NEAT module of Darwin, providing an interface for the extension to use the NEAT algorithm through GDScript.</p>
-<p>The API is simple and hides the complexity of the module, exposing only the following methods:</p>
-<ul>
-<li>prepare</li>
-<li>evaluate</li>
-<li>setFitness</li>
-<li>nextGeneration</li>
-</ul>
-<p>Internally, it holds the following properties:</p>
-<ul>
-<li>pool</li>
-<li>genomes</li>
-<li>neuralNetworks</li>
-</ul>
-<h3 id="properties"><a class="header" href="#properties">Properties</a></h3>
-<h4 id="pool"><a class="header" href="#pool">pool</a></h4>
-<p><code>pool</code> represents the pool of genomes in the population, along with innovation tracking. It acts as the center of the whole system: handling settings, evolution, etc.</p>
-<h4 id="genomes"><a class="header" href="#genomes">genomes</a></h4>
-<p><code>genomes</code> holds the genomes of all species in the current generation. The list is cleared and populated at the start of every generation.</p>
-<h4 id="neuralnetworks"><a class="header" href="#neuralnetworks">neuralNetworks</a></h4>
-<p><code>neuralNetworks</code> is a list of the neural networks associated with each genome; or rather, the phenotype of each genotype. Since the neural networks, which are needed several times in a generation, have to be generated from a genome every single time, it's efficient to store them in a place instead of spawning them unnecessarily.</p>
-<h3 id="methods"><a class="header" href="#methods">Methods</a></h3>
-<h4 id="prepare"><a class="header" href="#prepare">prepare</a></h4>
-<p>This method takes the parameters and initiates the <code>pool</code> along with the rest of the properties for the initial generation. It's called once at the beginning of the session.</p>
-<h4 id="evaluate"><a class="header" href="#evaluate">evaluate</a></h4>
-<p>Called by each genome to get the output value from the input values by evaluating the associated neural network.</p>
-<h4 id="setfitness"><a class="header" href="#setfitness">setFitness</a></h4>
-<p>Registers the fitness value of a specific genome.</p>
-<h4 id="nextgeneration"><a class="header" href="#nextgeneration">nextGeneration</a></h4>
-<p>Proceeds to the next generation by triggering the pool and updating the list of genotypes and phenotypes (neural networks).</p>
+<p>This is how the fitness values are handled for the current population to evolve to the next:</p>
+<pre><code class="language-python">func next_generation() -&gt; void:
+    ball.cycles_count = 0
+    reset_ball()
+
+    for group in population:
+        var score: float = 0
+        for member in group.members:
+            score += member.fitness
+
+        max_fitness = max(score, max_fitness)
+
+    generation_id += 1
+    hud.set_generation(generation_id)
+    hud.set_max_fitness(max_fitness)
+
+    # Finalize the fitness, reset fitness and position
+    for group in population:
+        var score: float = 0
+        for member in group.members:
+            score += member.fitness
+            member.fitness = 0
+
+        if group.members.size() &gt; 0:
+            neat.set_fitness(group.members[0].id, score)
+
+    neat.next_generation()
+
+    # Add dead paddles to the scene
+    revive_dead_paddles()
+</code></pre>
+<h2 id="connecting-the-phenotypes-with-the-paddles"><a class="header" href="#connecting-the-phenotypes-with-the-paddles">Connecting the Phenotypes With the Paddles</a></h2>
+<p>Each paddle instance is going to have an ID representing it, allocated during the beginning of the evolution session. This is going to be used by the library for identifying the genome to retrieve its phenotype, evaluate it, and register its fitness value.</p>
+<p>The genomes and their associated neural networks (phenotypes) are stored in the library in ordered lists:</p>
+<pre><code class="language-cpp">shared_ptr&lt;neat::pool&gt; pool;
+vector&lt;neat::genome*&gt; genomes;
+vector&lt;ann::neuralnet&gt; neuralNetworks; 
+</code></pre>
+<p>This is how the list is populated:</p>
+<pre><code class="language-cpp">void update()
+{
+    genomes.clear();
+    neuralNetworks.clear();
+
+    auto genomeSpeciePairs = pool-&gt;get_genomes();
+    for (auto pair : genomeSpeciePairs) {
+        genomes.push_back(pair.second);
+
+        ann::neuralnet neuralNetwork;
+        neuralNetwork.from_genome(*pair.second);
+        neuralNetworks.push_back(neuralNetwork);
+    }
+}
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="week1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="week2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
-                        
-                            <a rel="next" href="week3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -237,15 +288,11 @@ connecting with the extension.</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="week1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="week2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
-                
-                    <a rel="next" href="week3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
                 
             </nav>
 
