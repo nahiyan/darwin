@@ -1,7 +1,7 @@
 import '../sass/base.sass'
 import { Elm } from '../elm/src/Main.elm'
 import '@fortawesome/fontawesome-free/js/all'
-import { exec } from 'child_process'
+import { spawn } from 'child_process'
 const os = require('os')
 const path = require('path')
 const toml = require('toml')
@@ -46,23 +46,24 @@ window.addEventListener('DOMContentLoaded', () => {
       // Create models file if it doesn't exist
       if (!generateRandomModels && !fs.existsSync(modelsFilePath)) { fs.writeFileSync(modelsFilePath, JSON.stringify({ models: [] })) }
 
-      const preparedConfig = JSON.stringify(prepareConfig(extensionName, generateRandomModels)).replace(/"/g, '\\"')
+      const preparedConfig = JSON.stringify(prepareConfig(extensionName, generateRandomModels))
 
       let binaryPath = path.resolve('..', '..', 'extensions', 'bin', extensionName)
       if (os.platform() === 'darwin') { binaryPath = path.join(binaryPath, 'Contents', 'MacOS', extensionName) }
 
       console.log(preparedConfig)
 
-      exec(`${binaryPath} "${preparedConfig}"`, function (error, stdout, stderr) {
-        if (error) {
-          console.log(`error: ${error.message}`)
-          return
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`)
-          return
-        }
-        console.log(stdout)
+      const extensionProcess = spawn(`${binaryPath}`, [preparedConfig])
+      extensionProcess.stdout.on('data', (data) => {
+        console.log(`${data}`)
+      })
+
+      extensionProcess.stderr.on('data', (data) => {
+        console.error(`${data}`)
+      })
+
+      extensionProcess.on('close', (code) => {
+        console.log(`child process exited with code ${code}`)
       })
     })
 
