@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Pong"
-run/main_scene="res://scenes/Main.tscn"
+run/main_scene="res://scenes/ParallelEvolution.tscn"
 config/icon="res://icon.png"
 
 [debug]

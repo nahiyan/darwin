@@ -1,16 +1,16 @@
 extends KinematicBody2D
 
 var id: int = -1
+
+var group_position: int = 1
 var fitness: float = 0
 onready var neat: Node = $"/root/Main/Neat"
-onready var ball: Node2D = $"/root/Main/Ball"
-var type: int = 0
-
+onready var ball: Node2D = get_parent().get_node("Ball")
+onready var ball_radius: float = (ball.get_node("CollisionShape2D").shape as CircleShape2D).radius
 
 func _process(delta: float) -> void:
     var extents: Vector2 = ($CollisionShape2D.shape as RectangleShape2D).extents
 
-    var ball_radius: float = (ball.get_node("CollisionShape2D").shape as CircleShape2D).radius
     var horizontal_distance: float = position.x - ball.position.x
     var vertical_distance: float = abs(position.y - extents.y - ball.position.y - ball_radius)
 
