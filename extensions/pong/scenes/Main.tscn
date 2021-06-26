@@ -60,3 +60,5 @@ z_index = -1
 texture = ExtResource( 8 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 1920, 1080 )
+
+[connection signal="tree_exited" from="." to="." method="_on_Main_tree_exited"]
