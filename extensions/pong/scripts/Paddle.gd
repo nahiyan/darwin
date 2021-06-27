@@ -8,6 +8,7 @@ onready var neat: Node = $"/root/Main/Neat"
 onready var ball: Node2D = get_parent().get_node("Ball")
 onready var ball_radius: float = (ball.get_node("CollisionShape2D").shape as CircleShape2D).radius
 
+
 func _process(delta: float) -> void:
     var extents: Vector2 = ($CollisionShape2D.shape as RectangleShape2D).extents
 
@@ -19,17 +20,16 @@ func _process(delta: float) -> void:
         evaluation * Vector2(1000, 0) * delta
     )
 
-func reposition_center() -> void:
-    var viewport_size: Vector2 = get_viewport_rect().size
-    position = Vector2(viewport_size.x / 2, viewport_size.y - 10)
 
-func reposition_left() -> void:
+func reposition(type: int) -> void:
     var viewport_size: Vector2 = get_viewport_rect().size
-    position = Vector2(($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
-
-func reposition_right() -> void:
-    var viewport_size: Vector2 = get_viewport_rect().size
-    position = Vector2(viewport_size.x - ($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
+    match type:
+        0:
+            position = Vector2(($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
+        1:
+            position = Vector2(viewport_size.x / 2, viewport_size.y - 10)
+        _:
+            position = Vector2(viewport_size.x - ($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
 
 
 func reward(amount: float) -> void:

@@ -3,6 +3,8 @@ var configuration: Configuration = Configuration.new()
 var population: Array = []
 
 
+enum {LEFT = 0, CENTER = 1, RIGHT = 2}
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
     # Fetch CLI arguments
@@ -29,29 +31,12 @@ func _ready() -> void:
     # Scale the HUD
     $Hud.set_scale(Vector2($Camera2D.zoom.x, $Camera2D.zoom.y))
 
-    # Stage settings
-    var stage_settings: Array = [{
-        "ball_harmful": false
-       }, {
-        "ball_harmful": false
-       }, {
-        "ball_harmful": false
-       }, {
-        "ball_harmful": true
-       }, {
-        "ball_harmful": true
-       }, {
-        "ball_harmful": true
-       }]
-
 
     # Add the balls
     var ball_scene = preload("res://scenes/Ball.tscn")
     for i in range($Stages.get_child_count()):
         var ball = ball_scene.instance()
         $Stages.get_child(i).add_child(ball)
-        if stage_settings[i]["ball_harmful"]:
-            ball.toggle_harmful()
         ball.reset()
 
     # Add the paddles
@@ -69,7 +54,7 @@ func _ready() -> void:
             paddle.group_position = j + 1
             paddle_group.add(paddle)
             $Stages.get_child(j).add_child(paddle)
-            paddle.reposition_center()
+            paddle.reposition(CENTER)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
