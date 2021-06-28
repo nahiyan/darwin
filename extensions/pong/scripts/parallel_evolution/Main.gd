@@ -1,6 +1,9 @@
 extends Node2D
 var configuration: Configuration = Configuration.new()
 var population: Array = []
+var stages_complete = 0
+var max_fitness: float = 0
+var generation_id: int = 1
 
 
 enum {LEFT = 0, CENTER = 1, RIGHT = 2}
@@ -31,13 +34,13 @@ func _ready() -> void:
     # Scale the HUD
     $Hud.set_scale(Vector2($Camera2D.zoom.x, $Camera2D.zoom.y))
 
-
     # Add the balls
     var ball_scene = preload("res://scenes/Ball.tscn")
-    for i in range($Stages.get_child_count()):
+    for stage in $Stages.get_children():
         var ball = ball_scene.instance()
-        $Stages.get_child(i).add_child(ball)
+        ball.stage = stage
         ball.reset()
+        stage.add_ball(ball)
 
     # Add the paddles
     var paddle_group_scene = preload("res://scenes/PaddleGroup.tscn")
@@ -48,13 +51,56 @@ func _ready() -> void:
         population.append(paddle_group)
 
         # Add the paddle to each scene
-        for j in range($Stages.get_child_count()):
+        for stage in $Stages.get_children():
             var paddle: Node2D = paddle_scene.instance()
             paddle.id = i
-            paddle.group_position = j + 1
             paddle_group.add(paddle)
-            $Stages.get_child(j).add_child(paddle)
+            stage.add_child(paddle)
             paddle.reposition(CENTER)
+
+
+func next_generation() -> void:
+    Physics2DServer.set_active(false)
+    stages_complete = 0
+
+    # Calculate the scores and max fitness
+    var scores = []
+    for group in population:
+        var score: float = 0
+        for member in group.members:
+            score += member.fitness
+            member.fitness = 0
+            member.reposition(CENTER)
+
+        if group.members.size() > 0:
+            $Neat.set_fitness(group.members[0].id, score)
+            scores.append(score)
+            max_fitness = max(score, max_fitness)
+
+    scores.sort()
+#    var message = ''
+#    for i in configuration.population_size:
+#        message += str(scores[configuration.population_size - i - 1]) + ' '
+#    print(message, '\n')
+
+    generation_id += 1
+    $Hud.set_generation(generation_id)
+    $Hud.set_max_fitness(max_fitness)
+
+    $Neat.next_generation()
+
+    for stage in $Stages.get_children():
+        stage.revive_ball()
+
+    Physics2DServer.set_active(true)
+
+
+func increment_stages_complete() -> void:
+    if stages_complete == 5:
+        next_generation()
+        stages_complete = 0
+    else:
+        stages_complete += 1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

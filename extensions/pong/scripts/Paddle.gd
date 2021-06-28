@@ -2,7 +2,6 @@ extends KinematicBody2D
 
 var id: int = -1
 
-var group_position: int = 1
 var fitness: float = 0
 onready var neat: Node = $"/root/Main/Neat"
 onready var ball: Node2D = get_parent().get_node("Ball")
