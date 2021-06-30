@@ -21,7 +21,7 @@ zoom = Vector2( 3.12, 2.14 )
 
 [node name="Stage1" type="Node2D" parent="Stages"]
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( 600, 600 )
+ball_initial_velocity = Vector2( 600, 800 )
 
 [node name="Background" parent="Stages/Stage1" instance=ExtResource( 7 )]
 
@@ -32,7 +32,7 @@ ball_initial_velocity = Vector2( 600, 600 )
 [node name="Stage2" type="Node2D" parent="Stages"]
 position = Vector2( 1064, 0 )
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( -600, 600 )
+ball_initial_velocity = Vector2( -600, 800 )
 
 [node name="HarmlessBoundaries" parent="Stages/Stage2" instance=ExtResource( 3 )]
 
@@ -43,7 +43,7 @@ ball_initial_velocity = Vector2( -600, 600 )
 [node name="Stage3" type="Node2D" parent="Stages"]
 position = Vector2( 2128, 0 )
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( 0, 600 )
+ball_initial_velocity = Vector2( 0, 800 )
 
 [node name="HarmlessBoundaries" parent="Stages/Stage3" instance=ExtResource( 3 )]
 
@@ -54,7 +54,7 @@ ball_initial_velocity = Vector2( 0, 600 )
 [node name="Stage4" type="Node2D" parent="Stages"]
 position = Vector2( 0, 640 )
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( 600, 600 )
+ball_initial_velocity = Vector2( 600, 800 )
 ball_harmful = true
 
 [node name="HarmlessBoundaries" parent="Stages/Stage4" instance=ExtResource( 3 )]
@@ -66,7 +66,7 @@ ball_harmful = true
 [node name="Stage5" type="Node2D" parent="Stages"]
 position = Vector2( 1064, 640 )
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( -600, 600 )
+ball_initial_velocity = Vector2( -600, 800 )
 ball_harmful = true
 
 [node name="HarmlessBoundaries" parent="Stages/Stage5" instance=ExtResource( 3 )]
@@ -78,7 +78,7 @@ ball_harmful = true
 [node name="Stage6" type="Node2D" parent="Stages"]
 position = Vector2( 2128, 640 )
 script = ExtResource( 6 )
-ball_initial_velocity = Vector2( 0, 600 )
+ball_initial_velocity = Vector2( 0, 800 )
 ball_harmful = true
 
 [node name="HarmlessBoundaries" parent="Stages/Stage6" instance=ExtResource( 3 )]

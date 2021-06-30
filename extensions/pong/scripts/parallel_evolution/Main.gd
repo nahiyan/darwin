@@ -2,6 +2,7 @@ extends Node2D
 var configuration: Configuration = Configuration.new()
 var population: Array = []
 var stages_complete = 0
+# Theoretical maximum fitness = 6 + HitReward * 3 = 12 if HitReward = 2
 var max_fitness: float = 0
 var generation_id: int = 1
 
