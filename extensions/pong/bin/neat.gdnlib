@@ -1,14 +1,16 @@
-[entry]
-
-OSX.64="res://bin/libneat.dylib"
-
-[dependencies]
-
-OSX.64=[  ]
-
 [general]
 
 singleton=false
 load_once=true
 symbol_prefix="godot_"
 reloadable=true
+
+[entry]
+
+OSX.64="res://bin/libneat.dylib"
+X11.64="res://bin/libneat.so"
+
+[dependencies]
+
+OSX.64=[  ]
+X11.64=[  ]
