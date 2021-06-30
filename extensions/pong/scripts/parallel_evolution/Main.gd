@@ -59,8 +59,22 @@ func _ready() -> void:
             paddle.reposition(CENTER)
 
 
+func _process(delta: float) -> void:
+    var move_to_next_generation = true
+    for stage in [$Stages/Stage6]:
+        if stage.ball.to_be_killed:
+            stage.ball.kill()
+            continue
+
+        if stage.ball.get_parent() != null:
+            move_to_next_generation = false
+
+    if move_to_next_generation:
+        next_generation()
+
+
+
 func next_generation() -> void:
-    Physics2DServer.set_active(false)
     stages_complete = 0
 
     # Calculate the scores and max fitness
@@ -89,18 +103,8 @@ func next_generation() -> void:
 
     $Neat.next_generation()
 
-    for stage in $Stages.get_children():
+    for stage in [$Stages/Stage6]:
         stage.revive_ball()
-
-    Physics2DServer.set_active(true)
-
-
-func increment_stages_complete() -> void:
-    if stages_complete == 5:
-        next_generation()
-        stages_complete = 0
-    else:
-        stages_complete += 1
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

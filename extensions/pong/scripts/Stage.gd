@@ -24,4 +24,3 @@ func add_ball(new_ball: Node2D) -> void:
 func revive_ball():
     ball.reset()
     add_child(ball)
-
