@@ -32,6 +32,16 @@ func _ready() -> void:
         configuration.enable_mutation_chance
     )
 
+    # Load models
+    $PersistentModels.initiate(configuration.models_file_path)
+
+#    if configuration.start_from_saved_models:
+#        var count = $PersistentModels.count()
+#        for i in range(count):
+#            var model = $PersistentModels.model(i)
+#            var definition:String = model[0]
+#            var fitness:float = model[1]
+
     # Scale the HUD
     $Hud.set_scale(Vector2($Camera2D.zoom.x, $Camera2D.zoom.y))
 
@@ -105,8 +115,3 @@ func next_generation() -> void:
 
     for stage in $Stages.get_children():
         stage.revive_ball()
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#    pass
