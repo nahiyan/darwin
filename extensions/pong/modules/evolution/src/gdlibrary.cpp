@@ -1,3 +1,4 @@
+#include "persistent_models.h"
 #include "tinyai/tinyann.hpp"
 #include "tinyai/tinyneat.hpp"
 #include <Godot.hpp>
@@ -6,7 +7,12 @@
 
 using namespace std;
 
+// alias the structs
+typedef PersistentModels PM;
+typedef PMModel PMM;
+
 namespace godot {
+// NEAT
 class Neat : public Reference {
     GODOT_CLASS(Neat, Reference)
 
@@ -22,6 +28,8 @@ public:
         register_method("set_fitness", &Neat::setFitness);
         register_method("next_generation", &Neat::nextGeneration);
         register_method("evaluate", &Neat::evaluate);
+        register_method("model_to_string", &Neat::modelToString);
+        register_method("model_from_string", &Neat::modelFromString);
     }
 
     void _init()
@@ -101,10 +109,107 @@ public:
         }
     }
 
+    String modelToString(int id)
+    {
+        try {
+            stringstream ss;
+            neuralNetworks[id].export_to_stream(ss);
+
+            return String(ss.str().c_str());
+        } catch (...) {
+            Godot::print("Error occurred while trying to convert stringify neural network.");
+
+            return String("");
+        }
+    }
+
+    void modelFromString(int id, godot::String string)
+    {
+        try {
+            stringstream ss(string.utf8().get_data());
+            neuralNetworks[id].import_from_stream(ss);
+        } catch (...) {
+            Godot::print("Error occurred while trying to convert string to neural network.");
+        }
+    }
+
     void nextGeneration()
     {
         pool->new_generation();
         update();
+    }
+};
+// Persistent Models
+struct PMModel {
+    string definition;
+    float fitness;
+};
+
+class PersistentModels : public Reference {
+    GODOT_CLASS(PersistentModels, Reference)
+private:
+    PM* pm;
+    string path;
+
+public:
+    static void _register_methods()
+    {
+        register_method("initiate", &PersistentModels::initiate);
+        register_method("model", &PersistentModels::model);
+        register_method("count", &PersistentModels::count);
+        register_method("stage", &PersistentModels::stage);
+        register_method("commit", &PersistentModels::commit);
+        register_method("save", &PersistentModels::save);
+    }
+
+    void _init()
+    {
+    }
+
+    void initiate(godot::String path)
+    {
+        this->path = path.utf8().get_data();
+        pm = pm_load_file(this->path.c_str());
+    }
+
+    godot::Array model(int index)
+    {
+        PMM pmm = pm_get_model(&pm, index);
+
+        godot::Variant definition(godot::String(pmm.definition));
+        pm_free_string((char*)pmm.definition);
+        godot::Variant fitness(pmm.fitness);
+
+        godot::Array model;
+        model.append(definition);
+        model.append(fitness);
+
+        return model;
+    }
+
+    int count()
+    {
+        return pm_count(&pm);
+    }
+
+    void stage(godot::String definition, float fitness)
+    {
+        pm_add_to_stage(&pm, definition.utf8().get_data(), fitness);
+    }
+
+    void commit(int amount)
+    {
+        pm_commit(&pm, amount);
+    }
+
+    void save()
+    {
+        pm_save_file(&pm, path.c_str());
+    }
+
+    ~PersistentModels()
+    {
+        pm_free_models(pm);
     }
 };
 }
@@ -124,4 +229,5 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void* handle)
     godot::Godot::nativescript_init(handle);
 
     godot::register_class<godot::Neat>();
+    godot::register_class<godot::PersistentModels>();
 }
