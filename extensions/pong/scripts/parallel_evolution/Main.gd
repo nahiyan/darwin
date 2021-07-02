@@ -1,5 +1,4 @@
 extends Node2D
-var configuration: Configuration = Configuration.new()
 var population: Array = []
 var stages_complete = 0
 # Theoretical maximum fitness = 6 + HitReward * 3 = 12 if HitReward = 2
@@ -13,35 +12,43 @@ enum {LEFT = 0, CENTER = 1, RIGHT = 2}
 func _ready() -> void:
     # Fetch CLI arguments
     var args = OS.get_cmdline_args()
-    configuration.parse(args[args.size() - 1])
+    Global.configuration.parse(args[args.size() - 1])
 
     # Prepare the population
-    $Neat.prepare(
-        configuration.population_size,
-        configuration.delta_disjoint,
-        configuration.delta_weights,
-        configuration.delta_threshold,
-        configuration.stale_species,
-        configuration.connection_mutate_chance,
-        configuration.perturb_chance,
-        configuration.crossover_chance,
-        configuration.link_mutation_chance,
-        configuration.node_mutation_chance,
-        configuration.bias_mutation_chance,
-        configuration.disable_mutation_chance,
-        configuration.enable_mutation_chance
+    Neat.prepare(
+        Global.configuration.population_size,
+        Global.configuration.delta_disjoint,
+        Global.configuration.delta_weights,
+        Global.configuration.delta_threshold,
+        Global.configuration.stale_species,
+        Global.configuration.connection_mutate_chance,
+        Global.configuration.perturb_chance,
+        Global.configuration.crossover_chance,
+        Global.configuration.link_mutation_chance,
+        Global.configuration.node_mutation_chance,
+        Global.configuration.bias_mutation_chance,
+        Global.configuration.disable_mutation_chance,
+        Global.configuration.enable_mutation_chance
     )
 
     # Load models
-    $PersistentModels.initiate(configuration.models_file_path)
+    PersistentModels.initiate(Global.configuration.models_file_path)
 
-    if configuration.start_from_saved_models:
-        var count = $PersistentModels.count()
-        for i in range(min(count, configuration.population_size)):
-            var model = $PersistentModels.model(i)
+    # Switch to the test scene if enabled
+    if Global.configuration.test_best_model:
+        var test_scene = preload("res://scenes/Test.tscn")
+        var result = get_tree().change_scene_to(test_scene)
+        if result != OK:
+            print("Failed to change scene.")
+
+    # Initiate the population with saved models if enabled
+    if Global.configuration.start_from_saved_models:
+        var count = PersistentModels.count()
+        for i in range(min(count, Global.configuration.population_size)):
+            var model = PersistentModels.model(i)
             var definition:String = model[0]
 
-            $Neat.model_from_string(i, definition)
+            Neat.model_from_string(i, definition)
 
     # Scale the HUD
     $Hud.set_scale(Vector2($Camera2D.zoom.x, $Camera2D.zoom.y))
@@ -58,7 +65,7 @@ func _ready() -> void:
     var paddle_group_scene = preload("res://scenes/PaddleGroup.tscn")
     var paddle_scene = preload("res://scenes/Paddle.tscn")
 
-    for i in range(configuration.population_size):
+    for i in range(Global.configuration.population_size):
         var paddle_group: Node = paddle_group_scene.instance()
         population.append(paddle_group)
 
@@ -99,24 +106,27 @@ func next_generation() -> void:
 
         if group.members.size() > 0:
             var model_id = group.members[0].id
-            $Neat.set_fitness(model_id, score)
+            Neat.set_fitness(model_id, score)
             scores.append(score)
             max_fitness = max(score, max_fitness)
-            $PersistentModels.stage($Neat.model_to_string(model_id), score)
-    $PersistentModels.commit(configuration.saved_models_count)
-    $PersistentModels.save()
+            PersistentModels.stage(Neat.model_to_string(model_id), score)
+    PersistentModels.commit(Global.configuration.saved_models_count)
+    PersistentModels.save()
 
     scores.sort()
 #    var message = ''
-#    for i in configuration.population_size:
-#        message += str(scores[configuration.population_size - i - 1]) + ' '
+#    for i in Global.configuration.population_size:
+#        message += str(scores[Global.configuration.population_size - i - 1]) + ' '
 #    print(message, '\n')
 
     generation_id += 1
     $Hud.set_generation(generation_id)
     $Hud.set_max_fitness(max_fitness)
 
-    $Neat.next_generation()
+    Neat.next_generation()
 
     for stage in $Stages.get_children():
         stage.revive_ball()
+
+func _on_Main_tree_exited() -> void:
+    pass

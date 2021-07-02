@@ -24,6 +24,12 @@ config/name="Pong"
 run/main_scene="res://scenes/ParallelEvolution.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://scripts/Global.gd"
+Neat="*res://scripts/Neat.gdns"
+PersistentModels="*res://scripts/PersistentModels.gdns"
+
 [debug]
 
 gdscript/warnings/unsafe_call_argument=true

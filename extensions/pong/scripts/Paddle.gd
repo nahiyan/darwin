@@ -3,7 +3,6 @@ extends KinematicBody2D
 var id: int = -1
 
 var fitness: float = 0
-onready var neat: Node = $"/root/Main/Neat"
 onready var ball: Node2D = $"../Ball"
 onready var ball_radius: float = (ball.get_node("CollisionShape2D").shape as CircleShape2D).radius
 
@@ -14,7 +13,7 @@ func _process(delta: float) -> void:
     var horizontal_distance: float = position.x - ball.position.x
     var vertical_distance: float = abs(position.y - extents.y - ball.position.y - ball_radius)
 
-    var evaluation = neat.evaluate(id, ball.harmful, horizontal_distance, vertical_distance)
+    var evaluation = Neat.evaluate(id, ball.harmful, horizontal_distance, vertical_distance)
     var _collision: KinematicCollision2D = move_and_collide(
         evaluation * Vector2(1500, 0) * delta
     )

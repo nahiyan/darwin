@@ -2,6 +2,7 @@
 #include "tinyai/tinyann.hpp"
 #include "tinyai/tinyneat.hpp"
 #include <Godot.hpp>
+#include <Node.hpp>
 #include <memory>
 #include <vector>
 
@@ -13,8 +14,8 @@ typedef PMModel PMM;
 
 namespace godot {
 // NEAT
-class Neat : public Reference {
-    GODOT_CLASS(Neat, Reference)
+class Neat : public Node {
+    GODOT_CLASS(Neat, Node)
 
 private:
     shared_ptr<neat::pool> pool;
@@ -145,8 +146,8 @@ struct PMModel {
     float fitness;
 };
 
-class PersistentModels : public Reference {
-    GODOT_CLASS(PersistentModels, Reference)
+class PersistentModels : public Node {
+    GODOT_CLASS(PersistentModels, Node)
 private:
     PM* pm;
     string path;
@@ -164,6 +165,7 @@ public:
 
     void _init()
     {
+        pm = nullptr;
     }
 
     void initiate(godot::String path)
@@ -189,6 +191,10 @@ public:
 
     int count()
     {
+        if (pm == nullptr) {
+            cout << "PM isn't initialized\n";
+            return 0;
+        }
         return pm_count(&pm);
     }
 
@@ -209,7 +215,8 @@ public:
 
     ~PersistentModels()
     {
-        pm_free_models(pm);
+        if (pm != nullptr)
+            pm_free_models(pm);
     }
 };
 }
