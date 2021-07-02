@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scenes/Hud.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/HarmlessBoundaries.tscn" type="PackedScene" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://scripts/Stage.gd" type="Script" id=4]
 [ext_resource path="res://scenes/HarmfulBoundaries.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/Background.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/HardcodedPaddle.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/Paddle.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/Ball.tscn" type="PackedScene" id=9]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
@@ -21,10 +24,18 @@ visible = true
 script = ExtResource( 4 )
 ball_initial_velocity = Vector2( 600, 800 )
 
+[node name="Ball" parent="Stages/Stage1" instance=ExtResource( 9 )]
+position = Vector2( 512, 30 )
+
+[node name="Paddle" parent="Stages/Stage1" instance=ExtResource( 8 )]
+position = Vector2( 512, 590 )
+
 [node name="Background" parent="Stages/Stage1" instance=ExtResource( 6 )]
 
 [node name="HarmlessBoundaries" parent="Stages/Stage1" instance=ExtResource( 2 )]
 
 [node name="HarmfulBoundaries" parent="Stages/Stage1" instance=ExtResource( 5 )]
+
+[node name="HardcodedPaddle" parent="." instance=ExtResource( 7 )]
 
 [connection signal="tree_exited" from="." to="." method="_on_Main_tree_exited"]

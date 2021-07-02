@@ -20,14 +20,13 @@ func _process(delta: float) -> void:
 
 
 func reposition(type: int) -> void:
-    var viewport_size: Vector2 = get_viewport_rect().size
     match type:
         0:
-            position = Vector2(($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
+            position = Vector2(($CollisionShape2D.shape as RectangleShape2D).extents.x, Global.viewport_size.y - 10)
         1:
-            position = Vector2(viewport_size.x / 2, viewport_size.y - 10)
+            position = Vector2(Global.viewport_size.x / 2, Global.viewport_size.y - 10)
         _:
-            position = Vector2(viewport_size.x - ($CollisionShape2D.shape as RectangleShape2D).extents.x, viewport_size.y - 10)
+            position = Vector2(Global.viewport_size.x - ($CollisionShape2D.shape as RectangleShape2D).extents.x, Global.viewport_size.y - 10)
 
 
 func reward(amount: float) -> void:

@@ -89,20 +89,26 @@ public:
         try {
             genomes[id]->fitness = fitness;
         } catch (...) {
-            Godot::print("ERror occurred while trying to set fitness.");
+            Godot::print("Error occurred while trying to set fitness.");
         }
     }
 
     double evaluate(int id, bool harmfulBall, float horizontalDistance, float verticalDistance)
     {
         try {
-            vector<double> inputs, outputs(1, 0.0);
-            inputs.push_back(harmfulBall);
-            inputs.push_back(horizontalDistance);
-            inputs.push_back(verticalDistance);
-            neuralNetworks[id].evaluate(inputs, outputs);
+            if (id < neuralNetworks.size()) {
+                vector<double> inputs, outputs(1, 0.0);
+                inputs.push_back(harmfulBall);
+                inputs.push_back(horizontalDistance);
+                inputs.push_back(verticalDistance);
+                neuralNetworks[id].evaluate(inputs, outputs);
 
-            return outputs[0];
+                return outputs[0];
+            } else {
+                Godot::print("Failed to evaluate model: Model with the ID doesn't exist.");
+                cout << neuralNetworks.size() << "\n";
+                return 0;
+            }
         } catch (...) {
             Godot::print("Error occurred while trying to evaluate.");
 
@@ -192,7 +198,7 @@ public:
     int count()
     {
         if (pm == nullptr) {
-            cout << "PM isn't initialized\n";
+            Godot::print("PM isn't initialized");
             return 0;
         }
         return pm_count(&pm);

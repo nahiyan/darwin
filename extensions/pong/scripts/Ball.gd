@@ -39,6 +39,11 @@ func _on_Ball_body_exited(body: Node) -> void:
         to_be_killed = true
 
 
+func _on_Ball_body_exited_test_mode(body: Node) -> void:
+    if body.is_in_group("paddles") or body.is_in_group("harmful_boundaries"):
+        toggle_harmful()
+
+
 func kill() -> void:
     if get_parent() != null:
         to_be_killed = false
