@@ -3,6 +3,7 @@ class_name Configuration
 # general
 var models_file_path: String = ""
 var start_from_saved_models: bool = false
+var saved_models_count: int = 10
 var population_size: int = 240
 
 # genenome similarity
@@ -34,6 +35,10 @@ func parse(text: String) -> void:
         # start_from_saved_models
         if parse_result.result.has('start_from_saved_models'):
             start_from_saved_models = parse_result.result.get('start_from_saved_models')
+
+        # saved_models_count
+        if parse_result.result.has('saved_models_count'):
+            saved_models_count = parse_result.result.get('saved_models_count')
 
         # speed
         if parse_result.result.has('speed'):

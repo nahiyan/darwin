@@ -16,7 +16,7 @@ func _process(delta: float) -> void:
 
     var evaluation = neat.evaluate(id, ball.harmful, horizontal_distance, vertical_distance)
     var _collision: KinematicCollision2D = move_and_collide(
-        evaluation * Vector2(1000, 0) * delta
+        evaluation * Vector2(1500, 0) * delta
     )
 
 

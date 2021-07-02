@@ -35,12 +35,13 @@ func _ready() -> void:
     # Load models
     $PersistentModels.initiate(configuration.models_file_path)
 
-#    if configuration.start_from_saved_models:
-#        var count = $PersistentModels.count()
-#        for i in range(count):
-#            var model = $PersistentModels.model(i)
-#            var definition:String = model[0]
-#            var fitness:float = model[1]
+    if configuration.start_from_saved_models:
+        var count = $PersistentModels.count()
+        for i in range(min(count, configuration.population_size)):
+            var model = $PersistentModels.model(i)
+            var definition:String = model[0]
+
+            $Neat.model_from_string(i, definition)
 
     # Scale the HUD
     $Hud.set_scale(Vector2($Camera2D.zoom.x, $Camera2D.zoom.y))
@@ -97,9 +98,13 @@ func next_generation() -> void:
             member.reposition(CENTER)
 
         if group.members.size() > 0:
-            $Neat.set_fitness(group.members[0].id, score)
+            var model_id = group.members[0].id
+            $Neat.set_fitness(model_id, score)
             scores.append(score)
             max_fitness = max(score, max_fitness)
+            $PersistentModels.stage($Neat.model_to_string(model_id), score)
+    $PersistentModels.commit(configuration.saved_models_count)
+    $PersistentModels.save()
 
     scores.sort()
 #    var message = ''
