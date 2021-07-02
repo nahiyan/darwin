@@ -5,9 +5,6 @@ var stages_complete = 0
 var max_fitness: float = 0
 var generation_id: int = 1
 
-
-enum {LEFT = 0, CENTER = 1, RIGHT = 2}
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
     # Fetch CLI arguments
@@ -40,6 +37,7 @@ func _ready() -> void:
         var result = get_tree().change_scene_to(test_scene)
         if result != OK:
             print("Failed to change scene.")
+        Global.test_mode = true
 
     # Initiate the population with saved models if enabled
     if Global.configuration.start_from_saved_models:
@@ -75,7 +73,7 @@ func _ready() -> void:
             paddle.id = i
             paddle_group.add(paddle)
             stage.add_child(paddle)
-            paddle.reposition(CENTER)
+            paddle.reposition(Global.CENTER)
 
 
 func _process(_delta: float) -> void:
@@ -102,7 +100,7 @@ func next_generation() -> void:
         for member in group.members:
             score += member.fitness
             member.fitness = 0
-            member.reposition(CENTER)
+            member.reposition(Global.CENTER)
 
         if group.members.size() > 0:
             var model_id = group.members[0].id
