@@ -23,9 +23,10 @@ func _ready() -> void:
     ball.connect("body_exited", ball, "_on_Ball_body_exited_test_mode")
 
     # Add the paddle
-    var paddle = stage.get_node("Paddle")
+    var paddle = preload("res://scenes/Paddle.tscn").instance()
     paddle.id = 0
     paddle.reposition(Global.CENTER)
+    stage.add_child(paddle)
 
 
 func _on_Main_tree_exited() -> void:
