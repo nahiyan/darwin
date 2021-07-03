@@ -12,5 +12,5 @@ X11.64="res://bin/libevolution.so"
 
 [dependencies]
 
-OSX.64=[  ]
+OSX.64=[ "res://bin/libpersistent_models.dylib" ]
 X11.64=[  ]

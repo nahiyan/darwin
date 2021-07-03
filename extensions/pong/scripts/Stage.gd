@@ -24,3 +24,18 @@ func add_ball(new_ball: Node2D) -> void:
 func revive_ball():
     ball.reset()
     add_child(ball)
+
+func _draw() -> void:
+    var shape:RectangleShape2D = $HarmlessBoundaries/Left.shape as RectangleShape2D
+    var size:Vector2 = shape.extents * 2
+    # Top
+    draw_rect(Rect2(Vector2(0, -size.x), $HarmlessBoundaries/Top.shape.extents * 2), Color.white)
+
+    # Bottom
+    draw_rect(Rect2(Vector2(0, Global.viewport_size.y), $HarmfulBoundaries/Bottom.shape.extents * 2), Color.white)
+
+    # Left
+    draw_rect(Rect2(Vector2(-size.x, -size.x), $HarmlessBoundaries/Left.shape.extents * 2), Color.white)
+
+    # Right
+    draw_rect(Rect2(Vector2(Global.viewport_size.x, -size.x), $HarmlessBoundaries/Right.shape.extents * 2), Color.white)
