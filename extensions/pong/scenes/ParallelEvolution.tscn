@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/Stage.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scripts/parallel_evolution/Main.gd" type="Script" id=2]
+[ext_resource path="res://scripts/parallel_evolution/Controller.gd" type="Script" id=2]
 [ext_resource path="res://scenes/Hud.tscn" type="PackedScene" id=4]
 
 [node name="Main" type="Node2D"]
