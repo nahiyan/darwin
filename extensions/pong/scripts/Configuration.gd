@@ -5,7 +5,8 @@ var models_file_path: String = ""
 var start_from_saved_models: bool = false
 var saved_models_count: int = 10
 var population_size: int = 240
-var test_best_model: bool = false
+var test_models: bool = false
+var test_models_count: int = 1
 
 # genenome similarity
 var delta_disjoint: float = 2.0
@@ -49,9 +50,13 @@ func parse(text: String) -> void:
         if parse_result.result.has('population_size'):
             population_size = parse_result.result.get('population_size')
 
-        # test_best_model
-        if parse_result.result.has('test_best_model'):
-            test_best_model = parse_result.result.get('test_best_model')
+        # test_models
+        if parse_result.result.has('test_models'):
+            test_models = parse_result.result.get('test_models')
+
+        # test_models_count
+        if parse_result.result.has('test_models_count'):
+            test_models_count = parse_result.result.get('test_models_count')
 
         # delta_disjoint
         if parse_result.result.has('delta_disjoint'):

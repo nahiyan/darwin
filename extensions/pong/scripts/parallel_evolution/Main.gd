@@ -32,7 +32,7 @@ func _ready() -> void:
     PersistentModels.initiate(Global.configuration.models_file_path)
 
     # Switch to the test scene if enabled
-    if Global.configuration.test_best_model:
+    if Global.configuration.test_models:
         var test_scene = preload("res://scenes/Test.tscn")
         var result = get_tree().change_scene_to(test_scene)
         if result != OK:

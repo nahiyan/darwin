@@ -9,9 +9,11 @@ func _ready() -> void:
         return
 
     # Load the model
-    var model = PersistentModels.model(0)
-    var definition:String = model[0]
-    Neat.model_from_string(0, definition)
+    for i in range(min(count, Global.configuration.test_models_count)):
+        var model = PersistentModels.model(i)
+        var definition:String = model[0]
+
+        Neat.model_from_string(i, definition)
 
     # Add the ball
     var stage = $Stages/Stage1
@@ -20,13 +22,15 @@ func _ready() -> void:
     ball.reset()
     ball.disconnect("body_entered", ball, "_on_Ball_body_entered")
     ball.disconnect("body_exited", ball, "_on_Ball_body_exited")
-    ball.connect("body_exited", ball, "_on_Ball_body_exited_test_mode")
+    ball.connect("body_entered", ball, "_on_Ball_body_entered_test_mode")
 
     # Add the paddle
-    var paddle = preload("res://scenes/Paddle.tscn").instance()
-    paddle.id = 0
-    paddle.reposition(Global.CENTER)
-    stage.add_child(paddle)
+    var paddle_scene = preload("res://scenes/Paddle.tscn")
+    for i in range(min(count, Global.configuration.test_models_count)):
+        var paddle: Node2D = paddle_scene.instance()
+        paddle.id = i
+        stage.add_child(paddle)
+        paddle.reposition(Global.CENTER)
 
 
 func _on_Main_tree_exited() -> void:

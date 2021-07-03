@@ -6,7 +6,9 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 70, 5 )
 
-[node name="HardcodedPaddle" type="KinematicBody2D"]
+[node name="HardcodedPaddle" type="KinematicBody2D" groups=[
+"hardcoded_paddles",
+]]
 position = Vector2( 512, 10 )
 collision_mask = 6
 script = ExtResource( 1 )

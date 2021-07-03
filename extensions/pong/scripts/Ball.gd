@@ -39,9 +39,11 @@ func _on_Ball_body_exited(body: Node) -> void:
         to_be_killed = true
 
 
-func _on_Ball_body_exited_test_mode(body: Node) -> void:
-    if body.is_in_group("paddles") or body.is_in_group("harmful_boundaries"):
+func _on_Ball_body_entered_test_mode(body: Node) -> void:
+    if body.is_in_group("hardcoded_paddles"):
         toggle_harmful()
+    elif harmful and body.is_in_group("paddles"):
+        body.call_deferred("kill")
 
 
 func kill() -> void:
