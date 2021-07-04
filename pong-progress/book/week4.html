@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Week 1 - CSE498R Extended Work</title>
+        <title>Week 4 - CSE498R Extended Work</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li><li class="chapter-item expanded "><a href="week4.html"><strong aria-hidden="true">4.</strong> Week 4</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li><li class="chapter-item expanded "><a href="week4.html" class="active"><strong aria-hidden="true">4.</strong> Week 4</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -163,70 +163,103 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="week-1-progress"><a class="header" href="#week-1-progress">Week 1 Progress</a></h1>
+                        <h1 id="week-4-progress"><a class="header" href="#week-4-progress">Week 4 Progress</a></h1>
 <h2 id="goal"><a class="header" href="#goal">Goal</a></h2>
-<p>Design the basic functionalities of the extension, including physics, controls, and communication through a predefined port.</p>
-<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
-<p>In this week, the new extension of Darwin, Pong, has its foundation set. The extension is developed using <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)">Godot</a>, a powerful <a href="https://en.wikipedia.org/wiki/Game_integrated_development_environment">game development environment</a>, which is much more powerful and way easier to develop the environment of the simulation compared to cocos2d-x. However, this required programming most of the components of this extension in a language called <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)#GDScript">GDScript</a>, in contrast to C++ that was used for developing the cocos2d-x-based extensions.</p>
-<p>The physics, which involves setting the shapes of the objects involved for collision detection, motion, controls, etc, has been set. Moreover, the executable of the extension, which has the task of communicating with the control panel of Darwin, needs to have the communication system built too. Thus, a <a href="https://en.wikipedia.org/wiki/JSON">JSON</a> reading library has been integrated to take data, such as the configuration entities, in a single compact string (based on the protocol of Darwin).</p>
-<p>The image below shows all the physics objects in one frame:</p>
-<p><img src="images/overview.png" alt="alt text" title="Overview" /></p>
-<h2 id="structure"><a class="header" href="#structure">Structure</a></h2>
-<p>The extension is comprises the following classes of objects:</p>
+<p>Develop and test a neural network storage format that will involve integration with the persistent models system of Darwin. Eventually, results for the new extension will be generated, outlining its performance. Patterns in the training process will also be observed and noted.</p>
+<h2 id="neural-network-storage-format"><a class="header" href="#neural-network-storage-format">Neural Network Storage Format</a></h2>
+<p><code>tinyai</code> has its own storage format for the neural networks, which looks something like this:</p>
+<pre><code>non-recurrent\n6\n\n1 0\n\n\n1 0\n\n\n1 0\n\n\n2 4\n1 0.0594683 0 -0.462274 4 0.394442 5 0.563337 \n\n0 2\n0 1.06421 1 -0.233392 \n\n0 1\n4 1.07719 \n\n
+</code></pre>
+<p>The following parameters of the genes are stored:</p>
 <ul>
-<li>Paddle</li>
-<li>Ball</li>
-<li>Boundary</li>
+<li>The ANN type (currently only non-recurrent NNs are supported)</li>
+<li>Nodes
+<ul>
+<li>Node type</li>
+<li>Number of inward connections</li>
+<li>Inward connections
+<ul>
+<li>Inward connection ID and weight</li>
 </ul>
-<h3 id="paddle"><a class="header" href="#paddle">Paddle</a></h3>
-<p>The paddle acts as a table-tennis bat, since the game, pong, itself is inspired by it. It's simply a wide and thin rectangular box in the simulation that is powered through a <a href="https://docs.godotengine.org/en/stable/classes/class_kinematicbody2d.html#class-kinematicbody2d">KinematicBody2D</a> in Godot. KinematicBody2D makes it possible for the paddle to move, collide with the ball and also be obstructed by the boundaries.</p>
-<p>The mechanism for controlling the paddle, which includes its horizontal motion, has been programmed in GDScript.</p>
-<h3 id="ball"><a class="header" href="#ball">Ball</a></h3>
-<p>The ball poses the main challenge for the players (controllers of the paddles). The only objective of the game is to hit the ball and not miss it. If the ball hits the bottom boundary, the player is out. It's represented by a <a href="https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html">RigidBody2D</a> in Godot. RigidBody2D allows the physics engine to calculate the position and velocity of the ball at any given time based on the applied force/impulse, torque, etc. It allows the ball to bounce off the boundary/paddle[s]. Continuous collision detection based on the ball's casted shape is used to avoid the ball tunneling through the boundary due to sudden great change in speed.</p>
-<h3 id="boundary"><a class="header" href="#boundary">Boundary</a></h3>
-<p>The boundary is what keeps the ball and paddles from escaping the game scene. It's represented by a <a href="https://docs.godotengine.org/en/stable/classes/class_staticbody2d.html">StaticBody2D</a> in Godot, since it doesn't move but will have a role in collision detection. The boundary will cover all 4 sides of the viewport.</p>
-<h2 id="communication"><a class="header" href="#communication">Communication</a></h2>
-<p>The extension will communicate with Darwin's components, such as the control panel, through JSON. The control panel will relay configuration details through JSON of the following entities:</p>
+</li>
+</ul>
+</li>
+</ul>
 <blockquote>
-<p>The machine name, used as keys in the JSON data, is in parenthesis.</p>
+<p>The neural networks are stored instead of genes because of the fact that the eventual goal of the system is to train and produce fit neural networks, which are the end products. Genes are part of the system only for neuroevolution.</p>
 </blockquote>
+<h2 id="integration-with-the-persistent-models-system"><a class="header" href="#integration-with-the-persistent-models-system">Integration With the Persistent Models System</a></h2>
+<p>The persistent models system of Darwin stores the best-fit models (neural networks in this case) in the format generated by <code>tinyai</code>. It's integrated with Pong through a GDNative library, which in turn is used in GDScript to connect with the entirety of the game framework.</p>
+<h3 id="functions-of-the-gdnative-library"><a class="header" href="#functions-of-the-gdnative-library">Functions of the GDNative Library</a></h3>
 <ul>
-<li>Models File Path (<code>models_file_path</code>) </li>
-<li>Initial Population Source (<code>start_from_saved_models</code>)</li>
-<li>Speed (<code>speed</code>)</li>
-<li>Population Size (<code>population_size</code>)</li>
-<li>Genome Similarity:
-<ul>
-<li>Weights Difference Coefficient (<code>gs_c_weights_difference</code>)</li>
-<li>Disjoints Difference Coefficient (<code>gs_c_disjoints_difference</code>)</li>
-<li>Overall Coefficient (<code>gs_c_overall</code>)</li>
+<li><code>initiate</code> for loading the models file.</li>
+<li><code>model</code> for fetching individual model.</li>
+<li><code>count</code> for counting the number of models.</li>
+<li><code>stage</code> for staging a specified model.</li>
+<li><code>commit</code> for committing a selected number of models.</li>
+<li><code>save</code> for writing the changes to the models file.</li>
 </ul>
-</li>
-<li>Species Staleness Threshold (<code>species_staleness_threshold</code>)</li>
-<li>Probabilities:
-<ul>
-<li>Crossover (<code>crossover</code>)</li>
-<li>Connection Mutation (<code>connection_mutation</code>)</li>
-<li>Perturb (<code>perturb</code>)</li>
-<li>Link Mutation (<code>link_mutation</code>)</li>
-<li>Node Mutation (<code>node_mutation</code>)</li>
-<li>Bias Mutation (<code>bias_mutation</code>)</li>
-<li>Disable Mutation (<code>disable_mutation</code>)</li>
-<li>Enable Mutation (<code>enable_mutation</code>)</li>
-</ul>
-</li>
-</ul>
+<h3 id="loading-the-models"><a class="header" href="#loading-the-models">Loading the Models</a></h3>
+<pre><code class="language-python"># Load models
+PersistentModels.initiate(Global.configuration.models_file_path)
+</code></pre>
+<h3 id="updating-at-the-end-of-every-generation"><a class="header" href="#updating-at-the-end-of-every-generation">Updating at the End of Every Generation</a></h3>
+<p>After the end of every generation, the models are staged, committed and saved.</p>
+<p>This is how each model is staged:</p>
+<pre><code class="language-python">PersistentModels.stage(Neat.model_to_string(model_id), score)
+</code></pre>
+<p>This is how a commit and save is done:</p>
+<pre><code class="language-python">PersistentModels.commit(Global.configuration.saved_models_count)
+PersistentModels.save()
+</code></pre>
+<h3 id="checking-if-there-are-no-saved-models"><a class="header" href="#checking-if-there-are-no-saved-models">Checking if There Are No Saved Models</a></h3>
+<p>This is a snippet that checks if no saved model exists in the file.</p>
+<pre><code class="language-python">var count = PersistentModels.count()
+
+if count == 0:
+    print(&quot;No saved model found.&quot;)
+    return
+</code></pre>
+<h2 id="results"><a class="header" href="#results">Results</a></h2>
+<p>The results below are fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.</p>
+<p>Parameters shared by all the training sessions:</p>
+<table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
+<tr><td>delta_disjoint</td><td>2.00</td></tr>
+<tr><td>delta_weights</td><td>0.40</td></tr>
+<tr><td>delta_threshold</td><td>1.30</td></tr>
+<tr><td>stale_species</td><td>15</td></tr>
+<tr><td>connection_mutate_chance</td><td>0.25</td></tr>
+<tr><td>perturb_chance</td><td>0.90</td></tr>
+<tr><td>crossover_chance</td><td>0.75</td></tr>
+<tr><td>link_mutation_chance</td><td>2.00</td></tr>
+<tr><td>node_mutation_chance</td><td>0.50</td></tr>
+<tr><td>bias_mutation_chance</td><td>0.40</td></tr>
+<tr><td>disable_mutation_chance</td><td>0.40</td></tr>
+<tr><td>enable_mutation_chance</td><td>0.20</td></tr>
+</tbody></table>
+<h3 id="50-genes"><a class="header" href="#50-genes">50 Genes</a></h3>
+<p><img src="images/week4/PongResults50.png" alt="" /></p>
+<h3 id="100-genes"><a class="header" href="#100-genes">100 Genes</a></h3>
+<p><img src="images/week4/PongResults100.png" alt="" /></p>
+<h3 id="300-genes"><a class="header" href="#300-genes">300 Genes</a></h3>
+<p><img src="images/week4/PongResults300.png" alt="" /></p>
+<h3 id="600-genes"><a class="header" href="#600-genes">600 Genes</a></h3>
+<p><img src="images/week4/PongResults600.png" alt="" /></p>
+<h2 id="observations-and-notes"><a class="header" href="#observations-and-notes">Observations and Notes</a></h2>
+<blockquote>
+<p>TODO</p>
+</blockquote>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-
-                        
-                            <a rel="next" href="week2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                            <a rel="prev" href="week3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
                             </a>
+                        
+
                         
 
                         <div style="clear: both"></div>
@@ -236,11 +269,11 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-
-                
-                    <a rel="next" href="week2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                    <a rel="prev" href="week3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
                     </a>
+                
+
                 
             </nav>
 

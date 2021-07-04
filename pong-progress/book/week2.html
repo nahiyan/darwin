@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html" class="active"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html" class="active"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li><li class="chapter-item expanded "><a href="week4.html"><strong aria-hidden="true">4.</strong> Week 4</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -251,6 +251,21 @@ connecting with the extension.</p>
 
         </div>
 
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         
 
         
