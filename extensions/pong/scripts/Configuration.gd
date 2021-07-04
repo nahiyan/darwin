@@ -21,8 +21,8 @@ var connection_mutate_chance: float = 0.25
 var perturb_chance: float = 0.90
 var crossover_chance: float = 0.75
 var link_mutation_chance: float = 2.0
-var node_mutation_chance: float = 0.50
-var bias_mutation_chance: float = 0.40
+var node_mutation_chance: float = 0.5
+var bias_mutation_chance: float = 0.4
 var disable_mutation_chance: float = 0.4
 var enable_mutation_chance: float = 0.2
 
