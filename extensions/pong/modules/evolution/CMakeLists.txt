@@ -1,9 +1,16 @@
 cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 11)
-project(pong-evolution)
+project(pong-evolution CXX)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(DARWIN_ROOT ${PROJECT_SOURCE_DIR}/../../../..)
-set(PONG_ROOT ${PROJECT_SOURCE_DIR}/../../)
+set(PONG_ROOT ${PROJECT_SOURCE_DIR}/../..)
+
+if(WIN32)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll" ".a")
+  set(GODOT_CPP_LIB_NAME "godotcpp.windows")
+elseif(CMAKE_HOST_APPLE)
+  set(GODOT_CPP_LIB_NAME "godotcpp.macos")
+endif()
 
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_library(evolution SHARED ${SRC_FILES})
@@ -18,11 +25,14 @@ target_include_directories(
           ${DARWIN_ROOT}/modules/persistent-models/c-headers)
 
 # Persistent Models
-find_library(PERSISTENT_MODELS_LIB persistent_models ${PONG_ROOT}/bin/)
+find_library(PERSISTENT_MODELS_LIB persistent_models PATHS ${PONG_ROOT}/bin
+                                                           REQUIRED)
 
 # Godot CPP
-find_library(GODOT_CPP_LIB godotcpp ${PROJECT_SOURCE_DIR}/../../godot-cpp/bin)
+find_library(GODOT_CPP_LIB ${GODOT_CPP_LIB_NAME}
+             PATHS ${PONG_ROOT}/godot-cpp/bin REQUIRED)
 
+# Link libraries
 target_link_libraries(evolution ${GODOT_CPP_LIB} ${PERSISTENT_MODELS_LIB})
 
 # Copy the generated library to a the "bin" directory of the extension
