@@ -72,9 +72,28 @@ if count == 0:
     return
 ```
 
+## Parallel Evolution
+
+Parallel evolution is integrated into the system with each gene representing multiple paddles at the same time. This is dfone to test a gene in various way at the same time in a parallel, rather than sequential, fashion.
+
+In the current version, each gene controls 6 paddles, with each paddle being on each stage. So in total, there are 6 stages, all tested simultaneously. The image below shows all the 6 stages with numerous paddles in each stage.
+
+![](images/week4/ParallelEvolution.png)
+
+As one can observe, the ball are the white and red circles, one in each stage. However, the balls are of two types: 
+
+- Harmful (red)
+- Harmless (white)
+
+Harmful balls will decrease the fitness of a gene if the paddle it controls hits it. Thus, they are supposed to be avoided by the paddles.
+
+On the other side, harmless balls reward a gene if the paddle it's controlling hits it. Thus, they are to be hit for attaining a greater fitness.
+
+After a ball hits a paddle or a bottom boundary, all the paddles in that stage will be rewarded for avoiding or approaching the ball based on its type. Paddles are rewarded for avoiding a harmful ball whereas they are rewarded for approaching a harmless ball. This is done to make fitness calculations continuous and not discrete.
+
 ## Results
 
-The results below are fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.
+The results below are highest fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.
 
 Parameters shared by all the training sessions:
 
@@ -111,5 +130,11 @@ enable_mutation\_chance | 0.20
 
 ## Observations and Notes
 
-> TODO
+In all the training sessions, there are some clear patterns.
 
+- All of them share similar turning points around when highest fitness is ~5.4.
+- All of the sessions have ~5.4 fitness highest fitness at the end of the first generation.
+- The larger the population, the greater the highest fitness at the plateau, which is 8.29, 8.29, 9.31, and 9.34 for 50, 100, 300, and 600 population sizes respectively.
+- Larger populations usually reach the plateau faster than smaller ones, with the second training session (100 population members) being the exception in this case.
+
+Some of the patterns are best explained by probabilities of an individual gene mutating to attain higher fitness. Larger population increases the probability of any gene attaining a greater fitness, increasing the highest fitness of the generations. Moreover, it decreases the chances of reaching a plateau since there are greater number of species, each evolving to developer their own unique characteristics, which in turn decreases the chances of evolution to slow down.
