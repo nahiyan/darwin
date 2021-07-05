@@ -91,6 +91,12 @@ On the other side, harmless balls reward a gene if the paddle it's controlling h
 
 After a ball hits a paddle or a bottom boundary, all the paddles in that stage will be rewarded for avoiding or approaching the ball based on its type. Paddles are rewarded for avoiding a harmful ball whereas they are rewarded for approaching a harmless ball. This is done to make fitness calculations continuous and not discrete.
 
+# Testing
+
+After a training session, the user has the ability to test a selected subset of the trained models. The models aren't scored here but only simulated in a stage for the human to observe its behavior and performance.
+
+![](images/week4/Test.png)
+
 ## Results
 
 The results below are highest fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.
