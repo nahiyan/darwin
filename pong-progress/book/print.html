@@ -430,8 +430,20 @@ if count == 0:
     print(&quot;No saved model found.&quot;)
     return
 </code></pre>
+<h2 id="parallel-evolution"><a class="header" href="#parallel-evolution">Parallel Evolution</a></h2>
+<p>Parallel evolution is integrated into the system with each gene representing multiple paddles at the same time. This is dfone to test a gene in various way at the same time in a parallel, rather than sequential, fashion.</p>
+<p>In the current version, each gene controls 6 paddles, with each paddle being on each stage. So in total, there are 6 stages, all tested simultaneously. The image below shows all the 6 stages with numerous paddles in each stage.</p>
+<p><img src="images/week4/ParallelEvolution.png" alt="" /></p>
+<p>As one can observe, the ball are the white and red circles, one in each stage. However, the balls are of two types: </p>
+<ul>
+<li>Harmful (red)</li>
+<li>Harmless (white)</li>
+</ul>
+<p>Harmful balls will decrease the fitness of a gene if the paddle it controls hits it. Thus, they are supposed to be avoided by the paddles.</p>
+<p>On the other side, harmless balls reward a gene if the paddle it's controlling hits it. Thus, they are to be hit for attaining a greater fitness.</p>
+<p>After a ball hits a paddle or a bottom boundary, all the paddles in that stage will be rewarded for avoiding or approaching the ball based on its type. Paddles are rewarded for avoiding a harmful ball whereas they are rewarded for approaching a harmless ball. This is done to make fitness calculations continuous and not discrete.</p>
 <h2 id="results"><a class="header" href="#results">Results</a></h2>
-<p>The results below are fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.</p>
+<p>The results below are highest fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.</p>
 <p>Parameters shared by all the training sessions:</p>
 <table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
 <tr><td>delta_disjoint</td><td>2.00</td></tr>
@@ -456,9 +468,14 @@ if count == 0:
 <h3 id="600-genes"><a class="header" href="#600-genes">600 Genes</a></h3>
 <p><img src="images/week4/PongResults600.png" alt="" /></p>
 <h2 id="observations-and-notes"><a class="header" href="#observations-and-notes">Observations and Notes</a></h2>
-<blockquote>
-<p>TODO</p>
-</blockquote>
+<p>In all the training sessions, there are some clear patterns.</p>
+<ul>
+<li>All of them share similar turning points around when highest fitness is ~5.4.</li>
+<li>All of the sessions have ~5.4 fitness highest fitness at the end of the first generation.</li>
+<li>The larger the population, the greater the highest fitness at the plateau, which is 8.29, 8.29, 9.31, and 9.34 for 50, 100, 300, and 600 population sizes respectively.</li>
+<li>Larger populations usually reach the plateau faster than smaller ones, with the second training session (100 population members) being the exception in this case.</li>
+</ul>
+<p>Some of the patterns are best explained by probabilities of an individual gene mutating to attain higher fitness. Larger population increases the probability of any gene attaining a greater fitness, increasing the highest fitness of the generations. Moreover, it decreases the chances of reaching a plateau since there are greater number of species, each evolving to developer their own unique characteristics, which in turn decreases the chances of evolution to slow down.</p>
 
                     </main>
 
@@ -481,21 +498,6 @@ if count == 0:
 
         </div>
 
-        
-        <!-- Livereload script (if served using the cli tool) -->
-        <script type="text/javascript">
-            var socket = new WebSocket("ws://localhost:3000/__livereload");
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
         
 
         
