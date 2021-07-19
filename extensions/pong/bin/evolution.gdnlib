@@ -9,8 +9,10 @@ reloadable=true
 
 OSX.64="res://bin/libevolution.dylib"
 Windows.64="res://bin/evolution.dll"
+X11.64="res://bin/libevolution.so"
 
 [dependencies]
 
 OSX.64=[ "res://bin/libpersistent_models.dylib" ]
 Windows.64=[ "res://bin/persistent_models.dll" ]
+X11.64=[ "res://bin/libpersistent_models.so" ]
