@@ -7,9 +7,6 @@ set(PONG_ROOT ${PROJECT_SOURCE_DIR}/../..)
 
 if(WIN32)
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll" ".a")
-  set(GODOT_CPP_LIB_NAME "godotcpp.windows")
-elseif(CMAKE_HOST_APPLE)
-  set(GODOT_CPP_LIB_NAME "godotcpp.macos")
 endif()
 
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
@@ -29,7 +26,7 @@ find_library(PERSISTENT_MODELS_LIB persistent_models PATHS ${PONG_ROOT}/bin
                                                            REQUIRED)
 
 # Godot CPP
-find_library(GODOT_CPP_LIB ${GODOT_CPP_LIB_NAME}
+find_library(GODOT_CPP_LIB godotcpp
              PATHS ${PONG_ROOT}/godot-cpp/bin REQUIRED)
 
 # Link libraries
