@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Week 2 - CSE498R Extended Work</title>
+        <title>Final Report - CSE498R Extended Work</title>
         <!-- Custom HTML head -->
         
 
@@ -77,7 +77,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html" class="active"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li><li class="chapter-item expanded "><a href="week4.html"><strong aria-hidden="true">4.</strong> Week 4</a></li><li class="chapter-item expanded "><a href="final-report.html"><strong aria-hidden="true">5.</strong> Final Report</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="week1.html"><strong aria-hidden="true">1.</strong> Week 1</a></li><li class="chapter-item expanded "><a href="week2.html"><strong aria-hidden="true">2.</strong> Week 2</a></li><li class="chapter-item expanded "><a href="week3.html"><strong aria-hidden="true">3.</strong> Week 3</a></li><li class="chapter-item expanded "><a href="week4.html"><strong aria-hidden="true">4.</strong> Week 4</a></li><li class="chapter-item expanded "><a href="final-report.html" class="active"><strong aria-hidden="true">5.</strong> Final Report</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -137,66 +137,244 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="week-2-progress"><a class="header" href="#week-2-progress">Week 2 Progress</a></h1>
-<h2 id="goal"><a class="header" href="#goal">Goal</a></h2>
-<p>Build a new module of Darwin, featuring the C++ implementation of the NEAT algorithm. This
-will involve the development of an API that will act as a front-end of the module intended for
-connecting with the extension.</p>
-<h2 id="c-implementation-of-the-neat-algorithm"><a class="header" href="#c-implementation-of-the-neat-algorithm">C++ Implementation of the NEAT Algorithm</a></h2>
-<p>Since the extension, Pong, is developed using Godot, GDScript is used for doing all the scripting. GDScript, however, doesn't have a large community and isn't very popular. Moreover, it's designed for game scripting, not anything else.</p>
-<p>For general-purpose and high-performance programming, and also considering the fact that the NEAT algorithm's most popular implementation is based on C/C++, it's logical to do all the neuroevolution programming in C/C++.</p>
-<p>The official C++ implementation of the NEAT algorithm, however, isn't well documented and not very easy to use. This called for a hunt for much better libraries featuring the NEAT algorithm. Here are the CPP-based NEAT libraries that I found along the way:</p>
-<ul>
-<li><a href="http://www.multineat.com/">MultiNEAT</a></li>
-<li><a href="https://github.com/hav4ik/tinyai">hav4ik/tinyai</a></li>
-<li><a href="https://github.com/F3R70/NEAT">F3R70/NEAT</a></li>
-</ul>
-<p><strong>MultiNEAT</strong> appeared to be a well-structured and feature-rich NEAT library but it resulted in a lot of unexpected runtime errors, which were getting a bit too tedious to debug and fix. In short, the attempt to use MultiNEAT was a failure.</p>
-<p><strong>FER70/NEAT</strong> is just a slightly improved version of the official C++ implementation of the NEAT algorithm with nothing extra added on top, which I considered as a backup library if <strong>hav4ik/tinyai</strong> wouldn't work.</p>
-<p><strong>hav4ik/tinyai</strong> is a compact NEAT implementation in C++ that is straightforward and simply works out of the box. It has just all the features that was needed for powering the neuroevolution of the pong simulation.</p>
-<p>On a side note, a Rust implementation of the NEAT algorithm,  <a href="https://github.com/TLmaK0/rustneat">TLmaK0/rustneat</a>, also looked promising. However, Godot's FFI only supports C and C++, not Rust, which would mean that a C/C++ library would have to be created to talk with the Rust library on Godot's behalf, further complicating the process.</p>
-<p>Thus, <strong>hav4ik/tinyai</strong> has been chosen for integrating the NEAT algorithm into the extension.</p>
-<h2 id="development-of-the-api"><a class="header" href="#development-of-the-api">Development of the API</a></h2>
-<p>The API serves as the frontend of the NEAT module of Darwin, providing an interface for the extension to use the NEAT algorithm through GDScript.</p>
-<p>The API is simple and hides the complexity of the module, exposing only the following methods:</p>
-<ul>
-<li>prepare</li>
-<li>evaluate</li>
-<li>setFitness</li>
-<li>nextGeneration</li>
-</ul>
-<p>Internally, it holds the following properties:</p>
-<ul>
-<li>pool</li>
-<li>genomes</li>
-<li>neuralNetworks</li>
-</ul>
-<h3 id="properties"><a class="header" href="#properties">Properties</a></h3>
-<h4 id="pool"><a class="header" href="#pool">pool</a></h4>
-<p><code>pool</code> represents the pool of genomes in the population, along with innovation tracking. It acts as the center of the whole system: handling settings, evolution, etc.</p>
-<h4 id="genomes"><a class="header" href="#genomes">genomes</a></h4>
-<p><code>genomes</code> holds the genomes of all species in the current generation. The list is cleared and populated at the start of every generation.</p>
-<h4 id="neuralnetworks"><a class="header" href="#neuralnetworks">neuralNetworks</a></h4>
-<p><code>neuralNetworks</code> is a list of the neural networks associated with each genome; or rather, the phenotype of each genotype. Since the neural networks, which are needed several times in a generation, have to be generated from a genome every single time, it's efficient to store them in a place instead of spawning them unnecessarily.</p>
-<h3 id="methods"><a class="header" href="#methods">Methods</a></h3>
-<h4 id="prepare"><a class="header" href="#prepare">prepare</a></h4>
-<p>This method takes the parameters and initiates the <code>pool</code> along with the rest of the properties for the initial generation. It's called once at the beginning of the session.</p>
-<h4 id="evaluate"><a class="header" href="#evaluate">evaluate</a></h4>
-<p>Called by each genome to get the output value from the input values by evaluating the associated neural network.</p>
-<h4 id="setfitness"><a class="header" href="#setfitness">setFitness</a></h4>
-<p>Registers the fitness value of a specific genome.</p>
-<h4 id="nextgeneration"><a class="header" href="#nextgeneration">nextGeneration</a></h4>
-<p>Proceeds to the next generation by triggering the pool and updating the list of genotypes and phenotypes (neural networks).</p>
+                        <h1 id="final-report"><a class="header" href="#final-report">Final Report</a></h1>
+<h2 id="generation-vs-max-fitness"><a class="header" href="#generation-vs-max-fitness">Generation Vs. Max-Fitness</a></h2>
+<p>The following presents a series of generation vs. max-fitness graphs, where the population size is varied. The data used to render each graph, as provided under each heading, is a series of max-fitness values of the generations. In other words, the line-separated values are the max-fitness values of each generation.</p>
+<p>The first value is the max-fitness of the first generation, the second value is the max-fitness of the second generation, and so on. X-axis represents the generation numbers and the y-axis represents the fitness values.</p>
+<p>Note that each of the graph covers a 30-generation session.</p>
+<h3 id="50-genes"><a class="header" href="#50-genes">50 Genes</a></h3>
+<p><strong>Data:</strong> </p>
+<pre><code>5.431628
+5.431628
+5.451668
+5.451668
+8.260777
+8.260777
+8.260777
+8.260777
+8.268461
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.281201
+8.288198
+8.288198
+8.288198
+8.288198
+8.288198
+8.288198
+8.288198
+8.288198
+8.288198
+8.292171
+8.292171
+8.292171
+8.292171
+</code></pre>
+<p><img src="images/final-report/50.png" alt="" /></p>
+<h3 id="100-genes"><a class="header" href="#100-genes">100 Genes</a></h3>
+<p><strong>Data:</strong></p>
+<pre><code>5.432813
+5.432813
+5.432813
+5.432813
+7.066851
+7.066851
+8.1442
+8.231398
+8.278016
+8.28744
+8.28744
+8.28744
+8.289681
+8.289681
+8.289681
+8.289681
+8.289681
+8.289681
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+8.294307
+</code></pre>
+<p><img src="images/final-report/100.png" alt="" /></p>
+<h3 id="150-genes"><a class="header" href="#150-genes">150 Genes</a></h3>
+<p><strong>Data:</strong></p>
+<pre><code>5.431562
+5.431562
+5.431562
+8.260981
+8.260981
+8.271969
+8.271969
+8.271969
+8.271969
+8.281805
+8.281805
+8.281805
+8.281805
+8.281805
+8.281805
+8.288877
+8.288877
+8.292191
+8.292191
+8.292191
+8.292191
+8.292191
+8.294148
+8.294148
+8.294148
+8.294497
+8.295925
+8.295925
+8.295925
+8.295925
+8.39234
+</code></pre>
+<p><img src="images/final-report/150.png" alt="" /></p>
+<h3 id="200-genes"><a class="header" href="#200-genes">200 Genes</a></h3>
+<p><strong>Data:</strong></p>
+<pre><code>5.431562
+7.052027
+7.052027
+8.275368
+8.277686
+8.277686
+8.282916
+8.282916
+8.282986
+8.290395
+8.290395
+8.290395
+8.290395
+8.290395
+8.290395
+8.290395
+8.290395
+8.29338
+9.171868
+9.171868
+9.171868
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+9.298051
+</code></pre>
+<p><img src="images/final-report/200.png" alt="" /></p>
+<h3 id="250-genes"><a class="header" href="#250-genes">250 Genes</a></h3>
+<p><strong>Data:</strong></p>
+<pre><code>5.431562
+9.04776
+9.04776
+9.286324
+9.286324
+9.286324
+9.286324
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.311235
+9.334922
+9.334922
+9.334922
+</code></pre>
+<p><img src="images/final-report/250.png" alt="" /></p>
+<h3 id="300-genes"><a class="header" href="#300-genes">300 Genes</a></h3>
+<p><strong>Data:</strong></p>
+<pre><code>5.432036
+9.185127
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.279955
+9.284306
+9.284306
+9.284306
+9.284306
+9.284306
+9.328227
+9.328227
+9.328227
+9.328227
+9.328227
+9.328227
+9.328227
+</code></pre>
+<p><img src="images/final-report/300.png" alt="" /></p>
+<h2 id="population-size-vs-max-fitness-after-30-generations"><a class="header" href="#population-size-vs-max-fitness-after-30-generations">Population Size vs. Max-Fitness After 30 Generations</a></h2>
+<p>The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.</p>
+<p><strong>Data:</strong></p>
+<pre><code>8.292171
+8.294307
+8.39234
+9.298051
+9.334922
+9.328227
+</code></pre>
+<p><img src="images/final-report/population-size-v-fitness.png" alt="" /></p>
+<p>The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.</p>
+<p>Another way to look at it is that the graph shows the trend in population size vs. plateau height.</p>
+<h2 id="trend-in-generations-required-to-reach-a-specific-max-fitness"><a class="header" href="#trend-in-generations-required-to-reach-a-specific-max-fitness">Trend in Generations Required to Reach A Specific Max-Fitness</a></h2>
+<p>As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.</p>
+<p><img src="images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
+<h2 id="observations"><a class="header" href="#observations">Observations</a></h2>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="week1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="week4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a rel="next" href="week3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
                     </nav>
@@ -204,11 +382,8 @@ connecting with the extension.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="week1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="week4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a rel="next" href="week3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
