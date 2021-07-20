@@ -144,7 +144,7 @@
 <p>In this week, the new extension of Darwin, Pong, has its foundation set. The extension is developed using <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)">Godot</a>, a powerful <a href="https://en.wikipedia.org/wiki/Game_integrated_development_environment">game development environment</a>, which is much more powerful and way easier to develop the environment of the simulation compared to cocos2d-x. However, this required programming most of the components of this extension in a language called <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)#GDScript">GDScript</a>, in contrast to C++ that was used for developing the cocos2d-x-based extensions.</p>
 <p>The physics, which involves setting the shapes of the objects involved for collision detection, motion, controls, etc, has been set. Moreover, the executable of the extension, which has the task of communicating with the control panel of Darwin, needs to have the communication system built too. Thus, a <a href="https://en.wikipedia.org/wiki/JSON">JSON</a> reading library has been integrated to take data, such as the configuration entities, in a single compact string (based on the protocol of Darwin).</p>
 <p>The image below shows all the physics objects in one frame:</p>
-<p><img src="images/overview.png" alt="alt text" title="Overview" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/overview.png" alt="alt text" title="Overview" /></p>
 <h2 id="structure"><a class="header" href="#structure">Structure</a></h2>
 <p>The extension is comprises the following classes of objects:</p>
 <ul>
@@ -211,6 +211,20 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>

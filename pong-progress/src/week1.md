@@ -12,7 +12,7 @@ The physics, which involves setting the shapes of the objects involved for colli
 
 The image below shows all the physics objects in one frame:
 
-![alt text](images/overview.png "Overview")
+![alt text](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/overview.png "Overview")
 
 ## Structure
 

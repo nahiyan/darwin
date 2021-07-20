@@ -145,7 +145,7 @@
 <p>In this week, the new extension of Darwin, Pong, has its foundation set. The extension is developed using <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)">Godot</a>, a powerful <a href="https://en.wikipedia.org/wiki/Game_integrated_development_environment">game development environment</a>, which is much more powerful and way easier to develop the environment of the simulation compared to cocos2d-x. However, this required programming most of the components of this extension in a language called <a href="https://en.wikipedia.org/wiki/Godot_(game_engine)#GDScript">GDScript</a>, in contrast to C++ that was used for developing the cocos2d-x-based extensions.</p>
 <p>The physics, which involves setting the shapes of the objects involved for collision detection, motion, controls, etc, has been set. Moreover, the executable of the extension, which has the task of communicating with the control panel of Darwin, needs to have the communication system built too. Thus, a <a href="https://en.wikipedia.org/wiki/JSON">JSON</a> reading library has been integrated to take data, such as the configuration entities, in a single compact string (based on the protocol of Darwin).</p>
 <p>The image below shows all the physics objects in one frame:</p>
-<p><img src="images/overview.png" alt="alt text" title="Overview" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/overview.png" alt="alt text" title="Overview" /></p>
 <h2 id="structure"><a class="header" href="#structure">Structure</a></h2>
 <p>The extension is comprises the following classes of objects:</p>
 <ul>
@@ -406,7 +406,7 @@ if count == 0:
 <h2 id="parallel-evolution"><a class="header" href="#parallel-evolution">Parallel Evolution</a></h2>
 <p>Parallel evolution is integrated into the system with each gene representing multiple paddles at the same time. This is dfone to test a gene in various way at the same time in a parallel, rather than sequential, fashion.</p>
 <p>In the current version, each gene controls 6 paddles, with each paddle being on each stage. So in total, there are 6 stages, all tested simultaneously. The image below shows all the 6 stages with numerous paddles in each stage.</p>
-<p><img src="images/week4/ParallelEvolution.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/ParallelEvolution.png" alt="" /></p>
 <p>As one can observe, the ball are the white and red circles, one in each stage. However, the balls are of two types: </p>
 <ul>
 <li>Harmful (red)</li>
@@ -417,7 +417,7 @@ if count == 0:
 <p>After a ball hits a paddle or a bottom boundary, all the paddles in that stage will be rewarded for avoiding or approaching the ball based on its type. Paddles are rewarded for avoiding a harmful ball whereas they are rewarded for approaching a harmless ball. This is done to make fitness calculations continuous and not discrete.</p>
 <h1 id="testing"><a class="header" href="#testing">Testing</a></h1>
 <p>After a training session, the user has the ability to test a selected subset of the trained models. The models aren't scored here but only simulated in a stage for the human to observe its behavior and performance.</p>
-<p><img src="images/week4/Test.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/Test.png" alt="" /></p>
 <h2 id="results"><a class="header" href="#results">Results</a></h2>
 <p>The results below are highest fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.</p>
 <p>Parameters shared by all the training sessions:</p>
@@ -436,13 +436,13 @@ if count == 0:
 <tr><td>enable_mutation_chance</td><td>0.20</td></tr>
 </tbody></table>
 <h3 id="50-genes"><a class="header" href="#50-genes">50 Genes</a></h3>
-<p><img src="images/week4/PongResults50.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults50.png" alt="" /></p>
 <h3 id="100-genes"><a class="header" href="#100-genes">100 Genes</a></h3>
-<p><img src="images/week4/PongResults100.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults100.png" alt="" /></p>
 <h3 id="300-genes"><a class="header" href="#300-genes">300 Genes</a></h3>
-<p><img src="images/week4/PongResults300.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults300.png" alt="" /></p>
 <h3 id="600-genes"><a class="header" href="#600-genes">600 Genes</a></h3>
-<p><img src="images/week4/PongResults600.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults600.png" alt="" /></p>
 <h2 id="observations-and-notes"><a class="header" href="#observations-and-notes">Observations and Notes</a></h2>
 <p>In all the training sessions, there are some clear patterns.</p>
 <ul>
@@ -492,7 +492,7 @@ if count == 0:
 8.292171
 8.292171
 </code></pre>
-<p><img src="images/final-report/50.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/50.png" alt="" /></p>
 <h3 id="100-genes-1"><a class="header" href="#100-genes-1">100 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.432813
@@ -526,7 +526,7 @@ if count == 0:
 8.294307
 8.294307
 </code></pre>
-<p><img src="images/final-report/100.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/100.png" alt="" /></p>
 <h3 id="150-genes"><a class="header" href="#150-genes">150 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -561,7 +561,7 @@ if count == 0:
 8.295925
 8.39234
 </code></pre>
-<p><img src="images/final-report/150.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/150.png" alt="" /></p>
 <h3 id="200-genes"><a class="header" href="#200-genes">200 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -596,7 +596,7 @@ if count == 0:
 9.298051
 9.298051
 </code></pre>
-<p><img src="images/final-report/200.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/200.png" alt="" /></p>
 <h3 id="250-genes"><a class="header" href="#250-genes">250 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -630,7 +630,7 @@ if count == 0:
 9.334922
 9.334922
 </code></pre>
-<p><img src="images/final-report/250.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/250.png" alt="" /></p>
 <h3 id="300-genes-1"><a class="header" href="#300-genes-1">300 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.432036
@@ -665,7 +665,7 @@ if count == 0:
 9.328227
 9.328227
 </code></pre>
-<p><img src="images/final-report/300.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png" alt="" /></p>
 <h2 id="population-size-vs-max-fitness-after-30-generations"><a class="header" href="#population-size-vs-max-fitness-after-30-generations">Population Size vs. Max-Fitness After 30 Generations</a></h2>
 <p>The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.</p>
 <p><strong>Data:</strong></p>
@@ -676,12 +676,12 @@ if count == 0:
 9.334922
 9.328227
 </code></pre>
-<p><img src="images/final-report/population-size-v-fitness.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/population-size-v-fitness.png" alt="" /></p>
 <p>The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.</p>
 <p>Another way to look at it is that the graph shows the trend in population size vs. plateau height.</p>
 <h2 id="trend-in-generations-required-to-reach-a-specific-max-fitness"><a class="header" href="#trend-in-generations-required-to-reach-a-specific-max-fitness">Trend in Generations Required to Reach A Specific Max-Fitness</a></h2>
 <p>As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.</p>
-<p><img src="images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
 <h2 id="observations"><a class="header" href="#observations">Observations</a></h2>
 
                     </main>
@@ -698,6 +698,20 @@ if count == 0:
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>

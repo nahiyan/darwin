@@ -78,7 +78,7 @@ Parallel evolution is integrated into the system with each gene representing mul
 
 In the current version, each gene controls 6 paddles, with each paddle being on each stage. So in total, there are 6 stages, all tested simultaneously. The image below shows all the 6 stages with numerous paddles in each stage.
 
-![](images/week4/ParallelEvolution.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/ParallelEvolution.png)
 
 As one can observe, the ball are the white and red circles, one in each stage. However, the balls are of two types: 
 
@@ -95,7 +95,7 @@ After a ball hits a paddle or a bottom boundary, all the paddles in that stage w
 
 After a training session, the user has the ability to test a selected subset of the trained models. The models aren't scored here but only simulated in a stage for the human to observe its behavior and performance.
 
-![](images/week4/Test.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/Test.png)
 
 ## Results
 
@@ -103,36 +103,36 @@ The results below are highest fitness vs. generations graphs of 4 training sessi
 
 Parameters shared by all the training sessions:
 
-|Parameter | Value|
-|----------|------|
-delta\_disjoint | 2.00
-delta\_weights | 0.40
-delta_threshold | 1.30
-stale_species | 15
-connection\_mutate\_chance | 0.25
-perturb\_chance | 0.90
-crossover\_chance | 0.75
-link_mutation\_chance | 2.00
-node_mutation\_chance | 0.50
-bias_mutation\_chance | 0.40
-disable_mutation\_chance | 0.40
-enable_mutation\_chance | 0.20
+| Parameter                  | Value |
+| -------------------------- | ----- |
+| delta\_disjoint            | 2.00  |
+| delta\_weights             | 0.40  |
+| delta_threshold            | 1.30  |
+| stale_species              | 15    |
+| connection\_mutate\_chance | 0.25  |
+| perturb\_chance            | 0.90  |
+| crossover\_chance          | 0.75  |
+| link_mutation\_chance      | 2.00  |
+| node_mutation\_chance      | 0.50  |
+| bias_mutation\_chance      | 0.40  |
+| disable_mutation\_chance   | 0.40  |
+| enable_mutation\_chance    | 0.20  |
 
 ### 50 Genes
 
-![](images/week4/PongResults50.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults50.png)
 
 ### 100 Genes
 
-![](images/week4/PongResults100.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults100.png)
 
 ### 300 Genes
 
-![](images/week4/PongResults300.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults300.png)
 
 ### 600 Genes
 
-![](images/week4/PongResults600.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults600.png)
 
 ## Observations and Notes
 

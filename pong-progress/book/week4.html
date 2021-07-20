@@ -197,7 +197,7 @@ if count == 0:
 <h2 id="parallel-evolution"><a class="header" href="#parallel-evolution">Parallel Evolution</a></h2>
 <p>Parallel evolution is integrated into the system with each gene representing multiple paddles at the same time. This is dfone to test a gene in various way at the same time in a parallel, rather than sequential, fashion.</p>
 <p>In the current version, each gene controls 6 paddles, with each paddle being on each stage. So in total, there are 6 stages, all tested simultaneously. The image below shows all the 6 stages with numerous paddles in each stage.</p>
-<p><img src="images/week4/ParallelEvolution.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/ParallelEvolution.png" alt="" /></p>
 <p>As one can observe, the ball are the white and red circles, one in each stage. However, the balls are of two types: </p>
 <ul>
 <li>Harmful (red)</li>
@@ -208,7 +208,7 @@ if count == 0:
 <p>After a ball hits a paddle or a bottom boundary, all the paddles in that stage will be rewarded for avoiding or approaching the ball based on its type. Paddles are rewarded for avoiding a harmful ball whereas they are rewarded for approaching a harmless ball. This is done to make fitness calculations continuous and not discrete.</p>
 <h1 id="testing"><a class="header" href="#testing">Testing</a></h1>
 <p>After a training session, the user has the ability to test a selected subset of the trained models. The models aren't scored here but only simulated in a stage for the human to observe its behavior and performance.</p>
-<p><img src="images/week4/Test.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/Test.png" alt="" /></p>
 <h2 id="results"><a class="header" href="#results">Results</a></h2>
 <p>The results below are highest fitness vs. generations graphs of 4 training sessions, with each training session being run until it reached a plateau. Population size is varied in each training session.</p>
 <p>Parameters shared by all the training sessions:</p>
@@ -227,13 +227,13 @@ if count == 0:
 <tr><td>enable_mutation_chance</td><td>0.20</td></tr>
 </tbody></table>
 <h3 id="50-genes"><a class="header" href="#50-genes">50 Genes</a></h3>
-<p><img src="images/week4/PongResults50.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults50.png" alt="" /></p>
 <h3 id="100-genes"><a class="header" href="#100-genes">100 Genes</a></h3>
-<p><img src="images/week4/PongResults100.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults100.png" alt="" /></p>
 <h3 id="300-genes"><a class="header" href="#300-genes">300 Genes</a></h3>
-<p><img src="images/week4/PongResults300.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults300.png" alt="" /></p>
 <h3 id="600-genes"><a class="header" href="#600-genes">600 Genes</a></h3>
-<p><img src="images/week4/PongResults600.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/week4/PongResults600.png" alt="" /></p>
 <h2 id="observations-and-notes"><a class="header" href="#observations-and-notes">Observations and Notes</a></h2>
 <p>In all the training sessions, there are some clear patterns.</p>
 <ul>
@@ -270,6 +270,20 @@ if count == 0:
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>

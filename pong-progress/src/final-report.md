@@ -47,7 +47,7 @@ __Data:__
 8.292171
 ```
 
-![](images/final-report/50.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/50.png)
 
 ### 100 Genes
 
@@ -86,7 +86,7 @@ __Data:__
 8.294307
 ```
 
-![](images/final-report/100.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/100.png)
 
 ### 150 Genes
 
@@ -126,7 +126,7 @@ __Data:__
 8.39234
 ```
 
-![](images/final-report/150.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/150.png)
 
 ### 200 Genes
 
@@ -166,7 +166,7 @@ __Data:__
 9.298051
 ```
 
-![](images/final-report/200.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/200.png)
 
 ### 250 Genes
 
@@ -205,7 +205,7 @@ __Data:__
 9.334922
 ```
 
-![](images/final-report/250.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/250.png)
 
 ### 300 Genes
 
@@ -245,7 +245,7 @@ __Data:__
 9.328227
 ```
 
-![](images/final-report/300.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png)
 
 
 ## Population Size vs. Max-Fitness After 30 Generations
@@ -263,7 +263,8 @@ __Data:__
 9.328227
 ```
 
-![](images/final-report/population-size-v-fitness.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/population-size-v-fitness.png)
+
 
 The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.
 
@@ -273,7 +274,8 @@ Another way to look at it is that the graph shows the trend in population size v
 
 As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.
 
-![](images/final-report/generations-required-to-reach-certain-max-fitness.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png)
+
 
 ## Observations
 

@@ -177,7 +177,7 @@
 8.292171
 8.292171
 </code></pre>
-<p><img src="images/final-report/50.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/50.png" alt="" /></p>
 <h3 id="100-genes"><a class="header" href="#100-genes">100 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.432813
@@ -211,7 +211,7 @@
 8.294307
 8.294307
 </code></pre>
-<p><img src="images/final-report/100.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/100.png" alt="" /></p>
 <h3 id="150-genes"><a class="header" href="#150-genes">150 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -246,7 +246,7 @@
 8.295925
 8.39234
 </code></pre>
-<p><img src="images/final-report/150.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/150.png" alt="" /></p>
 <h3 id="200-genes"><a class="header" href="#200-genes">200 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -281,7 +281,7 @@
 9.298051
 9.298051
 </code></pre>
-<p><img src="images/final-report/200.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/200.png" alt="" /></p>
 <h3 id="250-genes"><a class="header" href="#250-genes">250 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.431562
@@ -315,7 +315,7 @@
 9.334922
 9.334922
 </code></pre>
-<p><img src="images/final-report/250.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/250.png" alt="" /></p>
 <h3 id="300-genes"><a class="header" href="#300-genes">300 Genes</a></h3>
 <p><strong>Data:</strong></p>
 <pre><code>5.432036
@@ -350,7 +350,7 @@
 9.328227
 9.328227
 </code></pre>
-<p><img src="images/final-report/300.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png" alt="" /></p>
 <h2 id="population-size-vs-max-fitness-after-30-generations"><a class="header" href="#population-size-vs-max-fitness-after-30-generations">Population Size vs. Max-Fitness After 30 Generations</a></h2>
 <p>The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.</p>
 <p><strong>Data:</strong></p>
@@ -361,12 +361,12 @@
 9.334922
 9.328227
 </code></pre>
-<p><img src="images/final-report/population-size-v-fitness.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/population-size-v-fitness.png" alt="" /></p>
 <p>The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.</p>
 <p>Another way to look at it is that the graph shows the trend in population size vs. plateau height.</p>
 <h2 id="trend-in-generations-required-to-reach-a-specific-max-fitness"><a class="header" href="#trend-in-generations-required-to-reach-a-specific-max-fitness">Trend in Generations Required to Reach A Specific Max-Fitness</a></h2>
 <p>As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.</p>
-<p><img src="images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
 <h2 id="observations"><a class="header" href="#observations">Observations</a></h2>
 
                     </main>
@@ -389,6 +389,20 @@
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3000/__livereload");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
         <script type="text/javascript">
             window.playground_copyable = true;
         </script>
