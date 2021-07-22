@@ -1,12 +1,14 @@
 # Final Report
 
-## Generation Vs. Max-Fitness
+## Generation Vs. Highest Fitness
 
-The following presents a series of generation vs. max-fitness graphs, where the population size is varied. The data used to render each graph, as provided under each heading, is a series of max-fitness values of the generations. In other words, the line-separated values are the max-fitness values of each generation.
+The following presents a series of generation vs. highest fitness graphs, where the population size is varied. The data used to render each graph, as provided under each heading, is a series of highest fitness values of the generations. In other words, the line-separated values are the highest fitness values of each generation.
 
-The first value is the max-fitness of the first generation, the second value is the max-fitness of the second generation, and so on. X-axis represents the generation numbers and the y-axis represents the fitness values.
+The first value is the highest fitness of the first generation, the second value is the highest fitness of the second generation, and so on. X-axis represents the generation numbers and the y-axis represents the fitness values.
 
 Note that each of the graph covers a 30-generation session.
+
+> Highest fitness is the most fitness ever recorded in a training session.
 
 ### 50 Genes
 
@@ -243,9 +245,9 @@ __Data:__
 ![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png)
 
 
-## Population Size vs. Max-Fitness
+## Population Size vs. Highest Fitness
 
-The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.
+The following graph shows population size vs. highest fitness at the end of a 30-generation training session.
 
 __Data:__
 
@@ -261,13 +263,13 @@ __Data:__
 ![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/population-size-v-fitness.png)
 
 
-The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.
+The 50-population training session has a highest fitness of 8.29 after 30 generations while the 300-population training session has a highest fitness of 9.33 after 30 generations.
 
 Another way to look at it is that the graph shows the trend in population size vs. plateau height.
 
-## Trend in Generations Required to Reach A Specific Max-Fitness
+## Trend in Generations Required to Reach A Specific Highest Fitness
 
-As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.
+As the highest fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a highest fitness of 8.29.
 
 __Data:__
 
@@ -280,8 +282,14 @@ __Data:__
 1
 ```
 
-![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png)
+![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-highest-fitness.png)
 
 
 ## Observations
 
+- As population size increases, highest fitness at the end of a same-length training session increases, as evident from the __Population Size vs. Max-Fitness__ graph.
+- As population size increases, the amount of generations taken to reach a specific highest fitness decreases, as seen from the __Population Size vs. Amount of Generations__ graph.
+- From the graphs, it's clear that the drastic change happens between 150 and 200 population sizes.
+- As observed from the visualizations, there is always a steep rise from a highest fitness of ~5.5 to ~8.2 and from ~8.2 to ~9.2, till the population size of ~200.
+- From population size of 250 to at least 300, there is a steep rise from a highest fitness of ~5.5 to ~9.2.
+- The populations usually stay within a local maximum for quite some time before having a steep rise, eventually nearing the global maximum.

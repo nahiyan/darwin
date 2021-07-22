@@ -138,10 +138,13 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="final-report"><a class="header" href="#final-report">Final Report</a></h1>
-<h2 id="generation-vs-max-fitness"><a class="header" href="#generation-vs-max-fitness">Generation Vs. Max-Fitness</a></h2>
-<p>The following presents a series of generation vs. max-fitness graphs, where the population size is varied. The data used to render each graph, as provided under each heading, is a series of max-fitness values of the generations. In other words, the line-separated values are the max-fitness values of each generation.</p>
-<p>The first value is the max-fitness of the first generation, the second value is the max-fitness of the second generation, and so on. X-axis represents the generation numbers and the y-axis represents the fitness values.</p>
+<h2 id="generation-vs-highest-fitness"><a class="header" href="#generation-vs-highest-fitness">Generation Vs. Highest Fitness</a></h2>
+<p>The following presents a series of generation vs. highest fitness graphs, where the population size is varied. The data used to render each graph, as provided under each heading, is a series of highest fitness values of the generations. In other words, the line-separated values are the highest fitness values of each generation.</p>
+<p>The first value is the highest fitness of the first generation, the second value is the highest fitness of the second generation, and so on. X-axis represents the generation numbers and the y-axis represents the fitness values.</p>
 <p>Note that each of the graph covers a 30-generation session.</p>
+<blockquote>
+<p>Highest fitness is the most fitness ever recorded in a training session.</p>
+</blockquote>
 <h3 id="50-genes"><a class="header" href="#50-genes">50 Genes</a></h3>
 <p><strong>Data:</strong> </p>
 <pre><code>5.431611
@@ -346,8 +349,8 @@
 9.328227
 </code></pre>
 <p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png" alt="" /></p>
-<h2 id="population-size-vs-max-fitness"><a class="header" href="#population-size-vs-max-fitness">Population Size vs. Max-Fitness</a></h2>
-<p>The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.</p>
+<h2 id="population-size-vs-highest-fitness"><a class="header" href="#population-size-vs-highest-fitness">Population Size vs. Highest Fitness</a></h2>
+<p>The following graph shows population size vs. highest fitness at the end of a 30-generation training session.</p>
 <p><strong>Data:</strong></p>
 <pre><code>8.294047
 8.294307
@@ -357,10 +360,10 @@
 9.328227
 </code></pre>
 <p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/population-size-v-fitness.png" alt="" /></p>
-<p>The 50-population training session has a max-fitness of 8.29 after 30 generations while the 300-population training session has a max-fitness of 9.33 after 30 generations.</p>
+<p>The 50-population training session has a highest fitness of 8.29 after 30 generations while the 300-population training session has a highest fitness of 9.33 after 30 generations.</p>
 <p>Another way to look at it is that the graph shows the trend in population size vs. plateau height.</p>
-<h2 id="trend-in-generations-required-to-reach-a-specific-max-fitness"><a class="header" href="#trend-in-generations-required-to-reach-a-specific-max-fitness">Trend in Generations Required to Reach A Specific Max-Fitness</a></h2>
-<p>As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.</p>
+<h2 id="trend-in-generations-required-to-reach-a-specific-highest-fitness"><a class="header" href="#trend-in-generations-required-to-reach-a-specific-highest-fitness">Trend in Generations Required to Reach A Specific Highest Fitness</a></h2>
+<p>As the highest fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a highest fitness of 8.29.</p>
 <p><strong>Data:</strong></p>
 <pre><code>28
 18
@@ -369,8 +372,16 @@
 1
 1
 </code></pre>
-<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png" alt="" /></p>
+<p><img src="https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-highest-fitness.png" alt="" /></p>
 <h2 id="observations"><a class="header" href="#observations">Observations</a></h2>
+<ul>
+<li>As population size increases, highest fitness at the end of a same-length training session increases, as evident from the <strong>Population Size vs. Max-Fitness</strong> graph.</li>
+<li>As population size increases, the amount of generations taken to reach a specific highest fitness decreases, as seen from the <strong>Population Size vs. Amount of Generations</strong> graph.</li>
+<li>From the graphs, it's clear that the drastic change happens between 150 and 200 population sizes.</li>
+<li>As observed from the visualizations, there is always a steep rise from a highest fitness of ~5.5 to ~8.2 and from ~8.2 to ~9.2, till the population size of ~200.</li>
+<li>From population size of 250 to at least 300, there is a steep rise from a highest fitness of ~5.5 to ~9.2.</li>
+<li>The populations usually stay within a local maximum for quite some time before having a steep rise, eventually nearing the global maximum.</li>
+</ul>
 
                     </main>
 
