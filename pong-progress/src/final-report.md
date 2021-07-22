@@ -13,38 +13,36 @@ Note that each of the graph covers a 30-generation session.
 __Data:__ 
 
 ```
-5.431628
-5.431628
-5.451668
-5.451668
-8.260777
-8.260777
-8.260777
-8.260777
-8.268461
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.281201
-8.288198
-8.288198
-8.288198
-8.288198
-8.288198
-8.288198
-8.288198
-8.288198
-8.288198
-8.292171
-8.292171
-8.292171
-8.292171
+5.431611
+5.431611
+5.431611
+5.431611
+5.431611
+5.456646
+5.456646
+5.456646
+5.456646
+5.456646
+7.658571
+7.658571
+8.265928
+8.271417
+8.271417
+8.277532
+8.277532
+8.277532
+8.277532
+8.277532
+8.277532
+8.277532
+8.284661
+8.284661
+8.284661
+8.284661
+8.284661
+8.284661
+8.294047
+8.294047
 ```
 
 ![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/50.png)
@@ -122,7 +120,6 @@ __Data:__
 8.295925
 8.295925
 8.295925
-8.295925
 8.39234
 ```
 
@@ -154,7 +151,6 @@ __Data:__
 9.171868
 9.171868
 9.171868
-9.298051
 9.298051
 9.298051
 9.298051
@@ -242,22 +238,21 @@ __Data:__
 9.328227
 9.328227
 9.328227
-9.328227
 ```
 
 ![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/300.png)
 
 
-## Population Size vs. Max-Fitness After 30 Generations
+## Population Size vs. Max-Fitness
 
 The following graph shows population size vs. max-fitness right at the end of a 30-generation training session.
 
 __Data:__
 
 ```
-8.292171
+8.294047
 8.294307
-8.39234
+8.392340
 9.298051
 9.334922
 9.328227
@@ -273,6 +268,17 @@ Another way to look at it is that the graph shows the trend in population size v
 ## Trend in Generations Required to Reach A Specific Max-Fitness
 
 As the max-fitness at the end of the 50-population training session is 8.29, the following graph compares the population size with the number of generations taken to reach a max-fitness of 8.29.
+
+__Data:__
+
+```
+28
+18
+17
+9
+1
+1
+```
 
 ![](https://github.com/nahiyan/darwin/raw/gh-pages/pong-progress/book/images/final-report/generations-required-to-reach-certain-max-fitness.png)
 
